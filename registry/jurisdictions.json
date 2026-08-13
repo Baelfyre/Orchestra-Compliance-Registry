@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "jurisdictions": [
+    {"jurisdiction_id": "PH", "name": "Philippines", "kind": "COUNTRY", "status": "FOUNDATION_ONLY"},
+    {"jurisdiction_id": "EU-EEA", "name": "European Union / European Economic Area", "kind": "REGIONAL_FRAMEWORK", "status": "FOUNDATION_ONLY"},
+    {"jurisdiction_id": "US", "name": "United States", "kind": "COUNTRY_WITH_SUBJURISDICTIONS", "status": "FOUNDATION_ONLY"},
+    {"jurisdiction_id": "CA", "name": "Canada", "kind": "COUNTRY_WITH_SUBJURISDICTIONS", "status": "FOUNDATION_ONLY"},
+    {"jurisdiction_id": "MX", "name": "Mexico", "kind": "COUNTRY", "status": "FOUNDATION_ONLY"}
+  ]
+}
