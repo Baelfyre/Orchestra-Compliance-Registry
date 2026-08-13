@@ -6,14 +6,14 @@ Public, versioned compliance intelligence for Orchestra.
 
 **FOUNDATION / NOT YET A TRUSTED COMPLIANCE RELEASE**
 
-This repository is the canonical public registry identity intended for Orchestra compliance intelligence. Until a versioned registry release has passed the repository validation and approval process, consumers must treat repository content as draft data rather than an authoritative compliance determination.
+This repository is the canonical public registry for Orchestra compliance intelligence. Until a versioned registry release has passed the repository validation and approval process, users must treat its contents as draft data rather than an authoritative compliance determination.
 
 ## Trust boundary
 
 - Public read access does not grant authority to modify canonical registry state.
 - Registry records provide sourced compliance intelligence, not legal advice, project-specific applicability decisions, execution authority, deployment authority, release authority, or policy activation.
 - Contributions and source-monitor output are untrusted until validated and approved through the governed repository workflow.
-- Orchestra consumers should use verified versioned releases or an explicitly pinned local snapshot, not arbitrary live `main` content.
+- Orchestra users should use verified versioned releases or an explicitly pinned local snapshot, not arbitrary live `main` content.
 
 ## Planned registry domains
 
