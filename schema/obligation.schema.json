@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Compliance Obligation Record",
+  "type": "object",
+  "required": ["obligation_id", "source_ids", "jurisdiction_ids", "domains", "required_evidence"],
+  "properties": {
+    "obligation_id": {"type": "string", "minLength": 1},
+    "source_ids": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "jurisdiction_ids": {"type": "array", "items": {"type": "string"}},
+    "provider_ids": {"type": "array", "items": {"type": "string"}},
+    "domains": {"type": "array", "items": {"type": "string"}},
+    "required_evidence": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": true
+}
