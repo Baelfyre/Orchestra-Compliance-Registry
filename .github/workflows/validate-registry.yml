@@ -36,3 +36,10 @@ jobs:
             --release-tag registry-v0.1.0
           cat artifacts/release-candidate/release-manifest.sha256
           cat artifacts/release-candidate/orchestra-compliance-registry.zip.sha256
+      - name: Preserve release candidate artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: registry-v0.1.0-candidate
+          path: artifacts/release-candidate/
+          if-no-files-found: error
+          retention-days: 14
