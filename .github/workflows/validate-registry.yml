@@ -26,3 +26,13 @@ jobs:
         run: python scripts/validate_registry.py
       - name: Run registry regression tests
         run: python -m unittest discover -s tests -p "test_*.py" -v
+      - name: Build deterministic release candidate
+        run: |
+          rm -rf artifacts/release-candidate
+          python scripts/build_release.py \
+            --output-dir artifacts/release-candidate \
+            --registry-version 0.1.0 \
+            --release-sequence 1 \
+            --release-tag registry-v0.1.0
+          cat artifacts/release-candidate/release-manifest.sha256
+          cat artifacts/release-candidate/orchestra-compliance-registry.zip.sha256

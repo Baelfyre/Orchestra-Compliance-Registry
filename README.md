@@ -30,6 +30,14 @@ The pilot deliberately remains `DRAFT`:
 
 See `docs/PH_PRIVACY_PILOT.md` for the bounded source set and interpretation boundary.
 
+## Deterministic release candidates
+
+`scripts/build_release.py` can transform validated `DRAFT` Registry source state into a deterministic **candidate bundle** without modifying the canonical source files. The candidate contains a `TRUSTED_RELEASE` staging manifest, exact SHA-256 inventory, external `release-manifest.sha256`, and `orchestra-compliance-registry.zip.sha256` evidence.
+
+Candidate construction is not publication. Content hashes establish integrity, while trusted provenance still requires the separately governed immutable GitHub Release boundary—or an independently obtained release-manifest SHA-256 for offline installation. CI builds a candidate so packaging remains continuously testable without silently turning branch content into a trusted release.
+
+See `docs/RELEASE_PACKAGING.md` for the bundle contract, deterministic-build rules, and publication gate.
+
 ## Planned registry domains
 
 - Jurisdictions: Philippines, EU/EEA, United States, Canada, Mexico
