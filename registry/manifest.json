@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "canonical_repository": "Baelfyre/Orchestra-Compliance-Registry",
-  "registry_version": "0.1.0-dev.1",
+  "registry_version": "0.1.0-dev.2",
   "release_sequence": 0,
   "status": "DRAFT",
   "records": {
@@ -13,11 +13,11 @@
     "review_due": "registry/review-due.json"
   },
   "record_counts": {
-    "sources": 0,
-    "obligations": 0,
+    "sources": 4,
+    "obligations": 6,
     "jurisdictions": 5,
     "providers": 7,
-    "source_status": 0,
-    "review_due": 0
+    "source_status": 4,
+    "review_due": 4
   }
 }

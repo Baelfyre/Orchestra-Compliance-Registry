@@ -1,4 +1,33 @@
 {
   "schema_version": 1,
-  "entries": []
+  "entries": [
+    {
+      "source_id": "PH-DPA-RA10173",
+      "status": "VERIFIED_CURRENT",
+      "checked_at": "2026-08-14",
+      "check_method": "PRIMARY_AUTHORITY_WEB_REVIEW",
+      "note": "National Privacy Commission continues to publish the Data Privacy Act source text."
+    },
+    {
+      "source_id": "PH-DPA-IRR-2016",
+      "status": "VERIFIED_CURRENT",
+      "checked_at": "2026-08-14",
+      "check_method": "PRIMARY_AUTHORITY_WEB_REVIEW",
+      "note": "National Privacy Commission continues to publish the implementing rules as current reference material."
+    },
+    {
+      "source_id": "PH-NPC-CIRC-2023-06",
+      "status": "VERIFIED_CURRENT",
+      "checked_at": "2026-08-14",
+      "check_method": "SIGNED_PDF_AND_CURRENT_NPC_ISSUANCE_INDEX_REVIEW",
+      "note": "Current NPC issuance index still lists Circular 2023-06; the NPC publication notice states that it repealed Circular 16-01 and took effect on 2024-03-30."
+    },
+    {
+      "source_id": "PH-NPC-ADV-2025-02",
+      "status": "VERIFIED_CURRENT",
+      "checked_at": "2026-08-14",
+      "check_method": "SIGNED_PDF_AND_CURRENT_NPC_ISSUANCE_INDEX_REVIEW",
+      "note": "Current NPC issuance index still lists Advisory 2025-02 as privacy-engineering guidance."
+    }
+  ]
 }

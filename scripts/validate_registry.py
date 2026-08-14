@@ -63,8 +63,15 @@ def string_list(value: Any, label: str, *, require_nonempty: bool = False) -> li
     return value
 
 
-def validate(root: Path) -> list[str]:
+def _coverage_error(label: str, expected: set[str], actual: set[str]) -> ValueError:
+    missing = sorted(expected - actual)
+    extra = sorted(actual - expected)
+    return ValueError(f"{label} coverage mismatch: missing={missing} extra={extra}")
+
+
+def validate(root: Path, *, today: date | None = None) -> list[str]:
     try:
+        today = today or date.today()
         manifest = load_json(root / "registry" / "manifest.json")
         if manifest.get("schema_version") != 1:
             raise ValueError("unsupported manifest schema_version")
@@ -107,6 +114,7 @@ def validate(root: Path) -> list[str]:
         provider_ids = ids(providers, "provider_id", "provider")
         ids(obligations, "obligation_id", "obligation")
 
+        source_verification_states: dict[str, str] = {}
         for source in sources:
             source_id = source["source_id"]
             url = source.get("canonical_url")
@@ -119,6 +127,7 @@ def validate(root: Path) -> list[str]:
             state = verification.get("status") if isinstance(verification, dict) else None
             if state not in SOURCE_STATES:
                 raise ValueError(f"source {source_id} has unsupported verification status")
+            source_verification_states[source_id] = state
             for value in source_jurisdictions:
                 if value not in jurisdiction_ids:
                     raise ValueError(f"source {source_id} references unknown jurisdiction {value}")
@@ -141,14 +150,18 @@ def validate(root: Path) -> list[str]:
                     raise ValueError(f"obligation {obligation_id} references unknown provider {value}")
 
         source_status_ids = ids(source_status, "source_id", "source-status entry")
+        source_status_states: dict[str, str] = {}
         for entry in source_status:
             source_id = entry["source_id"]
             if source_id not in source_ids:
                 raise ValueError(f"source-status entry references unknown source {source_id}")
-            if entry.get("status") not in SOURCE_STATES:
+            entry_status = entry.get("status")
+            if entry_status not in SOURCE_STATES:
                 raise ValueError(f"source-status entry {source_id} has unsupported status")
+            source_status_states[source_id] = entry_status
 
         review_due_ids = ids(review_due, "source_id", "review-due entry")
+        parsed_due_dates: dict[str, date] = {}
         for entry in review_due:
             source_id = entry["source_id"]
             if source_id not in source_ids:
@@ -157,14 +170,27 @@ def validate(root: Path) -> list[str]:
             if not isinstance(value, str):
                 raise ValueError(f"review-due entry {source_id} requires next_review_due")
             try:
-                date.fromisoformat(value)
+                parsed_due_dates[source_id] = date.fromisoformat(value)
             except ValueError as exc:
                 raise ValueError(f"review-due entry {source_id} has invalid next_review_due") from exc
 
-        if status == "TRUSTED_RELEASE" and source_status_ids != source_ids:
-            missing = sorted(source_ids - source_status_ids)
-            extra = sorted(source_status_ids - source_ids)
-            raise ValueError(f"trusted release source-status coverage mismatch: missing={missing} extra={extra}")
+        if source_status_ids != source_ids:
+            raise _coverage_error("source-status", source_ids, source_status_ids)
+        if review_due_ids != source_ids:
+            raise _coverage_error("review-due", source_ids, review_due_ids)
+
+        for source_id in sorted(source_ids):
+            source_state = source_verification_states[source_id]
+            ledger_state = source_status_states[source_id]
+            if source_state != ledger_state:
+                raise ValueError(
+                    f"source {source_id} verification/status drift: source={source_state} ledger={ledger_state}"
+                )
+            if parsed_due_dates[source_id] < today and ledger_state != "REVIEW_OVERDUE":
+                raise ValueError(
+                    f"source {source_id} review is overdue as of {today.isoformat()}; "
+                    "refresh the source or set status REVIEW_OVERDUE"
+                )
 
         counts = manifest.get("record_counts")
         expected = {
