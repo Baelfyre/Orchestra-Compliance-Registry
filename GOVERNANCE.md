@@ -21,6 +21,8 @@ This repository publishes reusable compliance intelligence for Orchestra. It doe
 5. Canonical state is updated only through the protected review path.
 6. A trusted registry release is a separate action after canonical validation.
 
+The foundation bootstrap does not waive these controls. Before the first registry-foundation pull request is merged, the required `main` repository controls below must be independently verified as active. Missing protection or required checks is a governance `HOLD`, not permission to merge through an unprotected branch.
+
 ## Required repository controls
 
 The intended GitHub controls for `main` are:
@@ -29,13 +31,28 @@ The intended GitHub controls for `main` are:
 - require at least one approving review by an authorized maintainer
 - require CODEOWNERS review for protected paths
 - dismiss stale approvals when the proposed change changes
-- require the registry validation status check
+- require the `Registry Validation` status check
 - require conversation resolution
 - block force pushes
 - block branch deletion
 - minimize bypass permissions
 
 Repository settings are enforcement state and must be verified independently. This file describes the intended policy and does not prove that GitHub settings are active.
+
+## Trusted registry release boundary
+
+A canonical merge is not automatically a trusted registry release. Trusted release publication remains a separate protected action.
+
+A trusted registry release must:
+
+- be produced from canonical validated registry state;
+- use a positive monotonic `release_sequence`;
+- use a release manifest that identifies `Baelfyre/Orchestra-Compliance-Registry`, the registry version, release tag, and exact SHA-256 for every distributed registry file;
+- contain no unlisted distributed files;
+- publish the release-manifest SHA-256 as independently readable release evidence for offline/pre-downloaded verification;
+- be a non-draft, non-prerelease, immutable GitHub Release in the canonical repository before normal network synchronization may trust it.
+
+A self-consistent archive does not establish provenance by itself. Orchestra network synchronization trusts the immutable canonical GitHub Release boundary plus the verified manifest. Offline/local installation requires the separately obtained expected release-manifest SHA-256 as its out-of-band trust anchor.
 
 ## Legal and licensing decisions
 
