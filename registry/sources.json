@@ -1,4 +1,74 @@
 {
   "schema_version": 1,
-  "sources": []
+  "sources": [
+    {
+      "source_id": "PH-DPA-RA10173",
+      "title": "Republic Act No. 10173 — Data Privacy Act of 2012",
+      "source_type": "STATUTE",
+      "authority": "National Privacy Commission / Republic of the Philippines",
+      "canonical_url": "https://privacy.gov.ph/data-privacy-act/",
+      "jurisdiction_ids": ["PH"],
+      "domains": ["privacy", "data-protection", "personal-data-processing"],
+      "issued_date": "2012-08-15",
+      "verification": {
+        "status": "VERIFIED_CURRENT",
+        "verified_at": "2026-08-14",
+        "method": "PRIMARY_AUTHORITY_WEB_REVIEW",
+        "authority_domain": "privacy.gov.ph"
+      },
+      "interpretation_boundary": "SOURCE_IDENTITY_AND_TEXT_ONLY; GOVERNOR_MUST_DETERMINE PROJECT_APPLICABILITY"
+    },
+    {
+      "source_id": "PH-DPA-IRR-2016",
+      "title": "Implementing Rules and Regulations of Republic Act No. 10173",
+      "source_type": "IMPLEMENTING_RULES",
+      "authority": "National Privacy Commission",
+      "canonical_url": "https://privacy.gov.ph/implementing-rules-regulations-data-privacy-act-2012/",
+      "jurisdiction_ids": ["PH"],
+      "domains": ["privacy", "data-protection", "personal-data-processing", "security"],
+      "verification": {
+        "status": "VERIFIED_CURRENT",
+        "verified_at": "2026-08-14",
+        "method": "PRIMARY_AUTHORITY_WEB_REVIEW",
+        "authority_domain": "privacy.gov.ph"
+      },
+      "interpretation_boundary": "SOURCE_IDENTITY_AND_TEXT_ONLY; GOVERNOR_MUST_DETERMINE PROJECT_APPLICABILITY"
+    },
+    {
+      "source_id": "PH-NPC-CIRC-2023-06",
+      "title": "NPC Circular 2023-06 — Security of Personal Data in the Government and the Private Sector",
+      "source_type": "REGULATORY_CIRCULAR",
+      "authority": "National Privacy Commission",
+      "canonical_url": "https://privacy.gov.ph/wp-content/uploads/2024/03/NPC-Circular-Repeal-16-01-Signed.pdf",
+      "jurisdiction_ids": ["PH"],
+      "domains": ["privacy", "data-protection", "security", "privacy-engineering", "business-continuity"],
+      "issued_date": "2023-12-01",
+      "effective_date": "2024-03-30",
+      "supersession_note": "Expressly repeals NPC Circular No. 16-01 according to the National Privacy Commission publication notice.",
+      "verification": {
+        "status": "VERIFIED_CURRENT",
+        "verified_at": "2026-08-14",
+        "method": "PRIMARY_AUTHORITY_SIGNED_PDF_AND_ISSUANCE_INDEX_REVIEW",
+        "authority_domain": "privacy.gov.ph"
+      },
+      "interpretation_boundary": "DIRECT REGULATORY TEXT; GOVERNOR MUST DETERMINE PIC/PIP AND PROJECT APPLICABILITY"
+    },
+    {
+      "source_id": "PH-NPC-ADV-2025-02",
+      "title": "NPC Advisory No. 2025-02 — Guidelines on Privacy Engineering in Systems Life Cycle Processes",
+      "source_type": "REGULATORY_ADVISORY",
+      "authority": "National Privacy Commission",
+      "canonical_url": "https://privacy.gov.ph/wp-content/uploads/2025/12/NPC_Advisory2025-02.pdf",
+      "jurisdiction_ids": ["PH"],
+      "domains": ["privacy", "privacy-engineering", "systems-lifecycle"],
+      "issued_date": "2025-08-27",
+      "verification": {
+        "status": "VERIFIED_CURRENT",
+        "verified_at": "2026-08-14",
+        "method": "PRIMARY_AUTHORITY_SIGNED_PDF_AND_ISSUANCE_INDEX_REVIEW",
+        "authority_domain": "privacy.gov.ph"
+      },
+      "interpretation_boundary": "ADVISORY GUIDANCE; NOT RECORDED AS A STANDALONE MANDATORY OBLIGATION WITHOUT GOVERNOR REVIEW"
+    }
+  ]
 }
