@@ -1,4 +1,107 @@
 {
   "schema_version": 1,
-  "obligations": []
+  "obligations": [
+    {
+      "obligation_id": "PH-PRIVACY-PIA",
+      "title": "Conduct and maintain Privacy Impact Assessments for personal-data processing",
+      "source_ids": ["PH-NPC-CIRC-2023-06", "PH-DPA-IRR-2016"],
+      "jurisdiction_ids": ["PH"],
+      "provider_ids": [],
+      "domains": ["privacy", "risk-management", "systems-lifecycle"],
+      "source_locator": "NPC Circular 2023-06 Sections 4(D) and 5",
+      "summary": "A PIC or PIP processing personal data should maintain a Privacy Impact Assessment covering the processing lifecycle and update it when material processing, regulatory, contractual, feature, or processor changes occur.",
+      "required_evidence": [
+        "privacy_impact_assessment_record",
+        "data_inventory_and_processing_lifecycle",
+        "privacy_risk_and_control_mapping",
+        "material_change_reassessment_record"
+      ],
+      "interpretation_state": "DIRECT_TEXTUAL_DUTY_REQUIRES_GOVERNOR_APPLICABILITY_REVIEW"
+    },
+    {
+      "obligation_id": "PH-PRIVACY-MANAGEMENT-PROGRAM",
+      "title": "Maintain a Privacy Management Program",
+      "source_ids": ["PH-NPC-CIRC-2023-06"],
+      "jurisdiction_ids": ["PH"],
+      "provider_ids": [],
+      "domains": ["privacy", "governance", "training"],
+      "source_locator": "NPC Circular 2023-06 Section 4(E)-(F)",
+      "summary": "A PIC or PIP should maintain an organizational privacy management program with leadership responsibility, a control framework, continuous improvement, and periodic privacy/data-protection training.",
+      "required_evidence": [
+        "privacy_management_program",
+        "privacy_control_framework",
+        "privacy_training_records",
+        "continuous_improvement_review"
+      ],
+      "interpretation_state": "DIRECT_TEXTUAL_DUTY_REQUIRES_GOVERNOR_APPLICABILITY_REVIEW"
+    },
+    {
+      "obligation_id": "PH-PRIVACY-BY-DESIGN-DEFAULT",
+      "title": "Integrate privacy-by-design and privacy-by-default into data-processing systems",
+      "source_ids": ["PH-NPC-CIRC-2023-06", "PH-NPC-ADV-2025-02"],
+      "jurisdiction_ids": ["PH"],
+      "provider_ids": [],
+      "domains": ["privacy", "privacy-engineering", "systems-lifecycle"],
+      "source_locator": "NPC Circular 2023-06 Sections 7-8; NPC Advisory 2025-02 provides lifecycle guidance",
+      "summary": "For applicable data-processing systems, privacy safeguards should be considered in system design and only data necessary for the stated processing purpose should be enabled by default.",
+      "required_evidence": [
+        "privacy_requirements_in_system_design",
+        "default_processing_configuration_review",
+        "data_minimization_design_evidence",
+        "privacy_engineering_traceability"
+      ],
+      "interpretation_state": "CIRCULAR_DUTY_WITH_ADVISORY_GUIDANCE_REQUIRES_GOVERNOR_APPLICABILITY_REVIEW"
+    },
+    {
+      "obligation_id": "PH-PRIVACY-RETENTION",
+      "title": "Document and periodically review personal-data retention periods",
+      "source_ids": ["PH-NPC-CIRC-2023-06", "PH-DPA-RA10173"],
+      "jurisdiction_ids": ["PH"],
+      "provider_ids": [],
+      "domains": ["privacy", "data-lifecycle", "retention"],
+      "source_locator": "NPC Circular 2023-06 Section 9; Data Privacy Act Section 11",
+      "summary": "Personal data should not be retained longer than necessary for its lawful purpose, and the organization should document, periodically review, and update retention periods.",
+      "required_evidence": [
+        "documented_retention_policy",
+        "retention_schedule",
+        "retention_review_record",
+        "deletion_or_disposal_control_evidence"
+      ],
+      "interpretation_state": "DIRECT_TEXTUAL_DUTY_REQUIRES_GOVERNOR_APPLICABILITY_REVIEW"
+    },
+    {
+      "obligation_id": "PH-PRIVACY-ACCESS-CONTROL",
+      "title": "Restrict personal-data access to authorized personnel with appropriate controls",
+      "source_ids": ["PH-NPC-CIRC-2023-06"],
+      "jurisdiction_ids": ["PH"],
+      "provider_ids": [],
+      "domains": ["privacy", "security", "access-control"],
+      "source_locator": "NPC Circular 2023-06 Sections 12-16",
+      "summary": "Access to personal data should be restricted to authorized personnel on a need-to-know basis, governed by access-control procedures and appropriate authentication mechanisms for applicable online access.",
+      "required_evidence": [
+        "access_control_policy",
+        "authorized_access_review",
+        "authentication_control_evidence",
+        "processor_access_contract_or_equivalent"
+      ],
+      "interpretation_state": "DIRECT_TEXTUAL_DUTY_REQUIRES_GOVERNOR_APPLICABILITY_REVIEW"
+    },
+    {
+      "obligation_id": "PH-PRIVACY-BUSINESS-CONTINUITY",
+      "title": "Maintain and periodically test business-continuity measures for personal data",
+      "source_ids": ["PH-NPC-CIRC-2023-06"],
+      "jurisdiction_ids": ["PH"],
+      "provider_ids": [],
+      "domains": ["privacy", "security", "business-continuity", "resilience"],
+      "source_locator": "NPC Circular 2023-06 Section 21",
+      "summary": "A PIC or PIP should maintain business-continuity planning that addresses personal-data backup, restoration and remedial time and is periodically reviewed and tested.",
+      "required_evidence": [
+        "business_continuity_plan",
+        "personal_data_backup_and_restore_procedure",
+        "business_continuity_test_evidence",
+        "periodic_bcp_review_record"
+      ],
+      "interpretation_state": "DIRECT_TEXTUAL_DUTY_REQUIRES_GOVERNOR_APPLICABILITY_REVIEW"
+    }
+  ]
 }
