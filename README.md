@@ -4,7 +4,7 @@ Public, versioned compliance intelligence for Orchestra.
 
 ## Status
 
-**FOUNDATION / NOT YET A TRUSTED COMPLIANCE RELEASE**
+**FOUNDATION / SOURCE-BACKED PILOT / NOT YET A TRUSTED COMPLIANCE RELEASE**
 
 This repository is the canonical public registry for Orchestra compliance intelligence. Until a versioned registry release has passed the repository validation and approval process, users must treat its contents as draft data rather than an authoritative compliance determination.
 
@@ -14,6 +14,21 @@ This repository is the canonical public registry for Orchestra compliance intell
 - Registry records provide sourced compliance intelligence, not legal advice, project-specific applicability decisions, execution authority, deployment authority, release authority, or policy activation.
 - Contributions and source-monitor output are untrusted until validated and approved through the governed repository workflow.
 - Orchestra users should use verified versioned releases or an explicitly pinned local snapshot, not arbitrary live `main` content.
+
+## Current source-backed pilot
+
+The first bounded data pilot covers Philippine privacy/data-protection sources published by the National Privacy Commission. It establishes the registry mechanics for source identity, source-status parity, review cadence, direct source locators, evidence-oriented obligations, and fail-closed freshness handling before the broader jurisdiction/provider catalog is populated.
+
+The pilot deliberately remains `DRAFT`:
+
+- source presence and currentness are verified against primary NPC publications;
+- obligation records preserve source IDs and section locators rather than presenting project-specific legal conclusions;
+- Governor remains responsible for applicability and material interpretation;
+- every source must have matching `source-status.json` and `review-due.json` entries;
+- a missed review date fails validation unless the source is explicitly marked `REVIEW_OVERDUE`;
+- Registry Validation also runs on a daily schedule so freshness debt cannot remain invisible indefinitely.
+
+See `docs/PH_PRIVACY_PILOT.md` for the bounded source set and interpretation boundary.
 
 ## Planned registry domains
 
