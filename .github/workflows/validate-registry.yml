@@ -1,0 +1,25 @@
+name: Registry Validation
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  validate-registry:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate registry
+        run: python scripts/validate_registry.py
+      - name: Run registry regression tests
+        run: python -m unittest discover -s tests -p "test_*.py" -v

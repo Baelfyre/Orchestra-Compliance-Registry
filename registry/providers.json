@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "providers": [
+    {"provider_id": "APPLE", "name": "Apple", "kind": "PLATFORM_PROVIDER", "status": "FOUNDATION_ONLY"},
+    {"provider_id": "GOOGLE_PLAY", "name": "Google Play", "kind": "DISTRIBUTION_PROVIDER", "status": "FOUNDATION_ONLY"},
+    {"provider_id": "MICROSOFT_WINDOWS", "name": "Microsoft / Windows", "kind": "PLATFORM_PROVIDER", "status": "FOUNDATION_ONLY"},
+    {"provider_id": "DEBIAN", "name": "Debian", "kind": "LINUX_DISTRIBUTION", "status": "FOUNDATION_ONLY"},
+    {"provider_id": "FEDORA", "name": "Fedora", "kind": "LINUX_DISTRIBUTION", "status": "FOUNDATION_ONLY"},
+    {"provider_id": "SNAP", "name": "Snap Store", "kind": "LINUX_DISTRIBUTION_PROVIDER", "status": "FOUNDATION_ONLY"},
+    {"provider_id": "FLATHUB", "name": "Flathub", "kind": "LINUX_DISTRIBUTION_PROVIDER", "status": "FOUNDATION_ONLY"}
+  ]
+}

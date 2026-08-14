@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Compliance Source Record",
+  "type": "object",
+  "required": ["source_id", "canonical_url", "jurisdiction_ids", "domains", "verification"],
+  "properties": {
+    "source_id": {"type": "string", "minLength": 1},
+    "canonical_url": {"type": "string", "pattern": "^https://"},
+    "jurisdiction_ids": {"type": "array", "items": {"type": "string"}},
+    "domains": {"type": "array", "items": {"type": "string"}},
+    "verification": {"type": "object", "required": ["status"]}
+  },
+  "additionalProperties": true
+}

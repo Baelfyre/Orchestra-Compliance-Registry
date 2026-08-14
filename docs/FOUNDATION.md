@@ -1,0 +1,1 @@
+Foundation branch for registry schemas, validation, and local-cache integration. No compliance records are active in this branch.
