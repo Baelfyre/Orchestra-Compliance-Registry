@@ -4,9 +4,11 @@ Public, versioned compliance intelligence for Orchestra.
 
 ## Status
 
-**FOUNDATION / SOURCE-BACKED PILOT / NOT YET A TRUSTED COMPLIANCE RELEASE**
+**FOUNDATION / SOURCE-BACKED PILOT / v0.1.0 CANDIDATE READY / NOT YET A TRUSTED COMPLIANCE RELEASE**
 
 This repository is the canonical public registry for Orchestra compliance intelligence. Until a versioned registry release has passed the repository validation and approval process, users must treat its contents as draft data rather than an authoritative compliance determination.
+
+The deterministic `registry-v0.1.0` candidate is prepared and reproducible from canonical source state, but publication remains a separate protected transition. See `docs/REGISTRY_V0_1_0_RELEASE_READINESS.md` for the exact source baseline, hashes, freshness state, and publication prerequisites.
 
 ## Trust boundary
 
@@ -34,9 +36,9 @@ See `docs/PH_PRIVACY_PILOT.md` for the bounded source set and interpretation bou
 
 `scripts/build_release.py` can transform validated `DRAFT` Registry source state into a deterministic **candidate bundle** without modifying the canonical source files. The candidate contains a `TRUSTED_RELEASE` staging manifest, exact SHA-256 inventory, external `release-manifest.sha256`, and `orchestra-compliance-registry.zip.sha256` evidence.
 
-Candidate construction is not publication. Content hashes establish integrity, while trusted provenance still requires the separately governed immutable GitHub Release boundary—or an independently obtained release-manifest SHA-256 for offline installation. CI builds a candidate so packaging remains continuously testable without silently turning branch content into a trusted release.
+Candidate construction is not publication. Content hashes establish integrity, while trusted provenance still requires the separately governed immutable GitHub Release boundary—or an independently obtained release-manifest SHA-256 for offline installation. CI builds and preserves the candidate as a revision-bound workflow artifact so packaging remains continuously testable without silently turning branch content into a trusted release.
 
-See `docs/RELEASE_PACKAGING.md` for the bundle contract, deterministic-build rules, and publication gate.
+See `docs/RELEASE_PACKAGING.md` for the bundle contract, deterministic-build rules, and publication gate, and `docs/REGISTRY_V0_1_0_RELEASE_READINESS.md` for the first candidate's readiness evidence.
 
 ## Planned registry domains
 
@@ -47,4 +49,4 @@ See `docs/RELEASE_PACKAGING.md` for the bundle contract, deterministic-build rul
 
 ## Security
 
-Canonical changes are intended to use protected pull-request workflows, CODEOWNERS, validation checks, immutable release manifests, and least-privilege automation.
+Canonical changes use the active protected pull-request ruleset, required Registry Validation, Squash-only promotion, immutable release manifests, and least-privilege automation. Trusted publication remains a separate release transition.
