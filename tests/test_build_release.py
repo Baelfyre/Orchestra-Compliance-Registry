@@ -14,6 +14,9 @@ ROOT = Path(__file__).resolve().parents[1]
 VERSION = "0.1.0"
 SEQUENCE = 1
 TAG = "registry-v0.1.0"
+EXPECTED_MANIFEST_SHA256 = "9922ddcce77dfac0c01cac80fe6669aaffe37636826a56a4b54a8312558ee2d1"
+EXPECTED_ASSET_SHA256 = "b64889933d30a8dea27bcbbb95c952e4f053c14a4f345e1e04b27777b5025ec0"
+EXPECTED_REGISTRY_FILE_COUNT = 7
 
 
 def sha256(path: Path) -> str:
@@ -56,13 +59,18 @@ class ReleaseBuilderTests(unittest.TestCase):
             self.assertEqual(TAG, manifest["release_tag"])
             self.assertEqual("TRUSTED_RELEASE", manifest["status"])
             self.assertNotIn(build_release.RELEASE_MANIFEST_NAME, manifest["files"])
+            self.assertEqual(EXPECTED_REGISTRY_FILE_COUNT, result["file_count"])
+            self.assertTrue(all(path.startswith("registry/") for path in manifest["files"]))
+            self.assertFalse(any(path.startswith("machine/") for path in manifest["files"]))
 
             manifest_digest = hashlib.sha256(manifest_bytes).hexdigest()
-            self.assertEqual(manifest_digest, result["manifest_sha256"])
+            self.assertEqual(EXPECTED_MANIFEST_SHA256, manifest_digest)
+            self.assertEqual(EXPECTED_MANIFEST_SHA256, result["manifest_sha256"])
             self.assertEqual(
                 f"{manifest_digest}  {build_release.RELEASE_MANIFEST_NAME}\n",
                 (output / "release-manifest.sha256").read_text(encoding="utf-8"),
             )
+            self.assertEqual(EXPECTED_ASSET_SHA256, result["asset_sha256"])
             self.assertEqual(result["asset_sha256"], sha256(asset))
             self.assertEqual(
                 f"{result['asset_sha256']}  {build_release.ASSET_NAME}\n",
@@ -75,6 +83,7 @@ class ReleaseBuilderTests(unittest.TestCase):
                     [build_release.RELEASE_MANIFEST_NAME, *sorted(manifest["files"])],
                     names,
                 )
+                self.assertFalse(any(name.startswith("machine/") for name in names))
                 bundled_manifest = json.loads(archive.read(build_release.RELEASE_MANIFEST_NAME))
                 self.assertEqual(manifest, bundled_manifest)
                 staged_registry_manifest = json.loads(archive.read("registry/manifest.json"))
