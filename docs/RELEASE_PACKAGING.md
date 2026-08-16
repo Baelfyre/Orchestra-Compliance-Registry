@@ -6,13 +6,15 @@ Registry source state and Registry distribution state are separate trust boundar
 
 `scripts/build_release.py` provides deterministic **candidate packaging only**. It does not create a tag, GitHub Release, marketplace publication, or policy activation.
 
+Machine control metadata lives under `machine/` and is intentionally outside the distributed `registry/` root. `machine/representation-policy.json` and `machine/publication-state.json` support JSON-first agent and tooling consumption without silently changing release bundle bytes, file inventory, or version identity.
+
 ## Candidate identity
 
 A release candidate requires three explicit values:
 
-- `registry_version` — a safe version token such as `0.1.0`
-- `release_sequence` — a positive monotonic integer such as `1`
-- `release_tag` — exactly `registry-v{registry_version}`, for example `registry-v0.1.0`
+- `registry_version`: a safe version token such as `0.1.0`
+- `release_sequence`: a positive monotonic integer such as `1`
+- `release_tag`: exactly `registry-v{registry_version}`, for example `registry-v0.1.0`
 
 The source registry must still be canonical `DRAFT` state with `release_sequence: 0`. The builder copies the Registry into a temporary staging area, changes only the staged release identity to `TRUSTED_RELEASE`, and runs the semantic Registry validator again before packaging.
 
@@ -46,6 +48,8 @@ The root `release-manifest.json` records:
 - exact SHA-256 for every bundled `registry/` file
 
 `release-manifest.json` is intentionally outside its own `files` map. Orchestra validates the manifest separately and then requires the actual bundled file inventory to match the manifest exactly: missing files, unlisted files, changed hashes, path escapes, or identity mismatches fail closed.
+
+Files under `machine/` are not bundled by the current distribution contract. Adding machine metadata to the trusted release bundle is a separate distribution-version decision and must not occur implicitly through a continuity or documentation change.
 
 ## Determinism
 
