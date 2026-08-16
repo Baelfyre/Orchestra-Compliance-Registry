@@ -1,0 +1,37 @@
+{
+  "schema_version": "orchestra.compliance-registry.representation-policy.v1",
+  "canonical_repository": "Baelfyre/Orchestra-Compliance-Registry",
+  "machine_priority": true,
+  "machine_authority": {
+    "editable_registry_state": "registry/manifest.json",
+    "publication_state": "machine/publication-state.json",
+    "registry_records_from_manifest": true
+  },
+  "external_source_reality": {
+    "trusted_publication": "immutable_github_release",
+    "verification_rule": "VERIFY_LIVE_RELEASE_BEFORE_TRUST_OR_MUTATION",
+    "live_external_reality_overrides_stale_repository_record": true
+  },
+  "human_views": {
+    "README.md": "HUMAN_READABLE_OVERVIEW",
+    "GOVERNANCE.md": "HUMAN_READABLE_GOVERNANCE_REFERENCE",
+    "docs/PH_PRIVACY_PILOT.md": "HUMAN_READABLE_PILOT_REFERENCE",
+    "docs/REGISTRY_V0_1_0_RELEASE_READINESS.md": "HISTORICAL_HUMAN_READABLE_RELEASE_EVIDENCE",
+    "docs/RELEASE_PACKAGING.md": "HUMAN_READABLE_PACKAGING_REFERENCE"
+  },
+  "rules": [
+    "MACHINE_JSON_PRECEDES_MARKDOWN",
+    "MARKDOWN_MUST_NOT_OVERRIDE_MACHINE_STATE",
+    "MARKDOWN_IS_OPTIONAL_UNLESS_HUMAN_REVIEW_REQUIRES_IT",
+    "NO_MACHINE_STATE_RECONSTRUCTION_FROM_MARKDOWN_WHEN_JSON_EXISTS",
+    "MACHINE_STATE_CHANGES_REQUIRE_MACHINE_RECORD_UPDATE_FIRST",
+    "LIVE_EXTERNAL_REALITY_OVERRIDES_STALE_REPOSITORY_RECORD"
+  ],
+  "markdown_role": "NON_AUTHORITATIVE_HUMAN_READABLE_REFERENCE",
+  "machine_state_must_not_depend_on_markdown_parsing": true,
+  "release_bundle_boundary": {
+    "distributed_root": "registry/",
+    "machine_metadata_root": "machine/",
+    "machine_metadata_is_distributed_registry_content": false
+  }
+}

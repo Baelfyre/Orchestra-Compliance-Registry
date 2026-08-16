@@ -1,10 +1,18 @@
 # Registry v0.1.0 Release Readiness
 
-## Status
+## Document role
+
+`HISTORICAL_HUMAN_READABLE_RELEASE_EVIDENCE`
+
+This file preserves the pre-publication readiness decision as human-readable evidence. It is not current machine state and must not be parsed to determine the present Registry publication boundary.
+
+Current machine-readable publication state is `machine/publication-state.json`. The live immutable GitHub Release remains external publication reality and must be independently re-read before trust or mutation.
+
+## Historical status at readiness review
 
 `CANDIDATE_READY_PUBLICATION_NOT_AUTHORIZED`
 
-This document records the release-readiness state for the first trusted Orchestra Compliance Registry distribution. It does not create a tag, GitHub Release, policy activation, deployment, or Orchestra publication authority.
+This document records the release-readiness state for the first trusted Orchestra Compliance Registry distribution before its later publication. It did not create a tag, GitHub Release, policy activation, deployment, or Orchestra publication authority.
 
 ## Canonical source baseline
 
@@ -79,7 +87,7 @@ Before publication, independently verify all of the following against the exact 
 
 Candidate readiness and successful CI are evidence, not publication authority.
 
-The following remain separate protected transitions:
+The following were separate protected transitions at the readiness checkpoint:
 
 - creating/publishing `registry-v0.1.0`;
 - making the GitHub Release immutable;
@@ -92,6 +100,6 @@ The following remain separate protected transitions:
 - branch deletion;
 - force push or history rewrite.
 
-## Verdict
+## Historical verdict
 
 `REGISTRY_V0_1_0_CANDIDATE_READY_FOR_EXPLICIT_PUBLICATION_GATE`

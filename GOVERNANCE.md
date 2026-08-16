@@ -12,6 +12,16 @@ This repository publishes reusable compliance intelligence for Orchestra. It doe
 - Source-monitor automation may discover changes and open or update proposals, but it must not approve, merge, or publish trusted registry releases.
 - Registry content never grants Orchestra execution, deployment, release, destructive-operation, risk-acceptance, or policy-activation authority.
 
+## Machine and human representation
+
+Repository machine state is JSON-first. `registry/manifest.json`, the Registry records it references, and machine records under `machine/` are the structured inputs for tooling and agent consumption.
+
+Markdown files are human-readable governance, explanation, rationale, and historical evidence. Where a corresponding machine record exists, Markdown must not override it and tooling must not reconstruct machine state by parsing prose.
+
+`machine/representation-policy.json` defines this representation boundary. `machine/publication-state.json` records the last verified source/publication identity, while the live immutable GitHub Release remains external publication reality and must be independently re-read before trust or mutation.
+
+Machine metadata under `machine/` is not distributed Registry content. The trusted release builder packages `registry/`; moving control metadata into that root would change release bytes and requires a separately governed distribution-version decision.
+
 ## Canonical change path
 
 1. A change is proposed on a non-canonical branch or pull request.

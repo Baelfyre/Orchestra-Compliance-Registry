@@ -24,6 +24,8 @@ jobs:
           python-version: "3.12"
       - name: Validate registry
         run: python scripts/validate_registry.py
+      - name: Validate JSON-first machine records
+        run: python scripts/validate_machine_records.py
       - name: Run registry regression tests
         run: python -m unittest discover -s tests -p "test_*.py" -v
       - name: Build deterministic release candidate

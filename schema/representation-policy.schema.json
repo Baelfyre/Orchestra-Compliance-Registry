@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "orchestra.compliance-registry.representation-policy.v1",
+  "title": "Compliance Registry Representation Policy",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "canonical_repository",
+    "machine_priority",
+    "machine_authority",
+    "external_source_reality",
+    "human_views",
+    "rules",
+    "markdown_role",
+    "machine_state_must_not_depend_on_markdown_parsing"
+  ],
+  "properties": {
+    "schema_version": {"const": "orchestra.compliance-registry.representation-policy.v1"},
+    "canonical_repository": {"const": "Baelfyre/Orchestra-Compliance-Registry"},
+    "machine_priority": {"const": true},
+    "machine_authority": {
+      "type": "object",
+      "required": ["editable_registry_state", "publication_state", "registry_records_from_manifest"]
+    },
+    "external_source_reality": {"type": "object"},
+    "human_views": {"type": "object"},
+    "rules": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+    "markdown_role": {"const": "NON_AUTHORITATIVE_HUMAN_READABLE_REFERENCE"},
+    "machine_state_must_not_depend_on_markdown_parsing": {"const": true}
+  },
+  "additionalProperties": true
+}
