@@ -7,7 +7,7 @@
     "schema_version",
     "canonical_repository",
     "recorded_at",
-    "repository_main",
+    "repository_source_boundary",
     "editable_source",
     "trusted_release",
     "verification",
@@ -18,14 +18,17 @@
     "schema_version": {"const": "orchestra.compliance-registry.publication-state.v1"},
     "canonical_repository": {"const": "Baelfyre/Orchestra-Compliance-Registry"},
     "recorded_at": {"type": "string", "minLength": 1},
-    "repository_main": {
+    "repository_source_boundary": {
       "type": "object",
-      "required": ["canonical_branch", "verified_sha", "state_class"],
+      "required": ["canonical_branch", "observed_sha", "state_class", "semantics", "live_head_reverification_required"],
       "properties": {
         "canonical_branch": {"const": "main"},
-        "verified_sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
-        "state_class": {"const": "EDITABLE_SOURCE_REALITY"}
-      }
+        "observed_sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "state_class": {"const": "VERIFIED_REPOSITORY_CHECKPOINT"},
+        "semantics": {"const": "LAST_EXPLICITLY_VERIFIED_REPOSITORY_BOUNDARY_NOT_CURRENT_HEAD_CLAIM"},
+        "live_head_reverification_required": {"const": true}
+      },
+      "additionalProperties": false
     },
     "editable_source": {
       "type": "object",
