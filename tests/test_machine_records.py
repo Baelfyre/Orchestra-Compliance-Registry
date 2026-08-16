@@ -70,6 +70,39 @@ class RegistryMachineRecordTests(unittest.TestCase):
         finally:
             temp.cleanup()
 
+    def test_repository_checkpoint_must_not_claim_current_head(self):
+        temp, root = self.fixture()
+        try:
+            path = root / "machine" / "publication-state.json"
+            state = json.loads(path.read_text(encoding="utf-8"))
+            state["repository_source_boundary"]["semantics"] = "CURRENT_MAIN_HEAD"
+            write_json(path, state)
+            self.assertIn("must not claim to be the current head", validate_machine_records.validate(root)[0])
+        finally:
+            temp.cleanup()
+
+    def test_repository_checkpoint_requires_live_head_reverification(self):
+        temp, root = self.fixture()
+        try:
+            path = root / "machine" / "publication-state.json"
+            state = json.loads(path.read_text(encoding="utf-8"))
+            state["repository_source_boundary"]["live_head_reverification_required"] = False
+            write_json(path, state)
+            self.assertIn("head re-verification", validate_machine_records.validate(root)[0])
+        finally:
+            temp.cleanup()
+
+    def test_legacy_repository_main_current_head_field_is_rejected(self):
+        temp, root = self.fixture()
+        try:
+            path = root / "machine" / "publication-state.json"
+            state = json.loads(path.read_text(encoding="utf-8"))
+            state["repository_main"] = {"canonical_branch": "main", "verified_sha": "0" * 40}
+            write_json(path, state)
+            self.assertIn("self-invalidating repository_main", validate_machine_records.validate(root)[0])
+        finally:
+            temp.cleanup()
+
     def test_trusted_release_cannot_be_draft(self):
         temp, root = self.fixture()
         try:

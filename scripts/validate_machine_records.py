@@ -110,13 +110,21 @@ def validate(root: Path) -> list[str]:
         if source.get("status") != "DRAFT" or source.get("release_sequence") != 0:
             raise ValueError("canonical editable source must remain DRAFT release_sequence 0")
 
-        main_state = publication.get("repository_main")
-        if not isinstance(main_state, dict):
-            raise ValueError("repository_main must be an object")
-        if main_state.get("canonical_branch") != "main":
-            raise ValueError("repository_main canonical_branch must be main")
-        if not isinstance(main_state.get("verified_sha"), str) or SHA_RE.fullmatch(main_state["verified_sha"]) is None:
-            raise ValueError("repository_main verified_sha must be a full lowercase Git SHA")
+        boundary = publication.get("repository_source_boundary")
+        if not isinstance(boundary, dict):
+            raise ValueError("repository_source_boundary must be an object")
+        if boundary.get("canonical_branch") != "main":
+            raise ValueError("repository source boundary canonical_branch must be main")
+        if not isinstance(boundary.get("observed_sha"), str) or SHA_RE.fullmatch(boundary["observed_sha"]) is None:
+            raise ValueError("repository source boundary observed_sha must be a full lowercase Git SHA")
+        if boundary.get("state_class") != "VERIFIED_REPOSITORY_CHECKPOINT":
+            raise ValueError("repository source boundary state_class mismatch")
+        if boundary.get("semantics") != "LAST_EXPLICITLY_VERIFIED_REPOSITORY_BOUNDARY_NOT_CURRENT_HEAD_CLAIM":
+            raise ValueError("repository source boundary must not claim to be the current head")
+        if boundary.get("live_head_reverification_required") is not True:
+            raise ValueError("live repository head re-verification must remain required")
+        if "repository_main" in publication:
+            raise ValueError("publication state must not use self-invalidating repository_main current-head semantics")
 
         trusted = publication.get("trusted_release")
         if not isinstance(trusted, dict):
@@ -142,6 +150,8 @@ def validate(root: Path) -> list[str]:
         verification = publication.get("verification")
         if not isinstance(verification, dict):
             raise ValueError("verification must be an object")
+        if verification.get("repository_source_boundary_verified") is not True:
+            raise ValueError("repository source boundary must be explicitly verified")
         if verification.get("external_reverification_required_before_trust_or_mutation") is not True:
             raise ValueError("live external re-verification must remain required before trust or mutation")
 
@@ -150,8 +160,12 @@ def validate(root: Path) -> list[str]:
             raise ValueError("authority must be an object")
         if authority.get("editable_source_authority") != MANIFEST_PATH:
             raise ValueError("editable source authority mismatch")
+        if authority.get("repository_head_source_reality") != "LIVE_GITHUB_MAIN":
+            raise ValueError("repository head source reality must remain live GitHub main")
         if authority.get("publication_source_reality") != "IMMUTABLE_GITHUB_RELEASE":
             raise ValueError("publication source reality must remain immutable GitHub Release")
+        if authority.get("repository_checkpoint_semantics") != "LAST_VERIFIED_CHECKPOINT_NOT_CURRENT_HEAD_CLAIM":
+            raise ValueError("repository checkpoint semantics mismatch")
         if authority.get("markdown_authority") is not False:
             raise ValueError("Markdown must not gain publication authority")
 
