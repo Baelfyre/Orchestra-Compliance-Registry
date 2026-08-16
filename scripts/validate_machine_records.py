@@ -9,8 +9,8 @@ from typing import Any
 CANONICAL_REPOSITORY = "Baelfyre/Orchestra-Compliance-Registry"
 SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
-POLICY_PATH = "registry/representation-policy.json"
-PUBLICATION_PATH = "registry/publication-state.json"
+POLICY_PATH = "machine/representation-policy.json"
+PUBLICATION_PATH = "machine/publication-state.json"
 MANIFEST_PATH = "registry/manifest.json"
 REQUIRED_RULES = {
     "MACHINE_JSON_PRECEDES_MARKDOWN",
@@ -60,12 +60,22 @@ def validate(root: Path) -> list[str]:
         if machine_authority.get("editable_registry_state") != MANIFEST_PATH:
             raise ValueError("editable Registry machine authority must be registry/manifest.json")
         if machine_authority.get("publication_state") != PUBLICATION_PATH:
-            raise ValueError("publication machine authority must be registry/publication-state.json")
+            raise ValueError("publication machine authority must be machine/publication-state.json")
         if machine_authority.get("registry_records_from_manifest") is not True:
             raise ValueError("Registry record paths must be resolved from the machine manifest")
         for label, path in machine_authority.items():
             if isinstance(path, str) and path.lower().endswith(".md"):
                 raise ValueError(f"Markdown cannot be machine authority: {label}={path}")
+
+        bundle_boundary = policy.get("release_bundle_boundary")
+        if not isinstance(bundle_boundary, dict):
+            raise ValueError("release_bundle_boundary must be an object")
+        if bundle_boundary.get("distributed_root") != "registry/":
+            raise ValueError("distributed Registry root must remain registry/")
+        if bundle_boundary.get("machine_metadata_root") != "machine/":
+            raise ValueError("machine metadata root must remain machine/")
+        if bundle_boundary.get("machine_metadata_is_distributed_registry_content") is not False:
+            raise ValueError("machine metadata must not silently enter the trusted Registry distribution")
 
         human_views = policy.get("human_views")
         if not isinstance(human_views, dict) or not human_views:
