@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "orchestra.compliance-registry.publication-state.v1",
+  "title": "Compliance Registry Publication State",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "canonical_repository",
+    "recorded_at",
+    "repository_main",
+    "editable_source",
+    "trusted_release",
+    "verification",
+    "authority",
+    "human_companions"
+  ],
+  "properties": {
+    "schema_version": {"const": "orchestra.compliance-registry.publication-state.v1"},
+    "canonical_repository": {"const": "Baelfyre/Orchestra-Compliance-Registry"},
+    "recorded_at": {"type": "string", "minLength": 1},
+    "repository_main": {
+      "type": "object",
+      "required": ["canonical_branch", "verified_sha", "state_class"],
+      "properties": {
+        "canonical_branch": {"const": "main"},
+        "verified_sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "state_class": {"const": "EDITABLE_SOURCE_REALITY"}
+      }
+    },
+    "editable_source": {
+      "type": "object",
+      "required": ["manifest_path", "registry_version", "release_sequence", "status"]
+    },
+    "trusted_release": {
+      "type": "object",
+      "required": ["state", "tag", "release_id", "registry_version", "release_sequence", "target_commit", "draft", "prerelease", "immutable", "published_at", "release_manifest_sha256", "bundle_sha256", "required_assets"]
+    },
+    "verification": {"type": "object"},
+    "authority": {"type": "object"},
+    "human_companions": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": true
+}
