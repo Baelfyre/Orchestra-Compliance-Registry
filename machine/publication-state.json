@@ -1,11 +1,13 @@
 {
   "schema_version": "orchestra.compliance-registry.publication-state.v1",
   "canonical_repository": "Baelfyre/Orchestra-Compliance-Registry",
-  "recorded_at": "2026-08-16T21:10:00+08:00",
-  "repository_main": {
+  "recorded_at": "2026-08-16T21:23:00+08:00",
+  "repository_source_boundary": {
     "canonical_branch": "main",
-    "verified_sha": "b1f181cef862f9dcb4df225e90f69ac970f708c3",
-    "state_class": "EDITABLE_SOURCE_REALITY"
+    "observed_sha": "1923caa866038289307223fbab1b9af6e7e4790b",
+    "state_class": "VERIFIED_REPOSITORY_CHECKPOINT",
+    "semantics": "LAST_EXPLICITLY_VERIFIED_REPOSITORY_BOUNDARY_NOT_CURRENT_HEAD_CLAIM",
+    "live_head_reverification_required": true
   },
   "editable_source": {
     "manifest_path": "registry/manifest.json",
@@ -35,7 +37,7 @@
   },
   "verification": {
     "method": "LIVE_GITHUB_MAIN_TAG_AND_IMMUTABLE_RELEASE_READ",
-    "main_verified": true,
+    "repository_source_boundary_verified": true,
     "tag_target_verified_exact": true,
     "release_identity_verified": true,
     "asset_inventory_verified": true,
@@ -44,7 +46,9 @@
   "authority": {
     "record_class": "MACHINE_READABLE_PUBLICATION_INDEX",
     "editable_source_authority": "registry/manifest.json",
+    "repository_head_source_reality": "LIVE_GITHUB_MAIN",
     "publication_source_reality": "IMMUTABLE_GITHUB_RELEASE",
+    "repository_checkpoint_semantics": "LAST_VERIFIED_CHECKPOINT_NOT_CURRENT_HEAD_CLAIM",
     "markdown_authority": false
   },
   "human_companions": [
