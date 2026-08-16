@@ -15,7 +15,22 @@ These are intentionally separate states:
 - canonical Registry `main`: editable `DRAFT` source state, release sequence `0`;
 - published distribution: immutable `registry-v0.1.0` trusted release, release sequence `1`.
 
-See `docs/REGISTRY_V0_1_0_RELEASE_READINESS.md` for the revision-bound candidate evidence that preceded publication. The live GitHub Release is the authoritative publication-state boundary.
+## Machine-first representation
+
+Registry machine state is JSON-first. Markdown is a human-readable reference and must not be parsed to reconstruct machine state when a corresponding JSON record exists.
+
+Machine entry points:
+
+- `registry/manifest.json`: editable Registry source-state authority and canonical record map;
+- `machine/publication-state.json`: machine-readable publication index for current source and trusted release identity;
+- `machine/representation-policy.json`: representation rules separating machine authority, external publication reality, and human-readable views;
+- `registry/*.json`: compliance data, source status, review state, and other Registry records referenced by the manifest.
+
+The immutable GitHub Release remains external publication reality and must be re-read before trust or mutation. `machine/publication-state.json` records the last verified publication identity so agents and tooling do not need to reconstruct it from Markdown.
+
+Human-facing files such as this README, `GOVERNANCE.md`, and files under `docs/` explain the machine records. They do not override them.
+
+See `docs/REGISTRY_V0_1_0_RELEASE_READINESS.md` for historical revision-bound candidate evidence that preceded publication.
 
 ## Trust boundary
 
@@ -44,6 +59,8 @@ See `docs/PH_PRIVACY_PILOT.md` for the bounded source set and interpretation bou
 `scripts/build_release.py` can transform validated `DRAFT` Registry source state into a deterministic **candidate bundle** without modifying the canonical source files. The candidate contains a `TRUSTED_RELEASE` staging manifest, exact SHA-256 inventory, external `release-manifest.sha256`, and `orchestra-compliance-registry.zip.sha256` evidence.
 
 Candidate construction is not publication. Content hashes establish integrity, while trusted provenance requires the separately governed immutable GitHub Release boundary, or an independently obtained release-manifest SHA-256 for offline installation. CI builds and preserves candidates as revision-bound workflow artifacts so packaging remains continuously testable without silently turning branch content into a trusted release.
+
+Machine metadata under `machine/` is intentionally outside the distributed `registry/` root. It must not silently change the trusted Registry bundle inventory or the immutable v0.1.0 release identity.
 
 `registry-v0.1.0` has completed that separate publication transition and is the current trusted release. Future candidates remain untrusted until their own governed publication and independent verification complete.
 
