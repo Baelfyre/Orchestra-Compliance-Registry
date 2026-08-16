@@ -20,6 +20,7 @@ class RegistryMachineRecordTests(unittest.TestCase):
         temp = tempfile.TemporaryDirectory()
         root = Path(temp.name)
         shutil.copytree(ROOT / "registry", root / "registry")
+        shutil.copytree(ROOT / "machine", root / "machine")
         return temp, root
 
     def test_repository_machine_records_are_valid(self):
@@ -28,7 +29,7 @@ class RegistryMachineRecordTests(unittest.TestCase):
     def test_markdown_cannot_be_machine_authority(self):
         temp, root = self.fixture()
         try:
-            path = root / "registry" / "representation-policy.json"
+            path = root / "machine" / "representation-policy.json"
             policy = json.loads(path.read_text(encoding="utf-8"))
             policy["machine_authority"]["publication_state"] = "README.md"
             write_json(path, policy)
@@ -39,7 +40,7 @@ class RegistryMachineRecordTests(unittest.TestCase):
     def test_machine_priority_cannot_be_disabled(self):
         temp, root = self.fixture()
         try:
-            path = root / "registry" / "representation-policy.json"
+            path = root / "machine" / "representation-policy.json"
             policy = json.loads(path.read_text(encoding="utf-8"))
             policy["machine_priority"] = False
             write_json(path, policy)
@@ -47,10 +48,21 @@ class RegistryMachineRecordTests(unittest.TestCase):
         finally:
             temp.cleanup()
 
+    def test_machine_metadata_must_stay_outside_distributed_registry_root(self):
+        temp, root = self.fixture()
+        try:
+            path = root / "machine" / "representation-policy.json"
+            policy = json.loads(path.read_text(encoding="utf-8"))
+            policy["release_bundle_boundary"]["machine_metadata_root"] = "registry/"
+            write_json(path, policy)
+            self.assertIn("machine metadata root", validate_machine_records.validate(root)[0])
+        finally:
+            temp.cleanup()
+
     def test_publication_source_state_must_match_manifest(self):
         temp, root = self.fixture()
         try:
-            path = root / "registry" / "publication-state.json"
+            path = root / "machine" / "publication-state.json"
             state = json.loads(path.read_text(encoding="utf-8"))
             state["editable_source"]["registry_version"] = "9.9.9"
             write_json(path, state)
@@ -61,7 +73,7 @@ class RegistryMachineRecordTests(unittest.TestCase):
     def test_trusted_release_cannot_be_draft(self):
         temp, root = self.fixture()
         try:
-            path = root / "registry" / "publication-state.json"
+            path = root / "machine" / "publication-state.json"
             state = json.loads(path.read_text(encoding="utf-8"))
             state["trusted_release"]["draft"] = True
             write_json(path, state)
@@ -72,7 +84,7 @@ class RegistryMachineRecordTests(unittest.TestCase):
     def test_trusted_release_must_be_immutable(self):
         temp, root = self.fixture()
         try:
-            path = root / "registry" / "publication-state.json"
+            path = root / "machine" / "publication-state.json"
             state = json.loads(path.read_text(encoding="utf-8"))
             state["trusted_release"]["immutable"] = False
             write_json(path, state)
@@ -83,7 +95,7 @@ class RegistryMachineRecordTests(unittest.TestCase):
     def test_trusted_release_sequence_must_advance_source(self):
         temp, root = self.fixture()
         try:
-            path = root / "registry" / "publication-state.json"
+            path = root / "machine" / "publication-state.json"
             state = json.loads(path.read_text(encoding="utf-8"))
             state["trusted_release"]["release_sequence"] = 0
             write_json(path, state)
@@ -94,7 +106,7 @@ class RegistryMachineRecordTests(unittest.TestCase):
     def test_live_external_reverification_cannot_be_removed(self):
         temp, root = self.fixture()
         try:
-            path = root / "registry" / "publication-state.json"
+            path = root / "machine" / "publication-state.json"
             state = json.loads(path.read_text(encoding="utf-8"))
             state["verification"]["external_reverification_required_before_trust_or_mutation"] = False
             write_json(path, state)
