@@ -32,15 +32,108 @@
     },
     "editable_source": {
       "type": "object",
-      "required": ["manifest_path", "registry_version", "release_sequence", "status"]
+      "required": ["manifest_path", "registry_version", "release_sequence", "status"],
+      "properties": {
+        "manifest_path": {"const": "registry/manifest.json"},
+        "registry_version": {"type": "string", "minLength": 1},
+        "release_sequence": {"const": 0},
+        "status": {"const": "DRAFT"}
+      },
+      "additionalProperties": false
     },
     "trusted_release": {
       "type": "object",
-      "required": ["state", "tag", "release_id", "registry_version", "release_sequence", "target_commit", "draft", "prerelease", "immutable", "published_at", "release_manifest_sha256", "bundle_sha256", "required_assets"]
+      "required": [
+        "state",
+        "tag",
+        "release_id",
+        "registry_version",
+        "release_sequence",
+        "target_commit",
+        "draft",
+        "prerelease",
+        "immutable",
+        "published_at",
+        "release_manifest_sha256",
+        "bundle_sha256",
+        "required_assets"
+      ],
+      "properties": {
+        "state": {"const": "PUBLISHED_IMMUTABLE_VERIFIED"},
+        "tag": {"type": "string", "pattern": "^registry-v[A-Za-z0-9][A-Za-z0-9._+-]{0,127}$"},
+        "release_id": {"type": "integer", "minimum": 1},
+        "registry_version": {"type": "string", "minLength": 1},
+        "release_sequence": {"type": "integer", "minimum": 1},
+        "target_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "draft": {"const": false},
+        "prerelease": {"const": false},
+        "immutable": {"const": true},
+        "published_at": {"type": "string", "minLength": 1},
+        "release_manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "bundle_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "required_assets": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "orchestra-compliance-registry.zip",
+              "orchestra-compliance-registry.zip.sha256",
+              "release-manifest.json",
+              "release-manifest.sha256"
+            ]
+          }
+        }
+      },
+      "additionalProperties": false
     },
-    "verification": {"type": "object"},
-    "authority": {"type": "object"},
-    "human_companions": {"type": "array", "items": {"type": "string"}}
+    "verification": {
+      "type": "object",
+      "required": [
+        "method",
+        "repository_source_boundary_verified",
+        "tag_target_verified_exact",
+        "release_identity_verified",
+        "asset_inventory_verified",
+        "external_reverification_required_before_trust_or_mutation"
+      ],
+      "properties": {
+        "method": {"type": "string", "minLength": 1},
+        "repository_source_boundary_verified": {"const": true},
+        "tag_target_verified_exact": {"const": true},
+        "release_identity_verified": {"const": true},
+        "asset_inventory_verified": {"const": true},
+        "external_reverification_required_before_trust_or_mutation": {"const": true}
+      },
+      "additionalProperties": false
+    },
+    "authority": {
+      "type": "object",
+      "required": [
+        "record_class",
+        "editable_source_authority",
+        "repository_head_source_reality",
+        "publication_source_reality",
+        "repository_checkpoint_semantics",
+        "markdown_authority"
+      ],
+      "properties": {
+        "record_class": {"const": "MACHINE_READABLE_PUBLICATION_INDEX"},
+        "editable_source_authority": {"const": "registry/manifest.json"},
+        "repository_head_source_reality": {"const": "LIVE_GITHUB_MAIN"},
+        "publication_source_reality": {"const": "IMMUTABLE_GITHUB_RELEASE"},
+        "repository_checkpoint_semantics": {"const": "LAST_VERIFIED_CHECKPOINT_NOT_CURRENT_HEAD_CLAIM"},
+        "markdown_authority": {"const": false}
+      },
+      "additionalProperties": false
+    },
+    "human_companions": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "\\.md$"}
+    }
   },
-  "additionalProperties": true
+  "additionalProperties": false
 }
