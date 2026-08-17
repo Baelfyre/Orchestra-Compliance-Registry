@@ -13,10 +13,18 @@ except ModuleNotFoundError:
 
 ROOT = Path(__file__).resolve().parents[1]
 CANONICAL_REPOSITORY = "Baelfyre/Orchestra-Compliance-Registry"
+COLLECTION_KEYS = {
+    "sources": "sources",
+    "obligations": "obligations",
+    "jurisdictions": "jurisdictions",
+    "providers": "providers",
+    "source_status": "entries",
+    "review_due": "entries",
+}
 
 
 def canonical(value: Any) -> bytes:
-    return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ",")).encode("utf-8")
 
 
 def sha256(data: bytes) -> str:
@@ -37,9 +45,12 @@ def query_records(
     domain: str | None = None,
     jurisdiction: str | None = None,
 ) -> list[dict[str, Any]]:
-    records = document.get(record_type)
+    collection_key = COLLECTION_KEYS.get(record_type)
+    if collection_key is None:
+        raise KeyError(record_type)
+    records = document.get(collection_key)
     if not isinstance(records, list) or not all(isinstance(item, dict) for item in records):
-        raise ValueError(f"record collection {record_type!r} is not an array of objects")
+        raise ValueError(f"record collection {record_type!r} ({collection_key!r}) is not an array of objects")
     result = list(records)
     if domain is not None:
         result = [item for item in result if domain in item.get("domains", [])]
@@ -105,10 +116,7 @@ def validate_receipt(receipt: dict[str, Any], *, root: Path = ROOT) -> None:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Build a non-authorizing Registry query receipt")
-    parser.add_argument(
-        "record",
-        choices=["sources", "obligations", "jurisdictions", "providers", "source_status", "review_due"],
-    )
+    parser.add_argument("record", choices=sorted(COLLECTION_KEYS))
     parser.add_argument("--domain")
     parser.add_argument("--jurisdiction")
     parser.add_argument("--output", type=Path, required=True)
