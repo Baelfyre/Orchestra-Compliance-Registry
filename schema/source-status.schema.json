@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "orchestra.compliance-registry.source-status.v1",
+  "title": "Compliance Source Status Record",
+  "type": "object",
+  "required": ["source_id", "status", "checked_at", "check_method", "note"],
+  "properties": {
+    "source_id": {"type": "string", "minLength": 1},
+    "status": {
+      "enum": [
+        "VERIFIED_CURRENT",
+        "CURRENT_WITH_PENDING_CHANGE",
+        "NOT_EFFECTIVE_YET",
+        "SUPERSEDED",
+        "REPEALED",
+        "SOURCE_UNAVAILABLE",
+        "SOURCE_MOVED",
+        "APPLICABILITY_UNRESOLVED",
+        "HUMAN_INTERPRETATION_REQUIRED",
+        "REVIEW_OVERDUE"
+      ]
+    },
+    "checked_at": {"type": "string", "format": "date"},
+    "check_method": {"type": "string", "minLength": 1},
+    "note": {"type": "string", "minLength": 1}
+  },
+  "additionalProperties": false
+}
