@@ -6,12 +6,12 @@ import json
 from pathlib import Path
 from typing import Any
 
-from scripts.validate_schema_contracts import validate_value
+try:
+    from scripts.validate_schema_contracts import validate_value
+except ModuleNotFoundError:
+    from validate_schema_contracts import validate_value
 
 ROOT = Path(__file__).resolve().parents[1]
-REGISTRY = ROOT / "registry"
-MANIFEST_PATH = ROOT / "registry" / "manifest.json"
-RECEIPT_SCHEMA_PATH = ROOT / "schema" / "query-receipt.schema.json"
 CANONICAL_REPOSITORY = "Baelfyre/Orchestra-Compliance-Registry"
 
 
@@ -26,7 +26,7 @@ def sha256(data: bytes) -> str:
 def load_json(path: Path) -> dict[str, Any]:
     value = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(value, dict):
-        raise ValueError(f"{path.relative_to(ROOT)} must contain a JSON object")
+        raise ValueError(f"{path.as_posix()} must contain a JSON object")
     return value
 
 
