@@ -19,13 +19,28 @@
     "docs/REGISTRY_V0_1_0_RELEASE_READINESS.md": "HISTORICAL_HUMAN_READABLE_RELEASE_EVIDENCE",
     "docs/RELEASE_PACKAGING.md": "HUMAN_READABLE_PACKAGING_REFERENCE"
   },
+  "ai_context_views": {
+    "canonical_source_format": "JSON",
+    "preferred_large_repetitive_projection": "TOON",
+    "fallback_projection": "COMPACT_JSON",
+    "toon_authority": "NONE_DERIVED_CONTEXT_ONLY",
+    "selection_rule": "USE_TOON_ONLY_AFTER_BOUNDED_QUERY_AND_MEASURED_SIZE_BENEFIT",
+    "source_digest_required": true,
+    "projection_digest_required": true,
+    "promotion_from_toon_forbidden": true,
+    "compiler": "scripts/context_export.py"
+  },
   "rules": [
     "MACHINE_JSON_PRECEDES_MARKDOWN",
     "MARKDOWN_MUST_NOT_OVERRIDE_MACHINE_STATE",
     "MARKDOWN_IS_OPTIONAL_UNLESS_HUMAN_REVIEW_REQUIRES_IT",
     "NO_MACHINE_STATE_RECONSTRUCTION_FROM_MARKDOWN_WHEN_JSON_EXISTS",
     "MACHINE_STATE_CHANGES_REQUIRE_MACHINE_RECORD_UPDATE_FIRST",
-    "LIVE_EXTERNAL_REALITY_OVERRIDES_STALE_REPOSITORY_RECORD"
+    "LIVE_EXTERNAL_REALITY_OVERRIDES_STALE_REPOSITORY_RECORD",
+    "TOON_IS_DERIVED_CONTEXT_ONLY",
+    "TOON_MUST_NOT_PROMOTE_OR_OVERRIDE_REGISTRY_JSON",
+    "TOON_REQUIRES_SOURCE_AND_PROJECTION_DIGESTS",
+    "TOON_FALLS_BACK_TO_COMPACT_JSON_WHEN_NOT_MATERIALLY_SMALLER"
   ],
   "markdown_role": "NON_AUTHORITATIVE_HUMAN_READABLE_REFERENCE",
   "machine_state_must_not_depend_on_markdown_parsing": true,
