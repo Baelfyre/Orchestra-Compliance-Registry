@@ -25,7 +25,8 @@ class QueryProtocolTests(unittest.TestCase):
 
     def test_filter_change_changes_result_digest(self) -> None:
         unfiltered, _ = query_protocol.build_receipt("obligations")
-        filtered, _ = query_protocol.build_receipt("obligations", jurisdiction="PH")
+        filtered, result = query_protocol.build_receipt("obligations", jurisdiction="US")
+        self.assertEqual([], result)
         self.assertNotEqual(unfiltered["result_semantic_sha256"], filtered["result_semantic_sha256"])
 
     def test_receipt_cannot_claim_publication_trust(self) -> None:
