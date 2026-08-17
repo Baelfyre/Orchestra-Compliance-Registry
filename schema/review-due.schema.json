@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "orchestra.compliance-registry.review-due.v1",
+  "title": "Compliance Source Review Due Record",
+  "type": "object",
+  "required": ["source_id", "last_reviewed", "next_review_due", "review_interval_days", "review_scope"],
+  "properties": {
+    "source_id": {"type": "string", "minLength": 1},
+    "last_reviewed": {"type": "string", "format": "date"},
+    "next_review_due": {"type": "string", "format": "date"},
+    "review_interval_days": {"type": "integer", "minimum": 1},
+    "review_scope": {"type": "string", "minLength": 1}
+  },
+  "additionalProperties": false
+}
