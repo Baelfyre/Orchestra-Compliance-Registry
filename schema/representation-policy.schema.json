@@ -56,7 +56,10 @@
         "source_digest_required",
         "projection_digest_required",
         "promotion_from_toon_forbidden",
-        "compiler"
+        "compiler",
+        "query_receipt_protocol",
+        "query_receipt_authority",
+        "query_receipt_external_reverification_required"
       ],
       "properties": {
         "canonical_source_format": {"const": "JSON"},
@@ -67,7 +70,10 @@
         "source_digest_required": {"const": true},
         "projection_digest_required": {"const": true},
         "promotion_from_toon_forbidden": {"const": true},
-        "compiler": {"const": "scripts/context_export.py"}
+        "compiler": {"const": "scripts/context_export.py"},
+        "query_receipt_protocol": {"const": "scripts/query_protocol.py"},
+        "query_receipt_authority": {"const": "NONE_EVIDENCE_ONLY"},
+        "query_receipt_external_reverification_required": {"const": true}
       },
       "additionalProperties": false
     },
