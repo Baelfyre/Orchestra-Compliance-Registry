@@ -22,6 +22,7 @@ DOCUMENT_CONTRACTS = {
     "schema/representation-policy.schema.json": "machine/representation-policy.json",
     "schema/publication-state.schema.json": "machine/publication-state.json",
 }
+STANDALONE_CONTRACTS = ("schema/query-receipt.schema.json",)
 
 
 class ContractError(ValueError):
@@ -32,7 +33,7 @@ def load(path: Path) -> Any:
     try:
         return json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
-        raise ContractError(f"cannot read {path.relative_to(ROOT)}: {exc}") from exc
+        raise ContractError(f"cannot read {path.as_posix()}: {exc}") from exc
 
 
 def _type_matches(value: Any, expected: str) -> bool:
@@ -164,6 +165,9 @@ def validate(root: Path = ROOT) -> list[str]:
             schema = load(root / schema_rel)
             _assert_closed_schema(schema, schema_rel)
             validate_value(load(root / document_rel), schema, document_rel)
+
+        for schema_rel in STANDALONE_CONTRACTS:
+            _assert_closed_schema(load(root / schema_rel), schema_rel)
 
         return []
     except ContractError as exc:
