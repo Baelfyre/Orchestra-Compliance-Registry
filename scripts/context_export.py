@@ -130,7 +130,11 @@ def load_record(record_name: str) -> tuple[Path, dict[str, Any]]:
 def filter_records(
     document: dict[str, Any], record_name: str, domain: str | None, jurisdiction: str | None
 ) -> dict[str, Any]:
-    values = list(document.get(record_name, []))
+    collection_key = query_protocol.COLLECTION_KEYS[record_name]
+    raw_values = document.get(collection_key)
+    if not isinstance(raw_values, list) or not all(isinstance(item, dict) for item in raw_values):
+        raise ValueError(f"record collection {record_name!r} ({collection_key!r}) is not an array of objects")
+    values = list(raw_values)
     if domain:
         values = [item for item in values if domain in item.get("domains", [])]
     if jurisdiction:
@@ -209,10 +213,7 @@ def bind_query_receipt(
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Compliance Registry JSON/TOON context exporter")
-    parser.add_argument(
-        "record",
-        choices=["sources", "obligations", "jurisdictions", "providers", "source_status", "review_due"],
-    )
+    parser.add_argument("record", choices=sorted(query_protocol.COLLECTION_KEYS))
     parser.add_argument("--domain")
     parser.add_argument("--jurisdiction")
     parser.add_argument("--output", type=Path, required=True)
