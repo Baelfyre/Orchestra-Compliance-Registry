@@ -29,6 +29,16 @@ class QueryProtocolTests(unittest.TestCase):
         self.assertEqual([], result)
         self.assertNotEqual(unfiltered["result_semantic_sha256"], filtered["result_semantic_sha256"])
 
+    def test_entries_backed_ledgers_are_queryable(self) -> None:
+        status_receipt, statuses = query_protocol.build_receipt("source_status")
+        review_receipt, reviews = query_protocol.build_receipt("review_due")
+        self.assertGreater(len(statuses), 0)
+        self.assertGreater(len(reviews), 0)
+        self.assertEqual(len(statuses), status_receipt["result_count"])
+        self.assertEqual(len(reviews), review_receipt["result_count"])
+        self.assertEqual("registry/source-status.json", status_receipt["record_path"])
+        self.assertEqual("registry/review-due.json", review_receipt["record_path"])
+
     def test_receipt_cannot_claim_publication_trust(self) -> None:
         receipt, _ = query_protocol.build_receipt("sources")
         tampered = copy.deepcopy(receipt)
