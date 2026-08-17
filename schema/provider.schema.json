@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "orchestra.compliance-registry.provider.v1",
+  "title": "Compliance Provider Record",
+  "type": "object",
+  "required": ["provider_id", "name", "kind", "status"],
+  "properties": {
+    "provider_id": {"type": "string", "minLength": 1},
+    "name": {"type": "string", "minLength": 1},
+    "kind": {
+      "enum": [
+        "PLATFORM_PROVIDER",
+        "DISTRIBUTION_PROVIDER",
+        "LINUX_DISTRIBUTION",
+        "LINUX_DISTRIBUTION_PROVIDER"
+      ]
+    },
+    "status": {"const": "FOUNDATION_ONLY"}
+  },
+  "additionalProperties": false
+}
