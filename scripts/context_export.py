@@ -3,7 +3,8 @@
 
 Registry JSON remains canonical. Large/repetitive query results may be projected to
 TOON for AI context only when measured output is materially smaller; otherwise compact
-JSON is retained.
+JSON is retained. Every CLI export also emits a digest-bound, evidence-only query
+receipt that cannot establish immutable-release trust.
 """
 from __future__ import annotations
 
@@ -13,6 +14,11 @@ import json
 import re
 from pathlib import Path
 from typing import Any
+
+try:
+    from scripts import query_protocol
+except ImportError:
+    import query_protocol
 
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / "registry"
@@ -121,7 +127,9 @@ def load_record(record_name: str) -> tuple[Path, dict[str, Any]]:
     return path, json.loads(path.read_text(encoding="utf-8"))
 
 
-def filter_records(document: dict[str, Any], record_name: str, domain: str | None, jurisdiction: str | None) -> dict[str, Any]:
+def filter_records(
+    document: dict[str, Any], record_name: str, domain: str | None, jurisdiction: str | None
+) -> dict[str, Any]:
     values = list(document.get(record_name, []))
     if domain:
         values = [item for item in values if domain in item.get("domains", [])]
@@ -175,19 +183,54 @@ def compile_export(
     return manifest
 
 
+def bind_query_receipt(
+    manifest: dict[str, Any],
+    manifest_path: Path,
+    receipt_path: Path,
+    receipt: dict[str, Any],
+) -> dict[str, Any]:
+    receipt_path.parent.mkdir(parents=True, exist_ok=True)
+    receipt_path.write_text(json.dumps(receipt, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    manifest.update(
+        {
+            "registry_authority_realm": receipt["registry_authority_realm"],
+            "publication_trust": receipt["publication_trust"],
+            "registry_manifest_sha256": receipt["manifest_sha256"],
+            "query_result_semantic_sha256": receipt["result_semantic_sha256"],
+            "query_receipt_sha256": sha(receipt_path.read_bytes()),
+            "external_reverification_required_before_trust_or_mutation": receipt[
+                "external_reverification_required_before_trust_or_mutation"
+            ],
+        }
+    )
+    manifest_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    return manifest
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Compliance Registry JSON/TOON context exporter")
-    parser.add_argument("record", choices=["sources", "obligations", "jurisdictions", "providers", "source_status", "review_due"])
+    parser.add_argument(
+        "record",
+        choices=["sources", "obligations", "jurisdictions", "providers", "source_status", "review_due"],
+    )
     parser.add_argument("--domain")
     parser.add_argument("--jurisdiction")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--manifest", type=Path, required=True)
+    parser.add_argument("--receipt", type=Path)
     parser.add_argument("--min-bytes", type=int, default=DEFAULT_MIN_BYTES)
     parser.add_argument("--min-savings-percent", type=float, default=DEFAULT_MIN_SAVINGS_PERCENT)
     args = parser.parse_args(argv)
 
     source_path, document = load_record(args.record)
     context = filter_records(document, args.record, args.domain, args.jurisdiction)
+    receipt, receipt_records = query_protocol.build_receipt(
+        args.record,
+        domain=args.domain,
+        jurisdiction=args.jurisdiction,
+    )
+    if receipt_records != context["records"]:
+        raise RuntimeError("query receipt/result mismatch")
     manifest = compile_export(
         context,
         args.output,
@@ -197,6 +240,8 @@ def main(argv: list[str] | None = None) -> int:
         min_bytes=args.min_bytes,
         min_savings_percent=args.min_savings_percent,
     )
+    receipt_path = args.receipt or args.manifest.with_name(args.manifest.name + ".query-receipt.json")
+    manifest = bind_query_receipt(manifest, args.manifest, receipt_path, receipt)
     print(json.dumps(manifest, indent=2, ensure_ascii=False))
     return 0
 
