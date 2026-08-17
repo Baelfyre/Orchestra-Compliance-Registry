@@ -1,0 +1,56 @@
+test_invalid_source_registry_blocks_packaging (test_build_release.ReleaseBuilderTests.test_invalid_source_registry_blocks_packaging) ... ok
+test_mismatched_release_tag_is_rejected (test_build_release.ReleaseBuilderTests.test_mismatched_release_tag_is_rejected) ... ok
+test_release_bundle_contract_and_hashes (test_build_release.ReleaseBuilderTests.test_release_bundle_contract_and_hashes) ... ok
+test_two_builds_are_byte_identical (test_build_release.ReleaseBuilderTests.test_two_builds_are_byte_identical) ... ok
+test_zero_release_sequence_is_rejected (test_build_release.ReleaseBuilderTests.test_zero_release_sequence_is_rejected) ... ok
+test_filter_preserves_only_requested_domain_and_jurisdiction (test_context_export.ContextExportTests.test_filter_preserves_only_requested_domain_and_jurisdiction) ... ok
+test_small_nested_context_falls_back_to_json (test_context_export.ContextExportTests.test_small_nested_context_falls_back_to_json) ... ok
+test_toon_table_declares_row_count (test_context_export.ContextExportTests.test_toon_table_declares_row_count) ... ok
+test_uniform_large_context_uses_toon_when_beneficial (test_context_export.ContextExportTests.test_uniform_large_context_uses_toon_when_beneficial) ... ok
+test_legacy_repository_main_current_head_field_is_rejected (test_machine_records.RegistryMachineRecordTests.test_legacy_repository_main_current_head_field_is_rejected) ... ok
+test_live_external_reverification_cannot_be_removed (test_machine_records.RegistryMachineRecordTests.test_live_external_reverification_cannot_be_removed) ... ok
+test_machine_metadata_must_stay_outside_distributed_registry_root (test_machine_records.RegistryMachineRecordTests.test_machine_metadata_must_stay_outside_distributed_registry_root) ... ok
+test_machine_priority_cannot_be_disabled (test_machine_records.RegistryMachineRecordTests.test_machine_priority_cannot_be_disabled) ... ok
+test_markdown_cannot_be_machine_authority (test_machine_records.RegistryMachineRecordTests.test_markdown_cannot_be_machine_authority) ... ok
+test_publication_source_state_must_match_manifest (test_machine_records.RegistryMachineRecordTests.test_publication_source_state_must_match_manifest) ... ok
+test_repository_checkpoint_must_not_claim_current_head (test_machine_records.RegistryMachineRecordTests.test_repository_checkpoint_must_not_claim_current_head) ... ok
+test_repository_checkpoint_requires_live_head_reverification (test_machine_records.RegistryMachineRecordTests.test_repository_checkpoint_requires_live_head_reverification) ... ok
+test_repository_machine_records_are_valid (test_machine_records.RegistryMachineRecordTests.test_repository_machine_records_are_valid) ... ok
+test_trusted_release_cannot_be_draft (test_machine_records.RegistryMachineRecordTests.test_trusted_release_cannot_be_draft) ... ok
+test_trusted_release_must_be_immutable (test_machine_records.RegistryMachineRecordTests.test_trusted_release_must_be_immutable) ... ok
+test_trusted_release_sequence_must_advance_source (test_machine_records.RegistryMachineRecordTests.test_trusted_release_sequence_must_advance_source) ... ok
+test_filter_change_changes_result_digest (test_query_protocol.QueryProtocolTests.test_filter_change_changes_result_digest) ... ok
+test_query_receipt_binds_editable_registry_and_result (test_query_protocol.QueryProtocolTests.test_query_receipt_binds_editable_registry_and_result) ... ok
+test_receipt_cannot_become_authority (test_query_protocol.QueryProtocolTests.test_receipt_cannot_become_authority) ... ok
+test_receipt_cannot_claim_publication_trust (test_query_protocol.QueryProtocolTests.test_receipt_cannot_claim_publication_trust) ... ok
+test_duplicate_obligation_evidence_is_rejected (test_schema_contracts.SchemaContractTests.test_duplicate_obligation_evidence_is_rejected) ... ok
+test_invalid_review_date_is_rejected_by_schema_contract (test_schema_contracts.SchemaContractTests.test_invalid_review_date_is_rejected_by_schema_contract) ... ok
+test_machine_policy_unknown_field_is_rejected (test_schema_contracts.SchemaContractTests.test_machine_policy_unknown_field_is_rejected) ... ok
+test_repository_machine_records_match_closed_contracts (test_schema_contracts.SchemaContractTests.test_repository_machine_records_match_closed_contracts) ... ok
+test_schema_live_field_coverage_mismatch_is_rejected (test_schema_contracts.SchemaContractTests.test_schema_live_field_coverage_mismatch_is_rejected) ... ok
+test_unknown_source_property_fails_closed (test_schema_contracts.SchemaContractTests.test_unknown_source_property_fails_closed) ... FAIL
+test_draft_requires_review_due_coverage (test_validate_registry.RegistryValidatorTests.test_draft_requires_review_due_coverage) ... ok
+test_draft_requires_source_status_coverage (test_validate_registry.RegistryValidatorTests.test_draft_requires_source_status_coverage) ... ok
+test_manifest_record_path_drift_is_rejected (test_validate_registry.RegistryValidatorTests.test_manifest_record_path_drift_is_rejected) ... ok
+test_past_due_current_source_fails_closed (test_validate_registry.RegistryValidatorTests.test_past_due_current_source_fails_closed) ... ok
+test_past_due_source_may_be_explicitly_marked_review_overdue (test_validate_registry.RegistryValidatorTests.test_past_due_source_may_be_explicitly_marked_review_overdue) ... ok
+test_repository_fixture_is_valid (test_validate_registry.RegistryValidatorTests.test_repository_fixture_is_valid) ... ok
+test_review_due_requires_iso_date (test_validate_registry.RegistryValidatorTests.test_review_due_requires_iso_date) ... ok
+test_source_and_status_ledger_must_agree (test_validate_registry.RegistryValidatorTests.test_source_and_status_ledger_must_agree) ... ok
+test_source_status_must_reference_known_source (test_validate_registry.RegistryValidatorTests.test_source_status_must_reference_known_source) ... ok
+test_trusted_release_requires_positive_sequence (test_validate_registry.RegistryValidatorTests.test_trusted_release_requires_positive_sequence) ... ok
+test_unsafe_registry_version_is_rejected (test_validate_registry.RegistryValidatorTests.test_unsafe_registry_version_is_rejected) ... ok
+
+======================================================================
+FAIL: test_unknown_source_property_fails_closed (test_schema_contracts.SchemaContractTests.test_unknown_source_property_fails_closed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/runner/work/Orchestra-Compliance-Registry/Orchestra-Compliance-Registry/tests/test_schema_contracts.py", line 36, in test_unknown_source_property_fails_closed
+    self.assertIn("unexpected property", validate_schema_contracts.validate(root)[0])
+AssertionError: 'unexpected property' not found in "schema/source.schema.json: schema/live field coverage mismatch missing=['surprise'] extra=[]"
+
+----------------------------------------------------------------------
+Ran 42 tests in 0.225s
+
+FAILED (failures=1)
+exit_code=1
