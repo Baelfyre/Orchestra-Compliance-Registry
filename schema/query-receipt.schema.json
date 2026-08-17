@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "orchestra.compliance-registry.query-receipt.v1",
+  "title": "Compliance Registry Query Receipt",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "authority",
+    "registry_authority_realm",
+    "publication_trust",
+    "canonical_repository",
+    "registry_version",
+    "release_sequence",
+    "registry_status",
+    "manifest_path",
+    "manifest_sha256",
+    "record_path",
+    "record_sha256",
+    "record_type",
+    "filters",
+    "result_count",
+    "result_semantic_sha256",
+    "external_reverification_required_before_trust_or_mutation",
+    "promotion_from_receipt_forbidden"
+  ],
+  "properties": {
+    "schema_version": {"const": "orchestra.compliance-registry.query-receipt.v1"},
+    "authority": {"const": "NONE_EVIDENCE_ONLY"},
+    "registry_authority_realm": {"const": "EDITABLE_REGISTRY_STATE"},
+    "publication_trust": {"const": "NOT_ESTABLISHED_BY_LOCAL_QUERY"},
+    "canonical_repository": {"const": "Baelfyre/Orchestra-Compliance-Registry"},
+    "registry_version": {"type": "string", "minLength": 1},
+    "release_sequence": {"type": "integer", "minimum": 0},
+    "registry_status": {"enum": ["DRAFT", "TRUSTED_RELEASE"]},
+    "manifest_path": {"const": "registry/manifest.json"},
+    "manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "record_path": {"type": "string", "pattern": "^registry/[^/]+\\.json$"},
+    "record_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "record_type": {
+      "enum": ["sources", "obligations", "jurisdictions", "providers", "source_status", "review_due"]
+    },
+    "filters": {
+      "type": "object",
+      "required": ["domain", "jurisdiction"],
+      "properties": {
+        "domain": {"type": ["string", "null"], "minLength": 1},
+        "jurisdiction": {"type": ["string", "null"], "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "result_count": {"type": "integer", "minimum": 0},
+    "result_semantic_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "external_reverification_required_before_trust_or_mutation": {"const": true},
+    "promotion_from_receipt_forbidden": {"const": true}
+  },
+  "additionalProperties": false
+}
