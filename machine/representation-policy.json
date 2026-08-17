@@ -28,7 +28,10 @@
     "source_digest_required": true,
     "projection_digest_required": true,
     "promotion_from_toon_forbidden": true,
-    "compiler": "scripts/context_export.py"
+    "compiler": "scripts/context_export.py",
+    "query_receipt_protocol": "scripts/query_protocol.py",
+    "query_receipt_authority": "NONE_EVIDENCE_ONLY",
+    "query_receipt_external_reverification_required": true
   },
   "rules": [
     "MACHINE_JSON_PRECEDES_MARKDOWN",
@@ -40,7 +43,9 @@
     "TOON_IS_DERIVED_CONTEXT_ONLY",
     "TOON_MUST_NOT_PROMOTE_OR_OVERRIDE_REGISTRY_JSON",
     "TOON_REQUIRES_SOURCE_AND_PROJECTION_DIGESTS",
-    "TOON_FALLS_BACK_TO_COMPACT_JSON_WHEN_NOT_MATERIALLY_SMALLER"
+    "TOON_FALLS_BACK_TO_COMPACT_JSON_WHEN_NOT_MATERIALLY_SMALLER",
+    "QUERY_RECEIPTS_ARE_EVIDENCE_ONLY",
+    "LOCAL_QUERY_RECEIPTS_DO_NOT_ESTABLISH_PUBLICATION_TRUST"
   ],
   "markdown_role": "NON_AUTHORITATIVE_HUMAN_READABLE_REFERENCE",
   "machine_state_must_not_depend_on_markdown_parsing": true,
