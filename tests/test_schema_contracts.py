@@ -33,7 +33,7 @@ class SchemaContractTests(unittest.TestCase):
             doc = json.loads(path.read_text(encoding="utf-8"))
             doc["sources"][0]["surprise"] = "not in v1 contract"
             write_json(path, doc)
-            self.assertIn("unexpected property", validate_schema_contracts.validate(root)[0])
+            self.assertIn("field coverage mismatch", validate_schema_contracts.validate(root)[0])
         finally:
             temp.cleanup()
 
