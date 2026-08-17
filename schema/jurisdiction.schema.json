@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "orchestra.compliance-registry.jurisdiction.v1",
+  "title": "Compliance Jurisdiction Record",
+  "type": "object",
+  "required": ["jurisdiction_id", "name", "kind", "status"],
+  "properties": {
+    "jurisdiction_id": {"type": "string", "minLength": 1},
+    "name": {"type": "string", "minLength": 1},
+    "kind": {
+      "enum": ["COUNTRY", "REGIONAL_FRAMEWORK", "COUNTRY_WITH_SUBJURISDICTIONS"]
+    },
+    "status": {"const": "FOUNDATION_ONLY"}
+  },
+  "additionalProperties": false
+}
