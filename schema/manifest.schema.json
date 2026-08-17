@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "orchestra.compliance-registry.manifest.v1",
+  "title": "Editable Compliance Registry Manifest",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "canonical_repository",
+    "registry_version",
+    "release_sequence",
+    "status",
+    "records",
+    "record_counts"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "canonical_repository": {"const": "Baelfyre/Orchestra-Compliance-Registry"},
+    "registry_version": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]{0,127}$"
+    },
+    "release_sequence": {"type": "integer", "minimum": 0},
+    "status": {"enum": ["DRAFT", "TRUSTED_RELEASE"]},
+    "records": {
+      "type": "object",
+      "required": ["sources", "obligations", "jurisdictions", "providers", "source_status", "review_due"],
+      "properties": {
+        "sources": {"const": "registry/sources.json"},
+        "obligations": {"const": "registry/obligations.json"},
+        "jurisdictions": {"const": "registry/jurisdictions.json"},
+        "providers": {"const": "registry/providers.json"},
+        "source_status": {"const": "registry/source-status.json"},
+        "review_due": {"const": "registry/review-due.json"}
+      },
+      "additionalProperties": false
+    },
+    "record_counts": {
+      "type": "object",
+      "required": ["sources", "obligations", "jurisdictions", "providers", "source_status", "review_due"],
+      "properties": {
+        "sources": {"type": "integer", "minimum": 0},
+        "obligations": {"type": "integer", "minimum": 0},
+        "jurisdictions": {"type": "integer", "minimum": 0},
+        "providers": {"type": "integer", "minimum": 0},
+        "source_status": {"type": "integer", "minimum": 0},
+        "review_due": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

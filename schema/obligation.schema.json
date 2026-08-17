@@ -1,15 +1,60 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "orchestra.compliance-registry.obligation.v1",
   "title": "Compliance Obligation Record",
   "type": "object",
-  "required": ["obligation_id", "source_ids", "jurisdiction_ids", "domains", "required_evidence"],
+  "required": [
+    "obligation_id",
+    "title",
+    "source_ids",
+    "jurisdiction_ids",
+    "provider_ids",
+    "domains",
+    "source_locator",
+    "summary",
+    "required_evidence",
+    "interpretation_state"
+  ],
   "properties": {
     "obligation_id": {"type": "string", "minLength": 1},
-    "source_ids": {"type": "array", "minItems": 1, "items": {"type": "string"}},
-    "jurisdiction_ids": {"type": "array", "items": {"type": "string"}},
-    "provider_ids": {"type": "array", "items": {"type": "string"}},
-    "domains": {"type": "array", "items": {"type": "string"}},
-    "required_evidence": {"type": "array", "items": {"type": "string"}}
+    "title": {"type": "string", "minLength": 1},
+    "source_ids": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "jurisdiction_ids": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "provider_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "domains": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "source_locator": {"type": "string", "minLength": 1},
+    "summary": {"type": "string", "minLength": 1},
+    "required_evidence": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "interpretation_state": {
+      "enum": [
+        "DIRECT_TEXTUAL_DUTY_REQUIRES_GOVERNOR_APPLICABILITY_REVIEW",
+        "CIRCULAR_DUTY_WITH_ADVISORY_GUIDANCE_REQUIRES_GOVERNOR_APPLICABILITY_REVIEW"
+      ]
+    }
   },
-  "additionalProperties": true
+  "additionalProperties": false
 }

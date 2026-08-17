@@ -10,9 +10,11 @@
     "machine_authority",
     "external_source_reality",
     "human_views",
+    "ai_context_views",
     "rules",
     "markdown_role",
-    "machine_state_must_not_depend_on_markdown_parsing"
+    "machine_state_must_not_depend_on_markdown_parsing",
+    "release_bundle_boundary"
   ],
   "properties": {
     "schema_version": {"const": "orchestra.compliance-registry.representation-policy.v1"},
@@ -20,13 +22,79 @@
     "machine_priority": {"const": true},
     "machine_authority": {
       "type": "object",
-      "required": ["editable_registry_state", "publication_state", "registry_records_from_manifest"]
+      "required": ["editable_registry_state", "publication_state", "registry_records_from_manifest"],
+      "properties": {
+        "editable_registry_state": {"const": "registry/manifest.json"},
+        "publication_state": {"const": "machine/publication-state.json"},
+        "registry_records_from_manifest": {"const": true}
+      },
+      "additionalProperties": false
     },
-    "external_source_reality": {"type": "object"},
-    "human_views": {"type": "object"},
-    "rules": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+    "external_source_reality": {
+      "type": "object",
+      "required": ["trusted_publication", "verification_rule", "live_external_reality_overrides_stale_repository_record"],
+      "properties": {
+        "trusted_publication": {"const": "immutable_github_release"},
+        "verification_rule": {"const": "VERIFY_LIVE_RELEASE_BEFORE_TRUST_OR_MUTATION"},
+        "live_external_reality_overrides_stale_repository_record": {"const": true}
+      },
+      "additionalProperties": false
+    },
+    "human_views": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {"type": "string", "minLength": 1}
+    },
+    "ai_context_views": {
+      "type": "object",
+      "required": [
+        "canonical_source_format",
+        "preferred_large_repetitive_projection",
+        "fallback_projection",
+        "toon_authority",
+        "selection_rule",
+        "source_digest_required",
+        "projection_digest_required",
+        "promotion_from_toon_forbidden",
+        "compiler",
+        "query_receipt_protocol",
+        "query_receipt_authority",
+        "query_receipt_external_reverification_required"
+      ],
+      "properties": {
+        "canonical_source_format": {"const": "JSON"},
+        "preferred_large_repetitive_projection": {"const": "TOON"},
+        "fallback_projection": {"const": "COMPACT_JSON"},
+        "toon_authority": {"const": "NONE_DERIVED_CONTEXT_ONLY"},
+        "selection_rule": {"const": "USE_TOON_ONLY_AFTER_BOUNDED_QUERY_AND_MEASURED_SIZE_BENEFIT"},
+        "source_digest_required": {"const": true},
+        "projection_digest_required": {"const": true},
+        "promotion_from_toon_forbidden": {"const": true},
+        "compiler": {"const": "scripts/context_export.py"},
+        "query_receipt_protocol": {"const": "scripts/query_protocol.py"},
+        "query_receipt_authority": {"const": "NONE_EVIDENCE_ONLY"},
+        "query_receipt_external_reverification_required": {"const": true}
+      },
+      "additionalProperties": false
+    },
+    "rules": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "minItems": 1,
+      "uniqueItems": true
+    },
     "markdown_role": {"const": "NON_AUTHORITATIVE_HUMAN_READABLE_REFERENCE"},
-    "machine_state_must_not_depend_on_markdown_parsing": {"const": true}
+    "machine_state_must_not_depend_on_markdown_parsing": {"const": true},
+    "release_bundle_boundary": {
+      "type": "object",
+      "required": ["distributed_root", "machine_metadata_root", "machine_metadata_is_distributed_registry_content"],
+      "properties": {
+        "distributed_root": {"const": "registry/"},
+        "machine_metadata_root": {"const": "machine/"},
+        "machine_metadata_is_distributed_registry_content": {"const": false}
+      },
+      "additionalProperties": false
+    }
   },
-  "additionalProperties": true
+  "additionalProperties": false
 }
