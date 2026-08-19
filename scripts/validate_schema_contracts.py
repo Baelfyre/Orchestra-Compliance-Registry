@@ -24,8 +24,13 @@ DOCUMENT_CONTRACTS = {
     "schema/readme-machine-index.schema.json": "README.json",
     "schema/source-provenance-audit.schema.json": "machine/source-provenance-audit.v1.json",
     "schema/release-request.schema.json": "machine/release-request-v0.2.0.json",
+    "schema/source-monitor-policy.schema.json": "machine/source-monitor-policy.json",
+    "schema/source-monitor-baseline.schema.json": "machine/source-monitor-baseline.v1.json",
 }
-STANDALONE_CONTRACTS = ("schema/query-receipt.schema.json",)
+STANDALONE_CONTRACTS = (
+    "schema/query-receipt.schema.json",
+    "schema/source-watch-receipt.schema.json",
+)
 
 
 class ContractError(ValueError):
