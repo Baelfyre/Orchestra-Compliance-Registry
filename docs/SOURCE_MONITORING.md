@@ -8,8 +8,8 @@ The Registry is not static. Laws, regulations, regulator guidance, and provider/
 
 The monitor may automatically:
 
-- fetch canonical official primary sources;
-- verify that redirects remain inside the declared authority domain;
+- fetch canonical official primary sources or a bounded official dissemination representation of the same source;
+- verify that redirects remain inside the declared source-specific official authority boundary;
 - compute deterministic source fingerprints;
 - compare live fingerprints with the reviewed baseline;
 - classify unchanged, metadata-only, potential substantive change, source-moved, or source-unavailable states;
@@ -42,6 +42,7 @@ Pull requests use the same workflow in read-only bootstrap-preview mode. The PR 
 | `schema/source-monitor-baseline.schema.json` | Closed baseline contract |
 | `schema/source-watch-receipt.schema.json` | Closed evidence receipt contract |
 | `scripts/source_monitor.py` | Deterministic fetch, fingerprint, comparison, and candidate application runtime |
+| `scripts/source_monitor_live.py` | Source-specific live transport hardening for official authorities whose public presentation layer contains automation or moving-boilerplate behavior |
 
 `machine/source-watch-candidate.json` is created only on an automated change-candidate branch and preserves the exact source-watch receipt that caused that candidate.
 
@@ -49,16 +50,32 @@ Pull requests use the same workflow in read-only bootstrap-preview mode. The PR 
 
 ### HTML_NORMALIZED_TEXT
 
-Used for official legislation and regulator pages served as HTML. The monitor records both:
+Used for official legislation and regulator pages served as HTML or XHTML. The monitor records both:
 
 - a SHA-256 digest of the raw response bytes; and
-- a SHA-256 digest of normalized visible HTML text after removing script/style/template content and normalizing Unicode and whitespace.
+- a SHA-256 digest of normalized visible text after removing script/style/template content and normalizing Unicode and whitespace.
 
 If raw representation changes while normalized official text is unchanged, the result is `METADATA_ONLY`. If normalized text changes, the result is `POTENTIAL_SUBSTANTIVE_CHANGE`.
 
 ### BINARY_SHA256
 
 Used for signed official PDFs and other binary primary sources. A binary digest change is classified as `POTENTIAL_SUBSTANTIVE_CHANGE` because a generic monitor cannot safely determine whether the PDF change is editorial, metadata-only, or legally substantive.
+
+## Source-specific transport hardening
+
+### EU-GDPR-2016-679
+
+The canonical Registry identity remains the EUR-Lex Regulation (EU) 2016/679 source. For unattended monitoring, `scripts/source_monitor_live.py` retrieves the English CELEX representation through the European Union Publications Office Cellar XHTML dissemination surface because the public EUR-Lex presentation endpoints can return automation/challenge content instead of stable legal text.
+
+The Cellar request begins on HTTPS at `publications.europa.eu`. If the official service emits a legacy HTTP-form Cellar resource identifier on that same authority, the monitor converts that identifier to HTTPS before following it. It never follows an HTTP request. Any redirect to another host or any non-HTTPS final representation fails closed. The returned representation must be `application/xhtml+xml` and must contain expected GDPR text sentinels before it can be fingerprinted.
+
+This transport choice changes only how the monitor obtains a stable official representation. It does not change the Registry's canonical EUR-Lex source identity, legal interpretation, obligation records, or applicability decisions.
+
+### SG-PDPA-2012
+
+Singapore Statutes Online renders a moving `Current version as at DD Mon YYYY` status label in the page presentation. That daily display value is not part of the monitored statutory text, so the source-specific normalizer replaces only the date inside that exact status label with a fixed placeholder before computing the normalized-text digest.
+
+The raw response SHA-256 is still preserved. Changes elsewhere in the normalized page remain detectable, and the monitor requires both expected PDPA text sentinels and the moving status label to be present. If those invariants disappear, the source fails closed rather than broadening normalization automatically.
 
 ## Change states
 
@@ -86,6 +103,6 @@ An actionable source set receives a deterministic candidate key derived only fro
 
 ## Validation
 
-The normal `Registry Validation` workflow validates the monitor policy and baseline without network access. `tests/test_source_monitor.py` covers normalization, classification, authority-boundary handling, configuration coverage, and fail-closed candidate status application.
+The normal `Registry Validation` workflow validates the monitor policy and baseline without network access. `tests/test_source_monitor.py` covers normalization, classification, authority-boundary handling, configuration coverage, and fail-closed candidate status application. `tests/test_source_monitor_live.py` locks the source-specific HTTPS Cellar redirect rule and the narrow Singapore moving-date normalization rule without performing network access.
 
 The separate `Registry Source Monitor` workflow exercises live official-source fetches and preserves the generated baseline or source-watch receipt as GitHub Actions evidence.

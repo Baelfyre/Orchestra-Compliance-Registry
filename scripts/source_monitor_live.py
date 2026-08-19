@@ -37,6 +37,23 @@ SG_CURRENT_VERSION_RE = re.compile(r"\bCurrent version as at \d{1,2} [A-Z][a-z]{
 _core_fetch = source_monitor._fetch
 
 
+def _secure_cellar_redirect_url(newurl: str) -> str:
+    parsed = urlparse(newurl)
+    if parsed.scheme == "http" and source_monitor._authorized_host(
+        parsed.hostname, EU_CELLAR_AUTHORITY_DOMAIN
+    ):
+        parsed = parsed._replace(scheme="https")
+        newurl = urlunparse(parsed)
+    parsed = urlparse(newurl)
+    if parsed.scheme != "https" or not source_monitor._authorized_host(
+        parsed.hostname, EU_CELLAR_AUTHORITY_DOMAIN
+    ):
+        raise source_monitor.SourceMonitorError(
+            f"official Cellar redirect left HTTPS publications.europa.eu boundary: {newurl}"
+        )
+    return newurl
+
+
 class _HttpsOnlyCellarRedirectHandler(urllib.request.HTTPRedirectHandler):
     def redirect_request(
         self,
@@ -47,16 +64,14 @@ class _HttpsOnlyCellarRedirectHandler(urllib.request.HTTPRedirectHandler):
         headers: Any,
         newurl: str,
     ) -> urllib.request.Request | None:
-        parsed = urlparse(newurl)
-        if parsed.scheme == "http" and source_monitor._authorized_host(parsed.hostname, EU_CELLAR_AUTHORITY_DOMAIN):
-            parsed = parsed._replace(scheme="https")
-            newurl = urlunparse(parsed)
-        parsed = urlparse(newurl)
-        if parsed.scheme != "https" or not source_monitor._authorized_host(parsed.hostname, EU_CELLAR_AUTHORITY_DOMAIN):
-            raise source_monitor.SourceMonitorError(
-                f"official Cellar redirect left HTTPS publications.europa.eu boundary: {newurl}"
-            )
-        return super().redirect_request(req, fp, code, msg, headers, newurl)
+        return super().redirect_request(
+            req,
+            fp,
+            code,
+            msg,
+            headers,
+            _secure_cellar_redirect_url(newurl),
+        )
 
 
 def _eu_cellar_fetch(source: dict[str, Any], config: dict[str, Any]) -> dict[str, Any]:
@@ -90,7 +105,9 @@ def _eu_cellar_fetch(source: dict[str, Any], config: dict[str, Any]) -> dict[str
         ) from exc
 
     parsed = urlparse(final_url)
-    if parsed.scheme != "https" or not source_monitor._authorized_host(parsed.hostname, EU_CELLAR_AUTHORITY_DOMAIN):
+    if parsed.scheme != "https" or not source_monitor._authorized_host(
+        parsed.hostname, EU_CELLAR_AUTHORITY_DOMAIN
+    ):
         raise source_monitor.SourceMonitorError(
             f"official Cellar source {source['source_id']} ended outside HTTPS publications.europa.eu boundary: {final_url}"
         )
@@ -123,6 +140,27 @@ def _eu_cellar_fetch(source: dict[str, Any], config: dict[str, Any]) -> dict[str
         "fetched_at": source_monitor._now_iso(),
         "authority_boundary_ok": True,
     }
+
+
+def _normalize_sg_pdpa_html(text: str) -> str:
+    normalized = source_monitor.normalize_html_text(text)
+    if not normalized:
+        raise source_monitor.SourceMonitorError(
+            f"official SSO source {SG_PDPA_SOURCE_ID} normalized text is empty"
+        )
+    missing_sentinels = [sentinel for sentinel in SG_PDPA_TEXT_SENTINELS if sentinel not in normalized]
+    if missing_sentinels:
+        raise source_monitor.SourceMonitorError(
+            f"official SSO source {SG_PDPA_SOURCE_ID} is missing expected PDPA text sentinels {missing_sentinels}"
+        )
+    normalized, status_count = SG_CURRENT_VERSION_RE.subn(
+        "Current version as at <CURRENT_DATE>", normalized
+    )
+    if status_count < 1:
+        raise source_monitor.SourceMonitorError(
+            f"official SSO source {SG_PDPA_SOURCE_ID} lacks expected moving current-version status label"
+        )
+    return normalized
 
 
 def _sg_pdpa_fetch(source: dict[str, Any], config: dict[str, Any]) -> dict[str, Any]:
@@ -162,24 +200,7 @@ def _sg_pdpa_fetch(source: dict[str, Any], config: dict[str, Any]) -> dict[str, 
             f"official SSO source {source['source_id']} returned unexpected content type {content_type}"
         )
 
-    text = raw.decode(charset, errors="replace")
-    normalized = source_monitor.normalize_html_text(text)
-    if not normalized:
-        raise source_monitor.SourceMonitorError(
-            f"official SSO source {source['source_id']} normalized text is empty"
-        )
-    missing_sentinels = [sentinel for sentinel in SG_PDPA_TEXT_SENTINELS if sentinel not in normalized]
-    if missing_sentinels:
-        raise source_monitor.SourceMonitorError(
-            f"official SSO source {source['source_id']} is missing expected PDPA text sentinels {missing_sentinels}"
-        )
-    normalized, status_count = SG_CURRENT_VERSION_RE.subn(
-        "Current version as at <CURRENT_DATE>", normalized
-    )
-    if status_count < 1:
-        raise source_monitor.SourceMonitorError(
-            f"official SSO source {source['source_id']} lacks expected moving current-version status label"
-        )
+    normalized = _normalize_sg_pdpa_html(raw.decode(charset, errors="replace"))
 
     return {
         "source_id": source["source_id"],
