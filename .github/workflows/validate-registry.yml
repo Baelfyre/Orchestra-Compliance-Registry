@@ -30,20 +30,20 @@ jobs:
         run: python scripts/validate_machine_records.py
       - name: Run registry regression tests
         run: python -m unittest discover -s tests -p "test_*.py" -v
-      - name: Build deterministic release candidate
+      - name: Build deterministic validation candidate
         run: |
           rm -rf artifacts/release-candidate
           python scripts/build_release.py \
             --output-dir artifacts/release-candidate \
-            --registry-version 0.1.0 \
+            --registry-version ci-candidate \
             --release-sequence 1 \
-            --release-tag registry-v0.1.0
+            --release-tag registry-vci-candidate
           cat artifacts/release-candidate/release-manifest.sha256
           cat artifacts/release-candidate/orchestra-compliance-registry.zip.sha256
-      - name: Preserve release candidate artifact
+      - name: Preserve validation candidate artifact
         uses: actions/upload-artifact@v7
         with:
-          name: registry-v0.1.0-candidate
+          name: registry-validation-candidate-${{ github.sha }}
           path: artifacts/release-candidate/
           if-no-files-found: error
           retention-days: 14
