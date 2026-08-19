@@ -1,17 +1,17 @@
 {
   "schema_version": "orchestra.compliance-registry.publication-state.v1",
   "canonical_repository": "Baelfyre/Orchestra-Compliance-Registry",
-  "recorded_at": "2026-08-16T21:23:00+08:00",
+  "recorded_at": "2026-08-19T20:40:00+08:00",
   "repository_source_boundary": {
     "canonical_branch": "main",
-    "observed_sha": "1923caa866038289307223fbab1b9af6e7e4790b",
+    "observed_sha": "3ae026e61336078a94a62d2c1e21017732adb995",
     "state_class": "VERIFIED_REPOSITORY_CHECKPOINT",
     "semantics": "LAST_EXPLICITLY_VERIFIED_REPOSITORY_BOUNDARY_NOT_CURRENT_HEAD_CLAIM",
     "live_head_reverification_required": true
   },
   "editable_source": {
     "manifest_path": "registry/manifest.json",
-    "registry_version": "0.1.0-dev.2",
+    "registry_version": "0.2.0-dev.1",
     "release_sequence": 0,
     "status": "DRAFT"
   },
@@ -54,6 +54,7 @@
   "human_companions": [
     "README.md",
     "docs/REGISTRY_V0_1_0_RELEASE_READINESS.md",
-    "docs/RELEASE_PACKAGING.md"
+    "docs/RELEASE_PACKAGING.md",
+    "docs/INTERNATIONAL_PRIVACY_PILOT.md"
   ]
 }
