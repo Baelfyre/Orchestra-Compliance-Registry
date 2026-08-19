@@ -27,7 +27,7 @@
     {
       "source_id": "EU-GDPR-2016-679",
       "enabled": true,
-      "strategy": "HTML_NORMALIZED_TEXT",
+      "strategy": "BINARY_SHA256",
       "timeout_seconds": 30,
       "max_bytes": 12582912
     },
