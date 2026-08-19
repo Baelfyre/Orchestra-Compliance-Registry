@@ -19,13 +19,20 @@ RECORD_CONTRACTS = {
 }
 DOCUMENT_CONTRACTS = {
     "schema/manifest.schema.json": "registry/manifest.json",
+    "schema/capability-manifest.schema.json": "registry/capabilities.json",
     "schema/representation-policy.schema.json": "machine/representation-policy.json",
     "schema/publication-state.schema.json": "machine/publication-state.json",
     "schema/readme-machine-index.schema.json": "README.json",
     "schema/source-provenance-audit.schema.json": "machine/source-provenance-audit.v1.json",
     "schema/release-request.schema.json": "machine/release-request-v0.2.0.json",
+    "schema/source-monitor-policy.schema.json": "machine/source-monitor-policy.json",
+    "schema/source-monitor-baseline.schema.json": "machine/source-monitor-baseline.v1.json",
 }
-STANDALONE_CONTRACTS = ("schema/query-receipt.schema.json",)
+STANDALONE_CONTRACTS = (
+    "schema/query-receipt.schema.json",
+    "schema/source-watch-receipt.schema.json",
+    "schema/release-delta.schema.json",
+)
 
 
 class ContractError(ValueError):

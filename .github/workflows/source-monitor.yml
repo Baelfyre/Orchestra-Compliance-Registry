@@ -1,0 +1,222 @@
+name: Registry Source Monitor
+
+on:
+  pull_request:
+    paths:
+      - "registry/sources.json"
+      - "registry/source-status.json"
+      - "machine/source-monitor-policy.json"
+      - "machine/source-monitor-baseline.v1.json"
+      - "machine/source-watch-candidate.json"
+      - "schema/source-monitor-*.json"
+      - "schema/source-watch-receipt.schema.json"
+      - "scripts/source_monitor.py"
+      - "scripts/source_monitor_live.py"
+      - "tests/test_source_monitor.py"
+      - ".github/workflows/source-monitor.yml"
+  schedule:
+    - cron: "23 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: registry-source-monitor-${{ github.event_name }}
+  cancel-in-progress: false
+
+jobs:
+  bootstrap-preview:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout candidate
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate monitor configuration
+        run: python scripts/source_monitor.py validate-config
+      - name: Generate live official-source baseline preview
+        run: |
+          mkdir -p artifacts/source-monitor
+          python scripts/source_monitor_live.py bootstrap \
+            --output artifacts/source-monitor/current-baseline.json
+      - name: Compare reviewed baseline with live official sources
+        run: |
+          python scripts/source_monitor_live.py check \
+            --receipt-output artifacts/source-monitor/source-watch-receipt.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          receipt = json.loads(Path("artifacts/source-monitor/source-watch-receipt.json").read_text(encoding="utf-8"))
+          if receipt["overall_state"] != "UNCHANGED":
+              raise SystemExit(
+                  "reviewed source baseline is not current: "
+                  + json.dumps(
+                      {
+                          "overall_state": receipt["overall_state"],
+                          "actionable_source_ids": receipt["actionable_source_ids"],
+                          "failure_source_ids": receipt["failure_source_ids"],
+                      },
+                      sort_keys=True,
+                  )
+              )
+          print("SOURCE_MONITOR_REVIEWED_BASELINE_CURRENT")
+          PY
+      - name: Preserve live source-monitor evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: source-monitor-baseline-preview-${{ github.sha }}
+          path: artifacts/source-monitor/
+          if-no-files-found: error
+          retention-days: 14
+
+  scheduled-check:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+    steps:
+      - name: Checkout canonical main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate monitor configuration
+        run: python scripts/source_monitor.py validate-config
+      - name: Check official sources
+        id: monitor
+        shell: bash
+        run: |
+          mkdir -p artifacts/source-monitor
+          set +e
+          python scripts/source_monitor_live.py check \
+            --receipt-output artifacts/source-monitor/source-watch-receipt.json
+          rc=$?
+          set -e
+          echo "exit_code=${rc}" >> "$GITHUB_OUTPUT"
+          if [[ -f artifacts/source-monitor/source-watch-receipt.json ]]; then
+            python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          from pathlib import Path
+          receipt = json.loads(Path("artifacts/source-monitor/source-watch-receipt.json").read_text(encoding="utf-8"))
+          print(f"overall_state={receipt['overall_state']}")
+          print(f"candidate_key={receipt.get('candidate_key') or ''}")
+          print("actionable_source_ids=" + ",".join(receipt.get("actionable_source_ids", [])))
+          print("failure_source_ids=" + ",".join(receipt.get("failure_source_ids", [])))
+          PY
+          else
+            echo "overall_state=MONITOR_FAILURE" >> "$GITHUB_OUTPUT"
+            echo "candidate_key=" >> "$GITHUB_OUTPUT"
+            echo "actionable_source_ids=" >> "$GITHUB_OUTPUT"
+            echo "failure_source_ids=UNKNOWN" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Preserve source-watch evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: source-watch-receipt-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/source-monitor/
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Record monitor failure
+        if: steps.monitor.outputs.overall_state == 'MONITOR_FAILURE'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FAILURE_SOURCE_IDS: ${{ steps.monitor.outputs.failure_source_ids }}
+        shell: bash
+        run: |
+          title="Registry source monitor failure"
+          body_file="${RUNNER_TEMP}/source-monitor-failure.md"
+          cat > "$body_file" <<EOF
+          The scheduled official-source monitor could not complete a trustworthy check.
+
+          Failure source IDs: ${FAILURE_SOURCE_IDS}
+          Workflow run: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+
+          This is monitoring evidence only. No Registry source status, obligation, merge state, or trusted release was changed automatically.
+          EOF
+          existing="$(gh issue list --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
+          if [[ -n "$existing" ]]; then
+            gh issue comment "$existing" --body-file "$body_file"
+          else
+            gh issue create --title "$title" --body-file "$body_file"
+          fi
+          exit 1
+      - name: Prepare bounded change candidate
+        if: steps.monitor.outputs.overall_state == 'CHANGES_DETECTED'
+        id: candidate
+        env:
+          CANDIDATE_KEY: ${{ steps.monitor.outputs.candidate_key }}
+          ACTIONABLE_SOURCE_IDS: ${{ steps.monitor.outputs.actionable_source_ids }}
+        shell: bash
+        run: |
+          short_key="${CANDIDATE_KEY:0:16}"
+          branch="automation/source-watch-${short_key}"
+          echo "branch=${branch}" >> "$GITHUB_OUTPUT"
+          echo "short_key=${short_key}" >> "$GITHUB_OUTPUT"
+          if git ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1; then
+            echo "existing=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "existing=false" >> "$GITHUB_OUTPUT"
+          git checkout -b "$branch"
+          python scripts/source_monitor.py apply-candidate \
+            --receipt artifacts/source-monitor/source-watch-receipt.json \
+            --candidate-output machine/source-watch-candidate.json
+          python scripts/validate_registry.py
+          python scripts/validate_source_provenance.py
+          python scripts/validate_schema_contracts.py
+          python scripts/validate_machine_records.py
+          python -m unittest discover -s tests -p "test_*.py" -v
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add registry/source-status.json machine/source-watch-candidate.json
+          git commit -m "monitor: flag official source change ${short_key}"
+          git push origin "$branch"
+      - name: Open draft source-change candidate PR
+        if: steps.monitor.outputs.overall_state == 'CHANGES_DETECTED' && steps.candidate.outputs.existing == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: ${{ steps.candidate.outputs.branch }}
+          SHORT_KEY: ${{ steps.candidate.outputs.short_key }}
+          ACTIONABLE_SOURCE_IDS: ${{ steps.monitor.outputs.actionable_source_ids }}
+        shell: bash
+        run: |
+          body_file="${RUNNER_TEMP}/source-watch-pr.md"
+          cat > "$body_file" <<EOF
+          ## Automated official-source change candidate
+
+          Source monitor candidate: `${SHORT_KEY}`
+          Actionable source IDs: `${ACTIONABLE_SOURCE_IDS}`
+          Detection run: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+
+          This draft PR is fail-closed monitoring evidence. The automation has only marked affected source status for human interpretation and preserved the source-watch receipt.
+
+          It does **not** determine legal applicability, extract or rewrite obligations, merge itself, update the reviewed baseline, or publish a trusted Registry release. Human/Governor review must re-read the official primary source and verify text, dates, supersession, applicability, and obligation impact before any merge decision.
+          EOF
+          if ! gh pr create \
+            --draft \
+            --base main \
+            --head "$BRANCH" \
+            --title "monitor: review official source change ${SHORT_KEY}" \
+            --body-file "$body_file"; then
+            gh issue create \
+              --title "Registry source change detected ${SHORT_KEY}" \
+              --body-file "$body_file"
+            exit 1
+          fi
+      - name: Confirm unchanged state
+        if: steps.monitor.outputs.overall_state == 'UNCHANGED'
+        run: echo "All monitored official sources match the reviewed baseline; no repository mutation is required."

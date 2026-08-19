@@ -1,0 +1,70 @@
+{
+  "$schema": "../schema/source-monitor-policy.schema.json",
+  "schema_version": "orchestra.compliance-registry.source-monitor-policy.v1",
+  "canonical_repository": "Baelfyre/Orchestra-Compliance-Registry",
+  "monitoring_enabled": true,
+  "schedule_hours": 6,
+  "official_primary_only": true,
+  "automatic_candidate_pull_request": true,
+  "automatic_merge": false,
+  "automatic_trusted_release": false,
+  "human_interpretation_required_for_substantive_change": true,
+  "sources": [
+    {
+      "source_id": "AU-PRIVACY-ACT-1988",
+      "enabled": true,
+      "strategy": "HTML_NORMALIZED_TEXT",
+      "timeout_seconds": 30,
+      "max_bytes": 12582912
+    },
+    {
+      "source_id": "CA-PIPEDA-SC2000-C5",
+      "enabled": true,
+      "strategy": "HTML_NORMALIZED_TEXT",
+      "timeout_seconds": 30,
+      "max_bytes": 12582912
+    },
+    {
+      "source_id": "EU-GDPR-2016-679",
+      "enabled": true,
+      "strategy": "HTML_NORMALIZED_TEXT",
+      "timeout_seconds": 30,
+      "max_bytes": 12582912
+    },
+    {
+      "source_id": "PH-DPA-IRR-2016",
+      "enabled": true,
+      "strategy": "HTML_NORMALIZED_TEXT",
+      "timeout_seconds": 30,
+      "max_bytes": 12582912
+    },
+    {
+      "source_id": "PH-DPA-RA10173",
+      "enabled": true,
+      "strategy": "HTML_NORMALIZED_TEXT",
+      "timeout_seconds": 30,
+      "max_bytes": 12582912
+    },
+    {
+      "source_id": "PH-NPC-ADV-2025-02",
+      "enabled": true,
+      "strategy": "BINARY_SHA256",
+      "timeout_seconds": 30,
+      "max_bytes": 20971520
+    },
+    {
+      "source_id": "PH-NPC-CIRC-2023-06",
+      "enabled": true,
+      "strategy": "BINARY_SHA256",
+      "timeout_seconds": 30,
+      "max_bytes": 20971520
+    },
+    {
+      "source_id": "SG-PDPA-2012",
+      "enabled": true,
+      "strategy": "HTML_NORMALIZED_TEXT",
+      "timeout_seconds": 30,
+      "max_bytes": 12582912
+    }
+  ]
+}

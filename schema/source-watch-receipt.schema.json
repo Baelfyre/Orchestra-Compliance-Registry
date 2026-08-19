@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "orchestra.compliance-registry.source-watch-receipt.v1",
+  "title": "Compliance Registry Source Watch Receipt",
+  "type": "object",
+  "required": [
+    "$schema",
+    "schema_version",
+    "canonical_repository",
+    "checked_at",
+    "baseline_captured_at",
+    "overall_state",
+    "source_results",
+    "actionable_source_ids",
+    "failure_source_ids",
+    "candidate_key",
+    "observation_digest"
+  ],
+  "properties": {
+    "$schema": {"type": "string", "minLength": 1},
+    "schema_version": {"const": "orchestra.compliance-registry.source-watch-receipt.v1"},
+    "canonical_repository": {"const": "Baelfyre/Orchestra-Compliance-Registry"},
+    "checked_at": {"type": "string", "minLength": 1},
+    "baseline_captured_at": {"type": ["string", "null"]},
+    "overall_state": {"enum": ["UNCHANGED", "CHANGES_DETECTED", "MONITOR_FAILURE"]},
+    "source_results": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "source_id",
+          "state",
+          "strategy",
+          "canonical_url",
+          "final_url",
+          "content_type",
+          "previous_raw_sha256",
+          "current_raw_sha256",
+          "previous_normalized_text_sha256",
+          "current_normalized_text_sha256",
+          "reason",
+          "fetched_at"
+        ],
+        "properties": {
+          "source_id": {"type": "string", "minLength": 1},
+          "state": {"enum": ["UNCHANGED", "METADATA_ONLY", "POTENTIAL_SUBSTANTIVE_CHANGE", "SOURCE_MOVED", "SOURCE_UNAVAILABLE"]},
+          "strategy": {"enum": ["HTML_NORMALIZED_TEXT", "BINARY_SHA256"]},
+          "canonical_url": {"type": "string", "pattern": "^https://[^\\s]+$"},
+          "final_url": {"type": ["string", "null"]},
+          "content_type": {"type": ["string", "null"]},
+          "previous_raw_sha256": {"type": ["string", "null"]},
+          "current_raw_sha256": {"type": ["string", "null"]},
+          "previous_normalized_text_sha256": {"type": ["string", "null"]},
+          "current_normalized_text_sha256": {"type": ["string", "null"]},
+          "reason": {"type": "string", "minLength": 1},
+          "fetched_at": {"type": ["string", "null"]}
+        },
+        "additionalProperties": false
+      }
+    },
+    "actionable_source_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "failure_source_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "candidate_key": {"type": ["string", "null"]},
+    "observation_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": false
+}
