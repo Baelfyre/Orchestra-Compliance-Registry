@@ -5,7 +5,15 @@
   "machine_authority": {
     "editable_registry_state": "registry/manifest.json",
     "publication_state": "machine/publication-state.json",
+    "repository_index": "README.json",
     "registry_records_from_manifest": true
+  },
+  "repository_overview_pair": {
+    "human": "README.md",
+    "machine": "README.json",
+    "human_role": "COMPACT_HUMAN_ORIENTATION",
+    "machine_role": "COMPLETE_MACHINE_REPOSITORY_INDEX",
+    "machine_index_authority": "DERIVED_AND_PARITY_VALIDATED_PROJECTION"
   },
   "external_source_reality": {
     "trusted_publication": "immutable_github_release",
@@ -13,9 +21,11 @@
     "live_external_reality_overrides_stale_repository_record": true
   },
   "human_views": {
-    "README.md": "HUMAN_READABLE_OVERVIEW",
+    "README.md": "COMPACT_HUMAN_READABLE_OVERVIEW",
     "GOVERNANCE.md": "HUMAN_READABLE_GOVERNANCE_REFERENCE",
+    "CONTRIBUTING.md": "HUMAN_READABLE_CONTRIBUTION_GUIDE",
     "docs/PH_PRIVACY_PILOT.md": "HUMAN_READABLE_PILOT_REFERENCE",
+    "docs/INTERNATIONAL_PRIVACY_PILOT.md": "HUMAN_READABLE_INTERNATIONAL_PILOT_REFERENCE",
     "docs/REGISTRY_V0_1_0_RELEASE_READINESS.md": "HISTORICAL_HUMAN_READABLE_RELEASE_EVIDENCE",
     "docs/RELEASE_PACKAGING.md": "HUMAN_READABLE_PACKAGING_REFERENCE"
   },
@@ -39,6 +49,9 @@
     "MARKDOWN_IS_OPTIONAL_UNLESS_HUMAN_REVIEW_REQUIRES_IT",
     "NO_MACHINE_STATE_RECONSTRUCTION_FROM_MARKDOWN_WHEN_JSON_EXISTS",
     "MACHINE_STATE_CHANGES_REQUIRE_MACHINE_RECORD_UPDATE_FIRST",
+    "README_MD_IS_COMPACT_HUMAN_ENTRY_POINT",
+    "README_JSON_IS_COMPLETE_MACHINE_REPOSITORY_INDEX",
+    "README_JSON_MUST_BE_SCHEMA_AND_PARITY_VALIDATED",
     "LIVE_EXTERNAL_REALITY_OVERRIDES_STALE_REPOSITORY_RECORD",
     "TOON_IS_DERIVED_CONTEXT_ONLY",
     "TOON_MUST_NOT_PROMOTE_OR_OVERRIDE_REGISTRY_JSON",
