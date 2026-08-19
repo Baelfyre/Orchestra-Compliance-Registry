@@ -45,11 +45,33 @@ jobs:
           mkdir -p artifacts/source-monitor
           python scripts/source_monitor_live.py bootstrap \
             --output artifacts/source-monitor/current-baseline.json
-      - name: Preserve baseline preview
+      - name: Compare reviewed baseline with live official sources
+        run: |
+          python scripts/source_monitor_live.py check \
+            --receipt-output artifacts/source-monitor/source-watch-receipt.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          receipt = json.loads(Path("artifacts/source-monitor/source-watch-receipt.json").read_text(encoding="utf-8"))
+          if receipt["overall_state"] != "UNCHANGED":
+              raise SystemExit(
+                  "reviewed source baseline is not current: "
+                  + json.dumps(
+                      {
+                          "overall_state": receipt["overall_state"],
+                          "actionable_source_ids": receipt["actionable_source_ids"],
+                          "failure_source_ids": receipt["failure_source_ids"],
+                      },
+                      sort_keys=True,
+                  )
+              )
+          print("SOURCE_MONITOR_REVIEWED_BASELINE_CURRENT")
+          PY
+      - name: Preserve live source-monitor evidence
         uses: actions/upload-artifact@v7
         with:
           name: source-monitor-baseline-preview-${{ github.sha }}
-          path: artifacts/source-monitor/current-baseline.json
+          path: artifacts/source-monitor/
           if-no-files-found: error
           retention-days: 14
 
