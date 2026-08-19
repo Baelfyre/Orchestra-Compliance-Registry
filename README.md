@@ -6,13 +6,13 @@ The Registry turns reviewed compliance sources into structured, evidence-oriente
 
 > **Machine entry point:** [`README.json`](README.json)  
 > **Editable source state:** `0.2.0-dev.1` / `DRAFT`  
-> **Current trusted release:** `registry-v0.1.0`
+> **Current trusted release:** `registry-v0.2.0`
 
 ## Purpose
 
 The Registry is designed to help software projects identify compliance considerations across jurisdictions, technical domains, and platform/provider requirements while preserving source provenance, freshness, applicability review, and explicit trust boundaries.
 
-Current source-backed work is an **international privacy pilot**. Broader software-development, cybersecurity, database/data-governance, AI, and provider/platform coverage is the next expansion program.
+The current trusted distribution is the bounded **international privacy pilot**. Broader software-development, cybersecurity, database/data-governance, AI, and provider/platform coverage is the next expansion program.
 
 ## How to use it
 
@@ -22,8 +22,20 @@ Current source-backed work is an **international privacy pilot**. Broader softwa
 | AI / agents / tooling | [`README.json`](README.json) | Complete repository map and ordered machine-readable references |
 | Registry consumers | [`registry/manifest.json`](registry/manifest.json) | Canonical editable record map and source-state identity |
 | Source reviewers | [`docs/SOURCE_PROVENANCE_AUDIT.md`](docs/SOURCE_PROVENANCE_AUDIT.md) | Official citations, date provenance, and the latest source rerun |
-| Release consumers | [`machine/publication-state.json`](machine/publication-state.json) | Last verified publication identity; live release must still be reverified |
+| Release consumers | [`docs/REGISTRY_V0_2_0_RELEASE_EVIDENCE.md`](docs/REGISTRY_V0_2_0_RELEASE_EVIDENCE.md) | Human-readable trusted-release identity and integrity evidence |
+| Release tooling / agents | [`machine/release-evidence-v0.2.0.json`](machine/release-evidence-v0.2.0.json) | Machine-readable exact release ID, source identity, hashes, assets, and workflow evidence |
 | Contributors | [`CONTRIBUTING.md`](CONTRIBUTING.md) | Source, evidence, review, and contribution requirements |
+
+## Trusted release
+
+`registry-v0.2.0` was published on **2026-08-19** as a non-draft, non-prerelease, immutable GitHub Release from exact source commit `cb32038a2683eb2c19f52646892d3257996a06eb` and source tree `10ce7849fd5b95b3ca756eff213bb506d00a89de`.
+
+| Evidence | SHA-256 |
+| --- | --- |
+| Release manifest | `cb98e4496da8952cff1432207d57f04379364bac2e95cc422de173681a8fb2b4` |
+| Registry bundle | `71414aaead10634c2a4b79ec519b4fc76fb32af71cd831ef48f2133bcc211388` |
+
+The editable repository remains `0.2.0-dev.1` `DRAFT` source state. Trusted publication is staged by the deterministic release builder and does not rewrite editable source records.
 
 ## Source provenance
 
@@ -88,7 +100,7 @@ The next provider phase will distinguish **contractual platform rules** from **g
 | `README.md` / `docs/*.md` | Compact human explanation and review material | Non-authoritative human reference |
 | `README.json` | Complete machine-readable repository index | Derived and parity-validated index |
 | `registry/*.json` | Canonical structured registry records | Editable machine authority as mapped by the manifest |
-| `machine/*.json` | Publication, representation, provenance-audit, and control metadata | Machine control/reference or evidence state as defined per record |
+| `machine/*.json` | Publication, release-evidence, representation, provenance-audit, and control metadata | Machine control/reference or evidence state as defined per record |
 | JSON Schema | Deterministic machine-contract validation | Validation contract |
 | TOON | Optional compact AI context projection | Derived, non-authoritative |
 
@@ -108,6 +120,7 @@ When prose and a machine record disagree on an exact deterministic fact, use the
 | Topic | Human reference | Machine reference |
 | --- | --- | --- |
 | Repository overview | `README.md` | [`README.json`](README.json) |
+| Trusted v0.2.0 release | [`docs/REGISTRY_V0_2_0_RELEASE_EVIDENCE.md`](docs/REGISTRY_V0_2_0_RELEASE_EVIDENCE.md) | [`machine/release-evidence-v0.2.0.json`](machine/release-evidence-v0.2.0.json) |
 | Source provenance | [`docs/SOURCE_PROVENANCE_AUDIT.md`](docs/SOURCE_PROVENANCE_AUDIT.md) | [`machine/source-provenance-audit.v1.json`](machine/source-provenance-audit.v1.json) |
 | Governance | [`GOVERNANCE.md`](GOVERNANCE.md) | [`machine/representation-policy.json`](machine/representation-policy.json) |
 | Registry records | Documentation and pilot notes | [`registry/manifest.json`](registry/manifest.json) |
@@ -115,4 +128,4 @@ When prose and a machine record disagree on an exact deterministic fact, use the
 | International privacy pilot | [`docs/INTERNATIONAL_PRIVACY_PILOT.md`](docs/INTERNATIONAL_PRIVACY_PILOT.md) | `registry/jurisdictions.json`, `registry/sources.json`, `registry/obligations.json` |
 | Contributions | [`CONTRIBUTING.md`](CONTRIBUTING.md) | JSON Schemas under `schema/` |
 
-Canonical changes remain pull-request governed. A trusted Registry release is a separate publication transition.
+Canonical changes remain pull-request governed. A future trusted Registry release is a separate publication transition.
