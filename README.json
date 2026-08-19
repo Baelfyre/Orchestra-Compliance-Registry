@@ -17,14 +17,7 @@
     "summary": "Public, versioned compliance intelligence for governed software and AI-assisted development.",
     "registry_role": "Normalize reviewed compliance sources into provenance-bound machine records and evidence-oriented obligations that can be queried by humans and AI tooling without converting source discovery, documentation, validation, or platform policy into legal advice or execution authority.",
     "current_program": "INTERNATIONAL_PRIVACY_SOURCE_BACKED_PILOT",
-    "planned_expansion_domains": [
-      "software-development",
-      "cybersecurity",
-      "database-and-data-governance",
-      "ai-usage-and-ai-systems",
-      "accessibility",
-      "provider-and-platform-requirements"
-    ],
+    "planned_expansion_domains": ["software-development", "cybersecurity", "database-and-data-governance", "ai-usage-and-ai-systems", "accessibility", "provider-and-platform-requirements"],
     "not_legal_advice": true,
     "project_applicability_requires_review": true
   },
@@ -33,14 +26,7 @@
     "registry_version": "0.2.0-dev.1",
     "release_sequence": 0,
     "status": "DRAFT",
-    "record_counts": {
-      "sources": 8,
-      "obligations": 15,
-      "jurisdictions": 7,
-      "providers": 7,
-      "source_status": 8,
-      "review_due": 8
-    }
+    "record_counts": {"sources": 8, "obligations": 15, "jurisdictions": 7, "providers": 7, "source_status": 8, "review_due": 8}
   },
   "trusted_release": {
     "state": "PUBLISHED_IMMUTABLE_VERIFIED",
@@ -54,16 +40,8 @@
     "scope_note": "The trusted v0.1.0 release is the immutable Philippine privacy pilot. Editable source state has advanced separately and is not trusted publication merely because it validates."
   },
   "representation": {
-    "human_entry_point": {
-      "path": "README.md",
-      "role": "COMPACT_HUMAN_ORIENTATION",
-      "authority": "NON_AUTHORITATIVE_HUMAN_READABLE_REFERENCE"
-    },
-    "machine_entry_point": {
-      "path": "README.json",
-      "role": "COMPLETE_MACHINE_REPOSITORY_INDEX",
-      "authority": "DERIVED_AND_PARITY_VALIDATED_PROJECTION"
-    },
+    "human_entry_point": {"path": "README.md", "role": "COMPACT_HUMAN_ORIENTATION", "authority": "NON_AUTHORITATIVE_HUMAN_READABLE_REFERENCE"},
+    "machine_entry_point": {"path": "README.json", "role": "COMPLETE_MACHINE_REPOSITORY_INDEX", "authority": "DERIVED_AND_PARITY_VALIDATED_PROJECTION"},
     "editable_registry_authority": "registry/manifest.json",
     "machine_control_metadata": "machine/",
     "human_documentation": "docs/",
@@ -73,42 +51,16 @@
     "machine_state_must_not_be_reconstructed_from_markdown_when_json_exists": true
   },
   "records": {
-    "manifest": {
-      "path": "registry/manifest.json",
-      "role": "EDITABLE_REGISTRY_SOURCE_STATE_AND_RECORD_MAP"
-    },
-    "sources": {
-      "path": "registry/sources.json",
-      "role": "PRIMARY_AND_REGULATORY_SOURCE_IDENTITIES_WITH_VERIFICATION_METADATA"
-    },
-    "obligations": {
-      "path": "registry/obligations.json",
-      "role": "BOUNDED_EVIDENCE_ORIENTED_OBLIGATIONS_WITH_DIRECT_SOURCE_LOCATORS"
-    },
-    "jurisdictions": {
-      "path": "registry/jurisdictions.json",
-      "role": "JURISDICTION_CATALOG_AND_COVERAGE_MATURITY"
-    },
-    "providers": {
-      "path": "registry/providers.json",
-      "role": "PROVIDER_AND_PLATFORM_CATALOG"
-    },
-    "source_status": {
-      "path": "registry/source-status.json",
-      "role": "SOURCE_CURRENTNESS_LEDGER"
-    },
-    "review_due": {
-      "path": "registry/review-due.json",
-      "role": "SOURCE_REVIEW_CADENCE_AND_FRESHNESS_LEDGER"
-    },
-    "publication_state": {
-      "path": "machine/publication-state.json",
-      "role": "LAST_VERIFIED_SOURCE_AND_TRUSTED_PUBLICATION_IDENTITY"
-    },
-    "representation_policy": {
-      "path": "machine/representation-policy.json",
-      "role": "MACHINE_HUMAN_AND_DERIVED_CONTEXT_REPRESENTATION_BOUNDARY"
-    }
+    "manifest": {"path": "registry/manifest.json", "role": "EDITABLE_REGISTRY_SOURCE_STATE_AND_RECORD_MAP"},
+    "sources": {"path": "registry/sources.json", "role": "PRIMARY_AND_REGULATORY_SOURCE_IDENTITIES_WITH_VERIFICATION_METADATA"},
+    "obligations": {"path": "registry/obligations.json", "role": "BOUNDED_EVIDENCE_ORIENTED_OBLIGATIONS_WITH_DIRECT_SOURCE_LOCATORS"},
+    "jurisdictions": {"path": "registry/jurisdictions.json", "role": "JURISDICTION_CATALOG_AND_COVERAGE_MATURITY"},
+    "providers": {"path": "registry/providers.json", "role": "PROVIDER_AND_PLATFORM_CATALOG"},
+    "source_status": {"path": "registry/source-status.json", "role": "SOURCE_CURRENTNESS_LEDGER"},
+    "review_due": {"path": "registry/review-due.json", "role": "SOURCE_REVIEW_CADENCE_AND_FRESHNESS_LEDGER"},
+    "publication_state": {"path": "machine/publication-state.json", "role": "LAST_VERIFIED_SOURCE_AND_TRUSTED_PUBLICATION_IDENTITY"},
+    "representation_policy": {"path": "machine/representation-policy.json", "role": "MACHINE_HUMAN_AND_DERIVED_CONTEXT_REPRESENTATION_BOUNDARY"},
+    "source_provenance_audit": {"path": "machine/source-provenance-audit.v1.json", "role": "EVIDENCE_ONLY_OFFICIAL_SOURCE_AND_DATE_PROVENANCE_AUDIT"}
   },
   "coverage": {
     "coverage_status_semantics": {
@@ -116,69 +68,13 @@
       "FOUNDATION_ONLY": "The jurisdiction or provider is structurally registered but no source-backed obligation set is asserted."
     },
     "jurisdictions": [
-      {
-        "jurisdiction_id": "PH",
-        "name": "Philippines",
-        "kind": "COUNTRY",
-        "status": "SOURCE_BACKED_PILOT",
-        "source_count": 4,
-        "obligation_count": 6,
-        "current_scope": ["privacy", "data-protection", "security", "privacy-engineering", "systems-lifecycle"]
-      },
-      {
-        "jurisdiction_id": "EU-EEA",
-        "name": "European Union / European Economic Area",
-        "kind": "REGIONAL_FRAMEWORK",
-        "status": "SOURCE_BACKED_PILOT",
-        "source_count": 1,
-        "obligation_count": 3,
-        "current_scope": ["privacy", "data-protection", "security", "privacy-engineering", "risk-management"]
-      },
-      {
-        "jurisdiction_id": "CA",
-        "name": "Canada",
-        "kind": "COUNTRY_WITH_SUBJURISDICTIONS",
-        "status": "SOURCE_BACKED_PILOT",
-        "source_count": 1,
-        "obligation_count": 2,
-        "current_scope": ["privacy", "data-protection", "security", "governance", "accountability"]
-      },
-      {
-        "jurisdiction_id": "AU",
-        "name": "Australia",
-        "kind": "COUNTRY_WITH_SUBJURISDICTIONS",
-        "status": "SOURCE_BACKED_PILOT",
-        "source_count": 1,
-        "obligation_count": 2,
-        "current_scope": ["privacy", "data-protection", "security", "retention", "transparency"]
-      },
-      {
-        "jurisdiction_id": "SG",
-        "name": "Singapore",
-        "kind": "COUNTRY",
-        "status": "SOURCE_BACKED_PILOT",
-        "source_count": 1,
-        "obligation_count": 2,
-        "current_scope": ["privacy", "data-protection", "security", "retention", "access-control"]
-      },
-      {
-        "jurisdiction_id": "US",
-        "name": "United States",
-        "kind": "COUNTRY_WITH_SUBJURISDICTIONS",
-        "status": "FOUNDATION_ONLY",
-        "source_count": 0,
-        "obligation_count": 0,
-        "current_scope": []
-      },
-      {
-        "jurisdiction_id": "MX",
-        "name": "Mexico",
-        "kind": "COUNTRY",
-        "status": "FOUNDATION_ONLY",
-        "source_count": 0,
-        "obligation_count": 0,
-        "current_scope": []
-      }
+      {"jurisdiction_id": "PH", "name": "Philippines", "kind": "COUNTRY", "status": "SOURCE_BACKED_PILOT", "source_count": 4, "obligation_count": 6, "current_scope": ["privacy", "data-protection", "security", "privacy-engineering", "systems-lifecycle"]},
+      {"jurisdiction_id": "EU-EEA", "name": "European Union / European Economic Area", "kind": "REGIONAL_FRAMEWORK", "status": "SOURCE_BACKED_PILOT", "source_count": 1, "obligation_count": 3, "current_scope": ["privacy", "data-protection", "security", "privacy-engineering", "risk-management"]},
+      {"jurisdiction_id": "CA", "name": "Canada", "kind": "COUNTRY_WITH_SUBJURISDICTIONS", "status": "SOURCE_BACKED_PILOT", "source_count": 1, "obligation_count": 2, "current_scope": ["privacy", "data-protection", "security", "governance", "accountability"]},
+      {"jurisdiction_id": "AU", "name": "Australia", "kind": "COUNTRY_WITH_SUBJURISDICTIONS", "status": "SOURCE_BACKED_PILOT", "source_count": 1, "obligation_count": 2, "current_scope": ["privacy", "data-protection", "security", "retention", "transparency"]},
+      {"jurisdiction_id": "SG", "name": "Singapore", "kind": "COUNTRY", "status": "SOURCE_BACKED_PILOT", "source_count": 1, "obligation_count": 2, "current_scope": ["privacy", "data-protection", "security", "retention", "access-control"]},
+      {"jurisdiction_id": "US", "name": "United States", "kind": "COUNTRY_WITH_SUBJURISDICTIONS", "status": "FOUNDATION_ONLY", "source_count": 0, "obligation_count": 0, "current_scope": []},
+      {"jurisdiction_id": "MX", "name": "Mexico", "kind": "COUNTRY", "status": "FOUNDATION_ONLY", "source_count": 0, "obligation_count": 0, "current_scope": []}
     ],
     "providers": [
       {"provider_id": "APPLE", "name": "Apple", "kind": "PLATFORM_PROVIDER", "status": "FOUNDATION_ONLY"},
@@ -192,74 +88,33 @@
     "provider_policy_obligations_source_backed": false
   },
   "domains": {
-    "current_source_backed": [
-      "privacy",
-      "data-protection",
-      "personal-data-processing",
-      "security",
-      "privacy-engineering",
-      "business-continuity",
-      "systems-lifecycle",
-      "risk-management",
-      "governance",
-      "training",
-      "data-lifecycle",
-      "retention",
-      "access-control",
-      "resilience",
-      "data-minimization",
-      "accountability",
-      "transparency"
-    ],
-    "next_expansion": [
-      "software-development",
-      "secure-software-development",
-      "cybersecurity",
-      "database-security",
-      "data-governance",
-      "data-residency",
-      "ai-usage",
-      "ai-systems",
-      "ai-risk-management",
-      "accessibility",
-      "provider-platform-policy",
-      "cloud-shared-responsibility",
-      "developer-distribution-requirements"
-    ]
+    "current_source_backed": ["privacy", "data-protection", "personal-data-processing", "security", "privacy-engineering", "business-continuity", "systems-lifecycle", "risk-management", "governance", "training", "data-lifecycle", "retention", "access-control", "resilience", "data-minimization", "accountability", "transparency"],
+    "next_expansion": ["software-development", "secure-software-development", "cybersecurity", "database-security", "data-governance", "data-residency", "ai-usage", "ai-systems", "ai-risk-management", "accessibility", "provider-platform-policy", "cloud-shared-responsibility", "developer-distribution-requirements"]
   },
   "source_model": {
-    "current_source_types": [
-      "STATUTE",
-      "REGULATION",
-      "IMPLEMENTING_RULES",
-      "REGULATORY_CIRCULAR",
-      "REGULATORY_ADVISORY"
-    ],
-    "verification_states": [
-      "VERIFIED_CURRENT",
-      "CURRENT_WITH_PENDING_CHANGE",
-      "NOT_EFFECTIVE_YET",
-      "SUPERSEDED",
-      "REPEALED",
-      "SOURCE_UNAVAILABLE",
-      "SOURCE_MOVED",
-      "APPLICABILITY_UNRESOLVED",
-      "HUMAN_INTERPRETATION_REQUIRED",
-      "REVIEW_OVERDUE"
-    ],
-    "primary_authority_preferred": true,
+    "current_source_types": ["STATUTE", "REGULATION", "IMPLEMENTING_RULES", "REGULATORY_CIRCULAR", "REGULATORY_ADVISORY"],
+    "verification_states": ["VERIFIED_CURRENT", "CURRENT_WITH_PENDING_CHANGE", "NOT_EFFECTIVE_YET", "SUPERSEDED", "REPEALED", "SOURCE_UNAVAILABLE", "SOURCE_MOVED", "APPLICABILITY_UNRESOLVED", "HUMAN_INTERPRETATION_REQUIRED", "REVIEW_OVERDUE"],
+    "canonical_source_policy": "OFFICIAL_PRIMARY_ONLY",
+    "government_and_regulator_rule": "USE_ISSUING_GOVERNMENT_REGULATOR_OR_OFFICIAL_LEGISLATION_SERVICE",
+    "provider_rule": "USE_PROVIDER_OFFICIAL_DEVELOPER_POLICY_LEGAL_SECURITY_COMPLIANCE_OR_DOCUMENTATION_SITE",
+    "wikipedia_allowed_as_canonical_source": false,
+    "social_media_allowed_as_canonical_source": false,
+    "blogs_or_aggregators_allowed_as_canonical_source": false,
     "secondary_summary_may_replace_primary_authority": false,
+    "structured_citation_required": true,
+    "citation_fields": ["source_origin", "primary_source", "official_source", "publisher", "identifier", "official_url", "locator"],
+    "date_fields": ["issued_date", "publication_date", "effective_date", "applicable_date", "current_text_as_of", "last_amended_date", "gathered_at", "verification.verified_at"],
+    "missing_date_rule": "DO_NOT_INFER_EXACT_DATE_WITHOUT_OFFICIAL_SOURCE_SUPPORT",
     "freshness_ledger_required_for_every_source": true,
-    "planned_authority_strength_model": {
-      "status": "NEXT_EXPANSION",
-      "values": [
-        "BINDING_LAW",
-        "BINDING_REGULATION",
-        "CONTRACTUAL_PLATFORM_RULE",
-        "GOVERNMENT_GUIDANCE",
-        "VOLUNTARY_TECHNICAL_FRAMEWORK"
-      ]
-    }
+    "latest_provenance_audit": {
+      "audited_at": "2026-08-19",
+      "human": "docs/SOURCE_PROVENANCE_AUDIT.md",
+      "machine": "machine/source-provenance-audit.v1.json",
+      "audited_sources": 8,
+      "rechecked_obligations": 15,
+      "result": "PASS_WITH_GDPR_DATE_SEMANTIC_CORRECTION"
+    },
+    "planned_authority_strength_model": {"status": "NEXT_EXPANSION", "values": ["BINDING_LAW", "BINDING_REGULATION", "CONTRACTUAL_PLATFORM_RULE", "GOVERNMENT_GUIDANCE", "VOLUNTARY_TECHNICAL_FRAMEWORK"]}
   },
   "obligation_model": {
     "source_id_required": true,
@@ -268,17 +123,8 @@
     "direct_source_locator_required": true,
     "required_evidence_required": true,
     "project_applicability_not_implied": true,
-    "interpretation_states": [
-      "DIRECT_TEXTUAL_DUTY_REQUIRES_GOVERNOR_APPLICABILITY_REVIEW",
-      "CIRCULAR_DUTY_WITH_ADVISORY_GUIDANCE_REQUIRES_GOVERNOR_APPLICABILITY_REVIEW"
-    ],
-    "promotion_pipeline": [
-      "DISCOVERED_MATERIAL",
-      "VERIFIED_MATERIAL",
-      "APPLICABILITY_REVIEW",
-      "OBLIGATION_EXTRACTION",
-      "SOURCE_BACKED_PILOT"
-    ]
+    "interpretation_states": ["DIRECT_TEXTUAL_DUTY_REQUIRES_GOVERNOR_APPLICABILITY_REVIEW", "CIRCULAR_DUTY_WITH_ADVISORY_GUIDANCE_REQUIRES_GOVERNOR_APPLICABILITY_REVIEW"],
+    "promotion_pipeline": ["DISCOVERED_MATERIAL", "VERIFIED_MATERIAL", "APPLICABILITY_REVIEW", "OBLIGATION_EXTRACTION", "SOURCE_BACKED_PILOT"]
   },
   "governance": {
     "human_reference": "GOVERNANCE.md",
@@ -294,6 +140,7 @@
   "validation": {
     "workflow": ".github/workflows/validate-registry.yml",
     "required_semantic_validator": "scripts/validate_registry.py",
+    "source_provenance_validator": "scripts/validate_source_provenance.py",
     "schema_contract_validator": "scripts/validate_schema_contracts.py",
     "machine_record_validator": "scripts/validate_machine_records.py",
     "regression_command": "python -m unittest discover -s tests -p \"test_*.py\" -v",
@@ -301,7 +148,9 @@
     "daily_freshness_validation": true,
     "fail_closed_review_overdue": true,
     "readme_machine_index_schema": "schema/readme-machine-index.schema.json",
-    "readme_parity_test": "tests/test_readme_machine_index.py"
+    "readme_parity_test": "tests/test_readme_machine_index.py",
+    "source_provenance_audit_schema": "schema/source-provenance-audit.schema.json",
+    "source_provenance_regression_test": "tests/test_source_provenance.py"
   },
   "query_and_context": {
     "context_exporter": "scripts/context_export.py",
@@ -317,6 +166,7 @@
       "overview": "README.md",
       "governance": "GOVERNANCE.md",
       "contributing": "CONTRIBUTING.md",
+      "source_provenance_audit": "docs/SOURCE_PROVENANCE_AUDIT.md",
       "international_privacy_pilot": "docs/INTERNATIONAL_PRIVACY_PILOT.md",
       "philippines_privacy_pilot": "docs/PH_PRIVACY_PILOT.md",
       "release_packaging": "docs/RELEASE_PACKAGING.md",
@@ -327,26 +177,17 @@
       "manifest": "registry/manifest.json",
       "publication_state": "machine/publication-state.json",
       "representation_policy": "machine/representation-policy.json",
+      "source_provenance_audit": "machine/source-provenance-audit.v1.json",
       "registry_root": "registry/",
       "schema_root": "schema/"
     }
   },
   "roadmap": {
-    "current": {
-      "program": "INTERNATIONAL_PRIVACY_PILOT",
-      "editable_version": "0.2.0-dev.1",
-      "publication_authorized": false
-    },
+    "current": {"program": "INTERNATIONAL_PRIVACY_PILOT", "editable_version": "0.2.0-dev.1", "publication_authorized": false},
     "next": {
       "program": "CROSS_DOMAIN_AND_PROVIDER_COMPLIANCE_EXPANSION",
       "status": "RESEARCH_AND_CONTRACT_DESIGN",
-      "country_dimensions": [
-        "software-development",
-        "security",
-        "database-and-data-governance",
-        "ai-usage-and-ai-systems",
-        "accessibility"
-      ],
+      "country_dimensions": ["software-development", "security", "database-and-data-governance", "ai-usage-and-ai-systems", "accessibility"],
       "provider_dimension": {
         "target": "LEADING_SOFTWARE_PLATFORM_CLOUD_AI_AND_DISTRIBUTION_PROVIDERS",
         "initial_target_count": 10,
