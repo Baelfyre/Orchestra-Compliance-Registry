@@ -22,6 +22,7 @@ DOCUMENT_CONTRACTS = {
     "schema/representation-policy.schema.json": "machine/representation-policy.json",
     "schema/publication-state.schema.json": "machine/publication-state.json",
     "schema/readme-machine-index.schema.json": "README.json",
+    "schema/source-provenance-audit.schema.json": "machine/source-provenance-audit.v1.json",
 }
 STANDALONE_CONTRACTS = ("schema/query-receipt.schema.json",)
 
