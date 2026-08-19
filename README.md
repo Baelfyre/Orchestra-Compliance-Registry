@@ -21,6 +21,7 @@ The current trusted distribution is the bounded **international privacy pilot**.
 | Humans | `README.md` | Quick orientation, coverage, usage, and trust boundaries |
 | AI / agents / tooling | [`README.json`](README.json) | Complete repository map and ordered machine-readable references |
 | Registry consumers | [`registry/manifest.json`](registry/manifest.json) | Canonical editable record map and source-state identity |
+| Adaptive consumers | [`docs/ADAPTIVE_CONSUMPTION_CONTRACTS.md`](docs/ADAPTIVE_CONSUMPTION_CONTRACTS.md) | R5 capability negotiation and R6 release-delta compatibility contracts |
 | Source reviewers | [`docs/SOURCE_PROVENANCE_AUDIT.md`](docs/SOURCE_PROVENANCE_AUDIT.md) | Official citations, date provenance, and the latest source rerun |
 | Source-monitor reviewers | [`docs/SOURCE_MONITORING.md`](docs/SOURCE_MONITORING.md) | Dynamic official-source monitoring, fingerprints, change states, and automation boundaries |
 | Release consumers | [`docs/REGISTRY_V0_2_0_RELEASE_EVIDENCE.md`](docs/REGISTRY_V0_2_0_RELEASE_EVIDENCE.md) | Human-readable trusted-release identity and integrity evidence |
@@ -50,7 +51,7 @@ Machine audit: [`machine/source-provenance-audit.v1.json`](machine/source-proven
 
 ## Dynamic source monitoring
 
-The draft source-monitor subsystem tracks all eight current canonical official sources against a reviewed fingerprint baseline. It is configured for six-hour polling through `.github/workflows/source-monitor.yml` using `HTML_NORMALIZED_TEXT` or `BINARY_SHA256` according to the official source surface.
+The canonical source-monitor subsystem tracks all eight current canonical official sources against a reviewed fingerprint baseline. It is configured for six-hour polling through `.github/workflows/source-monitor.yml` using `HTML_NORMALIZED_TEXT` or `BINARY_SHA256` according to the official source surface.
 
 | Behavior | Automation |
 | --- | --- |
@@ -68,7 +69,20 @@ The current reviewed monitor baseline is `ACTIVE`, covers all eight canonical so
 
 See [`docs/SOURCE_MONITORING.md`](docs/SOURCE_MONITORING.md) for the monitoring architecture. Machine controls are [`machine/source-monitor-policy.json`](machine/source-monitor-policy.json) and [`machine/source-monitor-baseline.v1.json`](machine/source-monitor-baseline.v1.json).
 
-This monitoring subsystem is currently held in an open draft implementation and does not change the trusted `registry-v0.2.0` publication until the coupled Orchestra integration is completed and separately approved.
+The source-monitor implementation is canonical on `main` as part of Registry R1-R6. It remains outside the immutable `registry-v0.2.0` distribution until a separately authorized trusted release is built, validated, and published.
+
+## Adaptive consumption contracts
+
+Registry R5-R6 are canonical on `main` and provide a machine-readable compatibility surface for adaptive consumers:
+
+- `registry/capabilities.json` declares descriptive, versioned capabilities without granting legal, applicability, execution, merge, or release authority.
+- `schema/capability-manifest.schema.json` validates the closed R5 capability contract.
+- `schema/release-delta.schema.json` validates R6 release-delta evidence.
+- `scripts/release_delta.py` deterministically compares Registry roots and classifies compatible, revalidation, unsupported-capability, and human-review impacts.
+
+The canonical R5 capability manifest was reconciled byte-for-byte with Orchestra's O1-O6 compatibility fixture before Registry R1-R6 merged. The immutable trusted `registry-v0.2.0` release predates R5-R6, so consumers must use the explicit v0.2 legacy compatibility boundary until a later trusted Registry release is separately authorized.
+
+See [`docs/ADAPTIVE_CONSUMPTION_CONTRACTS.md`](docs/ADAPTIVE_CONSUMPTION_CONTRACTS.md).
 
 ## Jurisdiction coverage
 
@@ -134,6 +148,7 @@ When prose and a machine record disagree on an exact deterministic fact, use the
 - Registry records provide sourced compliance intelligence, **not legal advice**.
 - Applicability to a specific product, organization, user, sector, or processing activity requires explicit review.
 - Automated source-change detection is evidence for review, not legal interpretation.
+- Capability and release-delta records are compatibility evidence, not execution or publication authority.
 - A platform rule can be mandatory for distribution without being a law.
 - A government or industry framework can be highly relevant without itself being legally binding.
 - Validation proves internal consistency; it does not create legal applicability or publication authority.
@@ -147,6 +162,7 @@ When prose and a machine record disagree on an exact deterministic fact, use the
 | Trusted v0.2.0 release | [`docs/REGISTRY_V0_2_0_RELEASE_EVIDENCE.md`](docs/REGISTRY_V0_2_0_RELEASE_EVIDENCE.md) | [`machine/release-evidence-v0.2.0.json`](machine/release-evidence-v0.2.0.json) |
 | Source provenance | [`docs/SOURCE_PROVENANCE_AUDIT.md`](docs/SOURCE_PROVENANCE_AUDIT.md) | [`machine/source-provenance-audit.v1.json`](machine/source-provenance-audit.v1.json) |
 | Dynamic source monitoring | [`docs/SOURCE_MONITORING.md`](docs/SOURCE_MONITORING.md) | [`machine/source-monitor-policy.json`](machine/source-monitor-policy.json), [`machine/source-monitor-baseline.v1.json`](machine/source-monitor-baseline.v1.json) |
+| Adaptive consumption R5-R6 | [`docs/ADAPTIVE_CONSUMPTION_CONTRACTS.md`](docs/ADAPTIVE_CONSUMPTION_CONTRACTS.md) | [`registry/capabilities.json`](registry/capabilities.json), [`schema/release-delta.schema.json`](schema/release-delta.schema.json) |
 | Governance | [`GOVERNANCE.md`](GOVERNANCE.md) | [`machine/representation-policy.json`](machine/representation-policy.json) |
 | Registry records | Documentation and pilot notes | [`registry/manifest.json`](registry/manifest.json) |
 | Publication state | [`docs/RELEASE_PACKAGING.md`](docs/RELEASE_PACKAGING.md) | [`machine/publication-state.json`](machine/publication-state.json) |
