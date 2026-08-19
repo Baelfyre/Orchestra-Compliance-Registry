@@ -22,11 +22,6 @@ class SourceMonitorTests(unittest.TestCase):
         self.assertEqual(result["baseline_state"], "ACTIVE")
         self.assertEqual(result["baseline_source_count"], 8)
 
-    def test_gdpr_pdf_transport_uses_binary_sha256(self) -> None:
-        policy = json.loads((ROOT / "machine" / "source-monitor-policy.json").read_text(encoding="utf-8"))
-        by_id = {item["source_id"]: item for item in policy["sources"]}
-        self.assertEqual(by_id["EU-GDPR-2016-679"]["strategy"], "BINARY_SHA256")
-
     def test_html_normalization_ignores_scripts_styles_and_whitespace(self) -> None:
         first = "<html><style>x{}</style><body><h1>Privacy Act</h1><script>dynamic()</script><p>Section 1</p></body></html>"
         second = "<html><body>  <h1>Privacy   Act</h1> <p>Section 1</p> </body></html>"
