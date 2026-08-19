@@ -4,58 +4,58 @@
     {
       "source_id": "PH-DPA-RA10173",
       "status": "VERIFIED_CURRENT",
-      "checked_at": "2026-08-14",
-      "check_method": "PRIMARY_AUTHORITY_WEB_REVIEW",
-      "note": "National Privacy Commission continues to publish the Data Privacy Act source text."
+      "checked_at": "2026-08-19",
+      "check_method": "PRIMARY_OFFICIAL_NPC_TEXT_REVIEW",
+      "note": "Official National Privacy Commission text re-verified on 2026-08-19. The page records approval on 2012-08-15 and remains the canonical Registry source for Republic Act No. 10173."
     },
     {
       "source_id": "PH-DPA-IRR-2016",
       "status": "VERIFIED_CURRENT",
-      "checked_at": "2026-08-14",
-      "check_method": "PRIMARY_AUTHORITY_WEB_REVIEW",
-      "note": "National Privacy Commission continues to publish the implementing rules as current reference material."
+      "checked_at": "2026-08-19",
+      "check_method": "PRIMARY_OFFICIAL_NPC_TEXT_AND_ISSUANCE_REVIEW",
+      "note": "Official National Privacy Commission IRR text re-verified on 2026-08-19. The official text records promulgation on 2016-08-24; the NPC release states effectivity is 15 days after publication."
     },
     {
       "source_id": "PH-NPC-CIRC-2023-06",
       "status": "VERIFIED_CURRENT",
-      "checked_at": "2026-08-14",
-      "check_method": "SIGNED_PDF_AND_CURRENT_NPC_ISSUANCE_INDEX_REVIEW",
-      "note": "Current NPC issuance index still lists Circular 2023-06; the NPC publication notice states that it repealed Circular 16-01 and took effect on 2024-03-30."
+      "checked_at": "2026-08-19",
+      "check_method": "PRIMARY_OFFICIAL_SIGNED_PDF_AND_CURRENT_NPC_ISSUANCE_INDEX_REVIEW",
+      "note": "Signed NPC Circular 2023-06 and the current NPC issuance index were re-verified on 2026-08-19. The signed circular is dated 2023-12-01; the NPC publication notice confirms effectivity on 2024-03-30 and repeal of Circular 16-01."
     },
     {
       "source_id": "PH-NPC-ADV-2025-02",
       "status": "VERIFIED_CURRENT",
-      "checked_at": "2026-08-14",
-      "check_method": "SIGNED_PDF_AND_CURRENT_NPC_ISSUANCE_INDEX_REVIEW",
-      "note": "Current NPC issuance index still lists Advisory 2025-02 as privacy-engineering guidance."
+      "checked_at": "2026-08-19",
+      "check_method": "PRIMARY_OFFICIAL_SIGNED_PDF_AND_CURRENT_NPC_ISSUANCE_INDEX_REVIEW",
+      "note": "Signed NPC Advisory 2025-02 and the current NPC advisory index were re-verified on 2026-08-19. The signed advisory is dated 2025-08-27 and remains listed as current privacy-engineering guidance."
     },
     {
       "source_id": "EU-GDPR-2016-679",
       "status": "VERIFIED_CURRENT",
       "checked_at": "2026-08-19",
-      "check_method": "PRIMARY_AUTHORITY_CURRENT_TEXT_REVIEW",
-      "note": "The current official EUR-Lex text for Regulation (EU) 2016/679 was reviewed as the source for this pilot."
+      "check_method": "PRIMARY_OFFICIAL_EUR_LEX_LEGAL_STATUS_AND_TEXT_REVIEW",
+      "note": "EUR-Lex re-verified Regulation (EU) 2016/679 as in force. Date semantics were corrected to distinguish signature 2016-04-27, Official Journal publication 2016-05-04, entry into force 2016-05-24, and application from 2018-05-25."
     },
     {
       "source_id": "CA-PIPEDA-SC2000-C5",
       "status": "CURRENT_WITH_PENDING_CHANGE",
       "checked_at": "2026-08-19",
-      "check_method": "PRIMARY_AUTHORITY_CURRENT_TEXT_AND_AMENDMENTS_NOT_IN_FORCE_REVIEW",
-      "note": "Justice Laws publishes the current consolidated Act and identifies amendments that are not yet in force; applicability and commencement must be re-evaluated before relying on pending provisions."
+      "check_method": "PRIMARY_OFFICIAL_JUSTICE_LAWS_CURRENT_TEXT_AND_AMENDMENTS_NOT_IN_FORCE_REVIEW",
+      "note": "Justice Laws states that PIPEDA is current to 2026-06-14 and last amended on 2025-03-04, while separately listing amendments not yet in force. Part 1 entered into force on 2001-01-01. Pending provisions are not treated as current obligations."
     },
     {
       "source_id": "AU-PRIVACY-ACT-1988",
       "status": "VERIFIED_CURRENT",
       "checked_at": "2026-08-19",
-      "check_method": "PRIMARY_AUTHORITY_LATEST_COMPILATION_REVIEW",
-      "note": "The latest in-force Privacy Act 1988 compilation on the Federal Register of Legislation was reviewed for this pilot."
+      "check_method": "PRIMARY_OFFICIAL_FEDERAL_REGISTER_LATEST_COMPILATION_AND_LEGISLATION_HISTORY_REVIEW",
+      "note": "Federal Register of Legislation re-verified the Privacy Act 1988 as in force. Assent was 1988-12-14, commencement 1989-01-01, and the latest reviewed compilation is C2026C00227 C104 effective 2026-06-04."
     },
     {
       "source_id": "SG-PDPA-2012",
       "status": "VERIFIED_CURRENT",
       "checked_at": "2026-08-19",
-      "check_method": "PRIMARY_AUTHORITY_CURRENT_VERSION_REVIEW",
-      "note": "The current Singapore Statutes Online version and amendment timeline for the Personal Data Protection Act 2012 were reviewed for this pilot."
+      "check_method": "PRIMARY_OFFICIAL_SSO_CURRENT_VERSION_AND_LEGISLATIVE_HISTORY_REVIEW",
+      "note": "Singapore Statutes Online re-verified the current PDPA text. The Act was published in the Acts Supplement on 2012-12-03, principal Parts III-VII commenced on 2014-07-02, the latest reviewed text is current as at 2026-08-07, and the latest timeline amendment is 2025-12-05."
     }
   ]
 }
