@@ -24,6 +24,8 @@ jobs:
           python-version: "3.12"
       - name: Validate registry
         run: python scripts/validate_registry.py
+      - name: Validate official source provenance
+        run: python scripts/validate_source_provenance.py
       - name: Validate executable JSON Schema contracts
         run: python scripts/validate_schema_contracts.py
       - name: Validate JSON-first machine records
