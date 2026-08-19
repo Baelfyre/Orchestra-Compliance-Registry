@@ -1,0 +1,369 @@
+name: Publish Registry v0.2.0
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/publish-registry-v0.2.0.yml"
+      - "machine/release-request-v0.2.0.json"
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: registry-v0.2.0-publication
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.repository == 'Baelfyre/Orchestra-Compliance-Registry'
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout publication request
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate frozen release request
+        id: request
+        shell: bash
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          import subprocess
+          from pathlib import Path
+
+          request = json.loads(Path("machine/release-request-v0.2.0.json").read_text(encoding="utf-8"))
+          expected = {
+              "schema_version": "orchestra.compliance-registry.release-request.v1",
+              "status": "AUTHORIZED_FOR_PUBLICATION",
+              "registry_version": "0.2.0",
+              "release_sequence": 2,
+              "release_tag": "registry-v0.2.0",
+              "source_commit": "cb32038a2683eb2c19f52646892d3257996a06eb",
+              "source_tree": "10ce7849fd5b95b3ca756eff213bb506d00a89de",
+              "source_registry_version": "0.2.0-dev.1",
+              "source_registry_status": "DRAFT",
+          }
+          for key, value in expected.items():
+              if request.get(key) != value:
+                  raise SystemExit(f"release request mismatch for {key}: {request.get(key)!r} != {value!r}")
+          if request.get("authorization", {}).get("type") != "EXPLICIT_HUMAN_APPROVAL":
+              raise SystemExit("explicit human authorization missing")
+          required_scope = {"CANONICAL_MERGE", "TRUSTED_RELEASE_PUBLICATION", "PADAYON_RECONCILIATION"}
+          if not required_scope.issubset(set(request.get("authorization", {}).get("scope", []))):
+              raise SystemExit("release authorization scope incomplete")
+          requirements = request.get("publication_requirements", {})
+          for key in (
+              "official_source_provenance_validation",
+              "exact_source_validation",
+              "deterministic_double_build",
+              "non_draft_release",
+              "non_prerelease_release",
+              "immutable_release",
+              "post_publication_reverification",
+              "padayon_update_required",
+          ):
+              if requirements.get(key) is not True:
+                  raise SystemExit(f"publication requirement {key} must be true")
+          source = request["source_commit"]
+          manifest = json.loads(
+              subprocess.check_output(["git", "show", f"{source}:registry/manifest.json"], text=True)
+          )
+          if manifest.get("registry_version") != request["source_registry_version"]:
+              raise SystemExit("source registry version drift")
+          if manifest.get("status") != request["source_registry_status"] or manifest.get("release_sequence") != 0:
+              raise SystemExit("source registry must remain DRAFT with sequence 0")
+          print(f"registry_version={request['registry_version']}")
+          print(f"release_sequence={request['release_sequence']}")
+          print(f"release_tag={request['release_tag']}")
+          print(f"source_commit={source}")
+          print(f"source_tree={request['source_tree']}")
+          PY
+
+      - name: Verify frozen source identity
+        shell: bash
+        run: |
+          SOURCE_COMMIT="${{ steps.request.outputs.source_commit }}"
+          SOURCE_TREE="${{ steps.request.outputs.source_tree }}"
+          git merge-base --is-ancestor "$SOURCE_COMMIT" "$GITHUB_SHA"
+          test "$(git rev-parse "$SOURCE_COMMIT^{tree}")" = "$SOURCE_TREE"
+          git diff --quiet "$SOURCE_COMMIT" "$GITHUB_SHA" -- registry/
+
+      - name: Checkout exact canonical source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.request.outputs.source_commit }}
+          fetch-depth: 0
+
+      - name: Validate exact canonical source
+        run: |
+          python scripts/validate_registry.py
+          python scripts/validate_source_provenance.py
+          python scripts/validate_schema_contracts.py
+          python scripts/validate_machine_records.py
+          python -m unittest discover -s tests -p "test_*.py" -v
+
+      - name: Build deterministic release twice
+        id: candidate
+        shell: bash
+        run: |
+          rm -rf artifacts/release-a artifacts/release-b
+          python scripts/build_release.py \
+            --output-dir artifacts/release-a \
+            --registry-version "${{ steps.request.outputs.registry_version }}" \
+            --release-sequence "${{ steps.request.outputs.release_sequence }}" \
+            --release-tag "${{ steps.request.outputs.release_tag }}"
+          python scripts/build_release.py \
+            --output-dir artifacts/release-b \
+            --registry-version "${{ steps.request.outputs.registry_version }}" \
+            --release-sequence "${{ steps.request.outputs.release_sequence }}" \
+            --release-tag "${{ steps.request.outputs.release_tag }}"
+          for file in \
+            orchestra-compliance-registry.zip \
+            orchestra-compliance-registry.zip.sha256 \
+            release-manifest.json \
+            release-manifest.sha256; do
+            cmp "artifacts/release-a/$file" "artifacts/release-b/$file"
+          done
+          MANIFEST_SHA="$(tr -d '\r\n' < artifacts/release-a/release-manifest.sha256)"
+          BUNDLE_SHA="$(tr -d '\r\n' < artifacts/release-a/orchestra-compliance-registry.zip.sha256)"
+          echo "manifest_sha=$MANIFEST_SHA" >> "$GITHUB_OUTPUT"
+          echo "bundle_sha=$BUNDLE_SHA" >> "$GITHUB_OUTPUT"
+
+      - name: Verify release namespace is unused
+        shell: bash
+        run: |
+          TAG="${{ steps.request.outputs.release_tag }}"
+          if git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null 2>&1; then
+            echo "Tag already exists: $TAG" >&2
+            exit 1
+          fi
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Release already exists: $TAG" >&2
+            exit 1
+          fi
+
+      - name: Create and verify exact release tag
+        shell: bash
+        run: |
+          TAG="${{ steps.request.outputs.release_tag }}"
+          SOURCE_COMMIT="${{ steps.request.outputs.source_commit }}"
+          gh api --method POST "repos/$GITHUB_REPOSITORY/git/refs" \
+            -f ref="refs/tags/$TAG" \
+            -f sha="$SOURCE_COMMIT" >/dev/null
+          TAG_SHA="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$TAG" --jq '.object.sha')"
+          test "$TAG_SHA" = "$SOURCE_COMMIT"
+
+      - name: Prepare release notes
+        shell: bash
+        run: |
+          cat > release-notes.md <<EOF
+          # Orchestra Compliance Registry v0.2.0
+
+          Trusted international privacy pilot release built from the exact canonical Registry source approved on 2026-08-19.
+
+          ## Scope
+          - Philippines privacy and data-protection pilot retained.
+          - EU/EEA GDPR source-backed pilot added.
+          - Canada PIPEDA source-backed pilot added.
+          - Australia Privacy Act / APP source-backed pilot added.
+          - Singapore PDPA source-backed pilot added.
+          - Official-primary-source provenance rules, structured citations, source dates, and freshness tracking added.
+          - Human README remains compact while README.json provides the complete machine-readable repository index.
+          - United States and Mexico remain FOUNDATION_ONLY pending bounded source-backed modeling.
+          - Provider/platform compliance expansion remains a subsequent governed phase.
+
+          ## Source identity
+          - Canonical source commit: ${{ steps.request.outputs.source_commit }}
+          - Canonical source tree: ${{ steps.request.outputs.source_tree }}
+          - Release sequence: ${{ steps.request.outputs.release_sequence }}
+
+          ## Integrity
+          - Release manifest SHA-256: ${{ steps.candidate.outputs.manifest_sha }}
+          - Registry bundle SHA-256: ${{ steps.candidate.outputs.bundle_sha }}
+
+          This release provides sourced compliance intelligence, not legal advice or automatic project applicability.
+          EOF
+
+      - name: Create draft release with complete assets
+        shell: bash
+        run: |
+          TAG="${{ steps.request.outputs.release_tag }}"
+          SOURCE_COMMIT="${{ steps.request.outputs.source_commit }}"
+          gh release create "$TAG" \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$SOURCE_COMMIT" \
+            --title "Orchestra Compliance Registry v0.2.0" \
+            --notes-file release-notes.md \
+            --draft \
+            artifacts/release-a/orchestra-compliance-registry.zip \
+            artifacts/release-a/orchestra-compliance-registry.zip.sha256 \
+            artifacts/release-a/release-manifest.json \
+            artifacts/release-a/release-manifest.sha256
+
+      - name: Verify draft release before publication
+        id: draft
+        shell: bash
+        env:
+          TAG: ${{ steps.request.outputs.release_tag }}
+          SOURCE_COMMIT: ${{ steps.request.outputs.source_commit }}
+        run: |
+          gh api "repos/$GITHUB_REPOSITORY/releases?per_page=100" > releases.json
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          import os
+          from pathlib import Path
+
+          tag = os.environ["TAG"]
+          source = os.environ["SOURCE_COMMIT"]
+          releases = json.loads(Path("releases.json").read_text(encoding="utf-8"))
+          matches = [item for item in releases if item.get("tag_name") == tag]
+          if len(matches) != 1:
+              raise SystemExit(f"expected one draft release for {tag}, found {len(matches)}")
+          release = matches[0]
+          if release.get("draft") is not True or release.get("prerelease") is not False:
+              raise SystemExit("release must be draft and non-prerelease before publication")
+          if release.get("target_commitish") != source:
+              raise SystemExit("draft release target_commitish mismatch")
+          required = {
+              "orchestra-compliance-registry.zip",
+              "orchestra-compliance-registry.zip.sha256",
+              "release-manifest.json",
+              "release-manifest.sha256",
+          }
+          assets = {item.get("name") for item in release.get("assets", [])}
+          if assets != required:
+              raise SystemExit(f"release asset mismatch: {sorted(assets)}")
+          print(f"release_id={release['id']}")
+          PY
+
+      - name: Publish trusted release
+        shell: bash
+        run: |
+          gh release edit "${{ steps.request.outputs.release_tag }}" \
+            --repo "$GITHUB_REPOSITORY" \
+            --draft=false \
+            --latest
+
+      - name: Verify published immutable release
+        id: published
+        shell: bash
+        run: |
+          TAG="${{ steps.request.outputs.release_tag }}"
+          RELEASE_ID="${{ steps.draft.outputs.release_id }}"
+          gh api "repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID" > published-release.json
+          if ! python - <<'PY' >> "$GITHUB_OUTPUT"; then
+          import json
+          from pathlib import Path
+
+          release = json.loads(Path("published-release.json").read_text(encoding="utf-8"))
+          if release.get("draft") is not False:
+              raise SystemExit("published release remained draft")
+          if release.get("prerelease") is not False:
+              raise SystemExit("published release became prerelease")
+          if release.get("immutable") is not True:
+              raise SystemExit("published release is not immutable")
+          print(f"release_id={release['id']}")
+          print(f"release_url={release['html_url']}")
+          print(f"published_at={release['published_at']}")
+          PY
+            echo "Published release failed trust verification; attempting mutable cleanup." >&2
+            gh release delete "$TAG" --repo "$GITHUB_REPOSITORY" --cleanup-tag --yes || true
+            exit 1
+          fi
+          TAG_SHA="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$TAG" --jq '.object.sha')"
+          test "$TAG_SHA" = "${{ steps.request.outputs.source_commit }}"
+
+      - name: Record trusted release evidence
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          release = json.loads(Path("published-release.json").read_text(encoding="utf-8"))
+          evidence = {
+              "schema_version": "orchestra.compliance-registry.release-evidence.v1",
+              "trust_state": "PUBLISHED_IMMUTABLE_VERIFIED",
+              "release_tag": "${{ steps.request.outputs.release_tag }}",
+              "registry_version": "${{ steps.request.outputs.registry_version }}",
+              "release_sequence": int("${{ steps.request.outputs.release_sequence }}"),
+              "source_commit": "${{ steps.request.outputs.source_commit }}",
+              "source_tree": "${{ steps.request.outputs.source_tree }}",
+              "release_id": release["id"],
+              "release_url": release["html_url"],
+              "published_at": release["published_at"],
+              "immutable": release["immutable"],
+              "draft": release["draft"],
+              "prerelease": release["prerelease"],
+              "release_manifest_sha256": "${{ steps.candidate.outputs.manifest_sha }}",
+              "bundle_sha256": "${{ steps.candidate.outputs.bundle_sha }}",
+              "assets": sorted(item["name"] for item in release.get("assets", [])),
+              "workflow_run_id": "${{ github.run_id }}",
+              "workflow_run_attempt": "${{ github.run_attempt }}",
+              "workflow_commit": "${{ github.sha }}",
+              "padayon_reconciliation_required": True,
+          }
+          Path("trusted-release-evidence.json").write_text(json.dumps(evidence, indent=2) + "\n", encoding="utf-8")
+          PY
+          cat > trusted-release-evidence.md <<EOF
+          # Release evidence: registry-v0.2.0
+
+          - State: PUBLISHED_IMMUTABLE_VERIFIED
+          - Release ID: ${{ steps.published.outputs.release_id }}
+          - Release URL: ${{ steps.published.outputs.release_url }}
+          - Published at: ${{ steps.published.outputs.published_at }}
+          - Source commit: ${{ steps.request.outputs.source_commit }}
+          - Source tree: ${{ steps.request.outputs.source_tree }}
+          - Release manifest SHA-256: ${{ steps.candidate.outputs.manifest_sha }}
+          - Bundle SHA-256: ${{ steps.candidate.outputs.bundle_sha }}
+          - Workflow run: ${{ github.run_id }} attempt ${{ github.run_attempt }}
+          - Padayon reconciliation: required
+          EOF
+
+      - name: Preserve trusted release evidence
+        uses: actions/upload-artifact@v7
+        with:
+          name: registry-v0.2.0-trusted-release-evidence
+          path: |
+            trusted-release-evidence.json
+            trusted-release-evidence.md
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Open release evidence issue
+        continue-on-error: true
+        shell: bash
+        run: |
+          gh issue create \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "release evidence: registry-v0.2.0" \
+            --body-file trusted-release-evidence.md
+
+      - name: Cleanup failed mutable publication
+        if: failure()
+        shell: bash
+        run: |
+          TAG="${{ steps.request.outputs.release_tag }}"
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            RELEASE_ID="$(gh api "repos/$GITHUB_REPOSITORY/releases?per_page=100" --jq ".[] | select(.tag_name == \"$TAG\") | .id" | head -n1)"
+            IMMUTABLE="false"
+            if [ -n "$RELEASE_ID" ]; then
+              IMMUTABLE="$(gh api "repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID" --jq '.immutable // false' 2>/dev/null || echo false)"
+            fi
+            if [ "$IMMUTABLE" != "true" ]; then
+              gh release delete "$TAG" --repo "$GITHUB_REPOSITORY" --cleanup-tag --yes || true
+            fi
+          else
+            gh api --method DELETE "repos/$GITHUB_REPOSITORY/git/refs/tags/$TAG" >/dev/null 2>&1 || true
+          fi

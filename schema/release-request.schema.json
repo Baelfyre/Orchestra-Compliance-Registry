@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "orchestra.compliance-registry.release-request.v1",
+  "title": "Compliance Registry Trusted Release Request",
+  "type": "object",
+  "required": [
+    "$schema",
+    "schema_version",
+    "status",
+    "registry_version",
+    "release_sequence",
+    "release_tag",
+    "source_commit",
+    "source_tree",
+    "source_registry_version",
+    "source_registry_status",
+    "authorization",
+    "publication_requirements"
+  ],
+  "properties": {
+    "$schema": {"const": "../schema/release-request.schema.json"},
+    "schema_version": {"const": "orchestra.compliance-registry.release-request.v1"},
+    "status": {"const": "AUTHORIZED_FOR_PUBLICATION"},
+    "registry_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "release_sequence": {"type": "integer", "minimum": 1},
+    "release_tag": {"type": "string", "pattern": "^registry-v[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "source_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "source_tree": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "source_registry_version": {"type": "string", "minLength": 1},
+    "source_registry_status": {"const": "DRAFT"},
+    "authorization": {
+      "type": "object",
+      "required": ["type", "approved_at", "scope"],
+      "properties": {
+        "type": {"const": "EXPLICIT_HUMAN_APPROVAL"},
+        "approved_at": {"type": "string", "minLength": 1},
+        "scope": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        }
+      },
+      "additionalProperties": false
+    },
+    "publication_requirements": {
+      "type": "object",
+      "required": [
+        "official_source_provenance_validation",
+        "exact_source_validation",
+        "deterministic_double_build",
+        "non_draft_release",
+        "non_prerelease_release",
+        "immutable_release",
+        "release_assets_required",
+        "post_publication_reverification",
+        "padayon_update_required"
+      ],
+      "properties": {
+        "official_source_provenance_validation": {"const": true},
+        "exact_source_validation": {"const": true},
+        "deterministic_double_build": {"const": true},
+        "non_draft_release": {"const": true},
+        "non_prerelease_release": {"const": true},
+        "immutable_release": {"const": true},
+        "release_assets_required": {
+          "type": "array",
+          "minItems": 4,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "post_publication_reverification": {"const": true},
+        "padayon_update_required": {"const": true}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
