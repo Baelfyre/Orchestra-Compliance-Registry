@@ -68,7 +68,9 @@
     "publication_state": {"path": "machine/publication-state.json", "role": "LAST_VERIFIED_SOURCE_AND_TRUSTED_PUBLICATION_IDENTITY"},
     "representation_policy": {"path": "machine/representation-policy.json", "role": "MACHINE_HUMAN_AND_DERIVED_CONTEXT_REPRESENTATION_BOUNDARY"},
     "source_provenance_audit": {"path": "machine/source-provenance-audit.v1.json", "role": "EVIDENCE_ONLY_OFFICIAL_SOURCE_AND_DATE_PROVENANCE_AUDIT"},
-    "release_evidence_v0_2_0": {"path": "machine/release-evidence-v0.2.0.json", "role": "TRUSTED_RELEASE_PUBLICATION_EVIDENCE"}
+    "release_evidence_v0_2_0": {"path": "machine/release-evidence-v0.2.0.json", "role": "TRUSTED_RELEASE_PUBLICATION_EVIDENCE"},
+    "source_monitor_policy": {"path": "machine/source-monitor-policy.json", "role": "OFFICIAL_SOURCE_MONITOR_POLICY_AND_AUTOMATION_BOUNDARY"},
+    "source_monitor_baseline": {"path": "machine/source-monitor-baseline.v1.json", "role": "REVIEWED_OFFICIAL_SOURCE_FINGERPRINT_BASELINE"}
   },
   "coverage": {
     "coverage_status_semantics": {
@@ -122,6 +124,24 @@
       "rechecked_obligations": 15,
       "result": "PASS_WITH_GDPR_DATE_SEMANTIC_CORRECTION"
     },
+    "source_monitoring": {
+      "implementation_state": "DRAFT_PR_IMPLEMENTED_NOT_MERGED",
+      "workflow": ".github/workflows/source-monitor.yml",
+      "schedule_hours": 6,
+      "policy": "machine/source-monitor-policy.json",
+      "baseline": "machine/source-monitor-baseline.v1.json",
+      "baseline_state": "ACTIVE",
+      "baseline_captured_at": "2026-08-19T15:36:28Z",
+      "monitored_source_count": 8,
+      "strategies": ["HTML_NORMALIZED_TEXT", "BINARY_SHA256"],
+      "automatic_candidate_pull_request": true,
+      "automatic_merge": false,
+      "automatic_trusted_release": false,
+      "substantive_change_requires_human_interpretation": true,
+      "candidate_statuses": ["HUMAN_INTERPRETATION_REQUIRED", "SOURCE_MOVED"],
+      "candidate_receipt_path": "machine/source-watch-candidate.json",
+      "candidate_receipt_exists_only_on_change_candidate_branch": true
+    },
     "planned_authority_strength_model": {"status": "NEXT_EXPANSION", "values": ["BINDING_LAW", "BINDING_REGULATION", "CONTRACTUAL_PLATFORM_RULE", "GOVERNMENT_GUIDANCE", "VOLUNTARY_TECHNICAL_FRAMEWORK"]}
   },
   "obligation_model": {
@@ -151,6 +171,11 @@
     "source_provenance_validator": "scripts/validate_source_provenance.py",
     "schema_contract_validator": "scripts/validate_schema_contracts.py",
     "machine_record_validator": "scripts/validate_machine_records.py",
+    "source_monitor_config_validator": "python scripts/source_monitor.py validate-config",
+    "source_monitor_live_runner": "scripts/source_monitor_live.py",
+    "source_monitor_workflow": ".github/workflows/source-monitor.yml",
+    "source_monitor_regression_test": "tests/test_source_monitor.py",
+    "source_monitor_live_bootstrap_preview": true,
     "regression_command": "python -m unittest discover -s tests -p \"test_*.py\" -v",
     "release_candidate_builder": "scripts/build_release.py",
     "daily_freshness_validation": true,
@@ -177,6 +202,7 @@
       "governance": "GOVERNANCE.md",
       "contributing": "CONTRIBUTING.md",
       "source_provenance_audit": "docs/SOURCE_PROVENANCE_AUDIT.md",
+      "source_monitoring": "docs/SOURCE_MONITORING.md",
       "release_evidence_v0_2_0": "docs/REGISTRY_V0_2_0_RELEASE_EVIDENCE.md",
       "international_privacy_pilot": "docs/INTERNATIONAL_PRIVACY_PILOT.md",
       "philippines_privacy_pilot": "docs/PH_PRIVACY_PILOT.md",
@@ -189,6 +215,8 @@
       "publication_state": "machine/publication-state.json",
       "representation_policy": "machine/representation-policy.json",
       "source_provenance_audit": "machine/source-provenance-audit.v1.json",
+      "source_monitor_policy": "machine/source-monitor-policy.json",
+      "source_monitor_baseline": "machine/source-monitor-baseline.v1.json",
       "release_evidence_v0_2_0": "machine/release-evidence-v0.2.0.json",
       "registry_root": "registry/",
       "schema_root": "schema/"
