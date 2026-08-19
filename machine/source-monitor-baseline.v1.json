@@ -29,14 +29,14 @@
     },
     {
       "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32016R0679",
-      "content_length": 982296,
-      "content_type": "application/pdf",
-      "fetched_at": "2026-08-19T15:52:57Z",
-      "final_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32016R0679",
-      "normalized_text_sha256": null,
-      "raw_sha256": "bd84e63f5b622b739a83389afc3b30d240f792bb88d8eb03a816c9a82b0c2499",
+      "content_length": 806864,
+      "content_type": "application/xhtml+xml",
+      "fetched_at": "2026-08-19T17:16:51Z",
+      "final_url": "https://publications.europa.eu/resource/cellar/3e485e15-11bd-11e6-ba9a-01aa75ed71a1.0006.03/DOC_1",
+      "normalized_text_sha256": "1e167c810f6c552262b89360241c240eb25c9dc375488fada493f4acf18470fd",
+      "raw_sha256": "962539af03738bf552319ff4ce42d69e5f95a576307c4dfed7bf87e81b646b9d",
       "source_id": "EU-GDPR-2016-679",
-      "strategy": "BINARY_SHA256"
+      "strategy": "HTML_NORMALIZED_TEXT"
     },
     {
       "canonical_url": "https://privacy.gov.ph/implementing-rules-regulations-data-privacy-act-2012/",
@@ -86,10 +86,10 @@
       "canonical_url": "https://sso.agc.gov.sg/Act/PDPA2012",
       "content_length": 263894,
       "content_type": "text/html",
-      "fetched_at": "2026-08-19T15:36:28Z",
+      "fetched_at": "2026-08-19T17:16:52Z",
       "final_url": "https://sso.agc.gov.sg/Act/PDPA2012",
-      "normalized_text_sha256": "6785d98c67a188ddc12fefc4fde33a8ed726e77d75f7e187cd359df93348ed80",
-      "raw_sha256": "d513a3e56b8eb256e118657d5e58be7d6df88e58e9d429c86cb1785976f57cc6",
+      "normalized_text_sha256": "a08e446144f4678fb678eb548d86aea54497150bd277b4e7d329095bc6db01ba",
+      "raw_sha256": "142682935d2ff68c826785835a6497e0c6fad387bf333660b1e365fc72f32ee8",
       "source_id": "SG-PDPA-2012",
       "strategy": "HTML_NORMALIZED_TEXT"
     }
