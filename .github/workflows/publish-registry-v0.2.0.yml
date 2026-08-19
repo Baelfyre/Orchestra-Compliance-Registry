@@ -7,8 +7,10 @@ on:
     paths:
       - ".github/workflows/publish-registry-v0.2.0.yml"
       - "machine/release-request-v0.2.0.json"
+  workflow_dispatch:
 
 permissions:
+  actions: read
   contents: write
   issues: write
 
@@ -23,6 +25,26 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
+      - name: Record publication attempt
+        continue-on-error: true
+        shell: bash
+        run: |
+          echo "START" > "$RUNNER_TEMP/release-stage.txt"
+          cat > "$RUNNER_TEMP/release-attempt.md" <<EOF
+          Trusted Registry v0.2.0 publication attempt started.
+
+          - Workflow run ID: $GITHUB_RUN_ID
+          - Workflow run attempt: $GITHUB_RUN_ATTEMPT
+          - Trigger commit: $GITHUB_SHA
+          - Frozen source commit: cb32038a2683eb2c19f52646892d3257996a06eb
+          - Frozen source tree: 10ce7849fd5b95b3ca756eff213bb506d00a89de
+          - Requested tag: registry-v0.2.0
+          EOF
+          gh issue create \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "release attempt: registry-v0.2.0 run $GITHUB_RUN_ID" \
+            --body-file "$RUNNER_TEMP/release-attempt.md" || true
+
       - name: Checkout publication request
         uses: actions/checkout@v4
         with:
@@ -33,10 +55,16 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Validate release request contract
+        run: |
+          echo "VALIDATE_RELEASE_REQUEST_CONTRACT" > "$RUNNER_TEMP/release-stage.txt"
+          python scripts/validate_schema_contracts.py
+
       - name: Validate frozen release request
         id: request
         shell: bash
         run: |
+          echo "VALIDATE_FROZEN_RELEASE_REQUEST" > "$RUNNER_TEMP/release-stage.txt"
           python - <<'PY' >> "$GITHUB_OUTPUT"
           import json
           import subprocess
@@ -57,13 +85,14 @@ jobs:
           for key, value in expected.items():
               if request.get(key) != value:
                   raise SystemExit(f"release request mismatch for {key}: {request.get(key)!r} != {value!r}")
-          if request.get("authorization", {}).get("type") != "EXPLICIT_HUMAN_APPROVAL":
+          authorization = request.get("authorization", {})
+          if authorization.get("type") != "EXPLICIT_HUMAN_APPROVAL":
               raise SystemExit("explicit human authorization missing")
           required_scope = {"CANONICAL_MERGE", "TRUSTED_RELEASE_PUBLICATION", "PADAYON_RECONCILIATION"}
-          if not required_scope.issubset(set(request.get("authorization", {}).get("scope", []))):
+          if not required_scope.issubset(set(authorization.get("scope", []))):
               raise SystemExit("release authorization scope incomplete")
           requirements = request.get("publication_requirements", {})
-          for key in (
+          required_true = (
               "official_source_provenance_validation",
               "exact_source_validation",
               "deterministic_double_build",
@@ -72,16 +101,14 @@ jobs:
               "immutable_release",
               "post_publication_reverification",
               "padayon_update_required",
-          ):
-              if requirements.get(key) is not True:
-                  raise SystemExit(f"publication requirement {key} must be true")
-          source = request["source_commit"]
-          manifest = json.loads(
-              subprocess.check_output(["git", "show", f"{source}:registry/manifest.json"], text=True)
           )
+          if any(requirements.get(key) is not True for key in required_true):
+              raise SystemExit("publication requirements are incomplete")
+          source = request["source_commit"]
+          manifest = json.loads(subprocess.check_output(["git", "show", f"{source}:registry/manifest.json"], text=True))
           if manifest.get("registry_version") != request["source_registry_version"]:
               raise SystemExit("source registry version drift")
-          if manifest.get("status") != request["source_registry_status"] or manifest.get("release_sequence") != 0:
+          if manifest.get("status") != "DRAFT" or manifest.get("release_sequence") != 0:
               raise SystemExit("source registry must remain DRAFT with sequence 0")
           print(f"registry_version={request['registry_version']}")
           print(f"release_sequence={request['release_sequence']}")
@@ -90,9 +117,10 @@ jobs:
           print(f"source_tree={request['source_tree']}")
           PY
 
-      - name: Verify frozen source identity
+      - name: Verify frozen source identity and no Registry drift
         shell: bash
         run: |
+          echo "VERIFY_FROZEN_SOURCE" > "$RUNNER_TEMP/release-stage.txt"
           SOURCE_COMMIT="${{ steps.request.outputs.source_commit }}"
           SOURCE_TREE="${{ steps.request.outputs.source_tree }}"
           git merge-base --is-ancestor "$SOURCE_COMMIT" "$GITHUB_SHA"
@@ -107,6 +135,7 @@ jobs:
 
       - name: Validate exact canonical source
         run: |
+          echo "VALIDATE_EXACT_SOURCE" > "$RUNNER_TEMP/release-stage.txt"
           python scripts/validate_registry.py
           python scripts/validate_source_provenance.py
           python scripts/validate_schema_contracts.py
@@ -117,6 +146,7 @@ jobs:
         id: candidate
         shell: bash
         run: |
+          echo "BUILD_DETERMINISTIC_CANDIDATE" > "$RUNNER_TEMP/release-stage.txt"
           rm -rf artifacts/release-a artifacts/release-b
           python scripts/build_release.py \
             --output-dir artifacts/release-a \
@@ -135,14 +165,17 @@ jobs:
             release-manifest.sha256; do
             cmp "artifacts/release-a/$file" "artifacts/release-b/$file"
           done
-          MANIFEST_SHA="$(tr -d '\r\n' < artifacts/release-a/release-manifest.sha256)"
-          BUNDLE_SHA="$(tr -d '\r\n' < artifacts/release-a/orchestra-compliance-registry.zip.sha256)"
+          MANIFEST_SHA="$(awk '{print $1}' artifacts/release-a/release-manifest.sha256)"
+          BUNDLE_SHA="$(awk '{print $1}' artifacts/release-a/orchestra-compliance-registry.zip.sha256)"
+          test "$MANIFEST_SHA" = "$(sha256sum artifacts/release-a/release-manifest.json | awk '{print $1}')"
+          test "$BUNDLE_SHA" = "$(sha256sum artifacts/release-a/orchestra-compliance-registry.zip | awk '{print $1}')"
           echo "manifest_sha=$MANIFEST_SHA" >> "$GITHUB_OUTPUT"
           echo "bundle_sha=$BUNDLE_SHA" >> "$GITHUB_OUTPUT"
 
       - name: Verify release namespace is unused
         shell: bash
         run: |
+          echo "VERIFY_RELEASE_NAMESPACE" > "$RUNNER_TEMP/release-stage.txt"
           TAG="${{ steps.request.outputs.release_tag }}"
           if git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null 2>&1; then
             echo "Tag already exists: $TAG" >&2
@@ -153,9 +186,10 @@ jobs:
             exit 1
           fi
 
-      - name: Create and verify exact release tag
+      - name: Create exact release tag
         shell: bash
         run: |
+          echo "CREATE_EXACT_TAG" > "$RUNNER_TEMP/release-stage.txt"
           TAG="${{ steps.request.outputs.release_tag }}"
           SOURCE_COMMIT="${{ steps.request.outputs.source_commit }}"
           gh api --method POST "repos/$GITHUB_REPOSITORY/git/refs" \
@@ -167,6 +201,7 @@ jobs:
       - name: Prepare release notes
         shell: bash
         run: |
+          echo "PREPARE_RELEASE_NOTES" > "$RUNNER_TEMP/release-stage.txt"
           cat > release-notes.md <<EOF
           # Orchestra Compliance Registry v0.2.0
 
@@ -198,11 +233,9 @@ jobs:
       - name: Create draft release with complete assets
         shell: bash
         run: |
-          TAG="${{ steps.request.outputs.release_tag }}"
-          SOURCE_COMMIT="${{ steps.request.outputs.source_commit }}"
-          gh release create "$TAG" \
+          echo "CREATE_DRAFT_RELEASE" > "$RUNNER_TEMP/release-stage.txt"
+          gh release create "${{ steps.request.outputs.release_tag }}" \
             --repo "$GITHUB_REPOSITORY" \
-            --target "$SOURCE_COMMIT" \
             --title "Orchestra Compliance Registry v0.2.0" \
             --notes-file release-notes.md \
             --draft \
@@ -216,8 +249,8 @@ jobs:
         shell: bash
         env:
           TAG: ${{ steps.request.outputs.release_tag }}
-          SOURCE_COMMIT: ${{ steps.request.outputs.source_commit }}
         run: |
+          echo "VERIFY_DRAFT_RELEASE" > "$RUNNER_TEMP/release-stage.txt"
           gh api "repos/$GITHUB_REPOSITORY/releases?per_page=100" > releases.json
           python - <<'PY' >> "$GITHUB_OUTPUT"
           import json
@@ -225,7 +258,6 @@ jobs:
           from pathlib import Path
 
           tag = os.environ["TAG"]
-          source = os.environ["SOURCE_COMMIT"]
           releases = json.loads(Path("releases.json").read_text(encoding="utf-8"))
           matches = [item for item in releases if item.get("tag_name") == tag]
           if len(matches) != 1:
@@ -233,8 +265,6 @@ jobs:
           release = matches[0]
           if release.get("draft") is not True or release.get("prerelease") is not False:
               raise SystemExit("release must be draft and non-prerelease before publication")
-          if release.get("target_commitish") != source:
-              raise SystemExit("draft release target_commitish mismatch")
           required = {
               "orchestra-compliance-registry.zip",
               "orchestra-compliance-registry.zip.sha256",
@@ -246,10 +276,13 @@ jobs:
               raise SystemExit(f"release asset mismatch: {sorted(assets)}")
           print(f"release_id={release['id']}")
           PY
+          TAG_SHA="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$TAG" --jq '.object.sha')"
+          test "$TAG_SHA" = "${{ steps.request.outputs.source_commit }}"
 
       - name: Publish trusted release
         shell: bash
         run: |
+          echo "PUBLISH_RELEASE" > "$RUNNER_TEMP/release-stage.txt"
           gh release edit "${{ steps.request.outputs.release_tag }}" \
             --repo "$GITHUB_REPOSITORY" \
             --draft=false \
@@ -258,35 +291,52 @@ jobs:
       - name: Verify published immutable release
         id: published
         shell: bash
+        env:
+          TAG: ${{ steps.request.outputs.release_tag }}
+          SOURCE_COMMIT: ${{ steps.request.outputs.source_commit }}
+          RELEASE_ID: ${{ steps.draft.outputs.release_id }}
         run: |
-          TAG="${{ steps.request.outputs.release_tag }}"
-          RELEASE_ID="${{ steps.draft.outputs.release_id }}"
+          echo "VERIFY_IMMUTABLE_RELEASE" > "$RUNNER_TEMP/release-stage.txt"
           gh api "repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID" > published-release.json
-          if ! python - <<'PY' >> "$GITHUB_OUTPUT"; then
+          if ! python - <<'PY' >> "$GITHUB_OUTPUT"
           import json
+          import os
           from pathlib import Path
 
           release = json.loads(Path("published-release.json").read_text(encoding="utf-8"))
+          if release.get("tag_name") != os.environ["TAG"]:
+              raise SystemExit("published tag mismatch")
           if release.get("draft") is not False:
               raise SystemExit("published release remained draft")
           if release.get("prerelease") is not False:
               raise SystemExit("published release became prerelease")
           if release.get("immutable") is not True:
               raise SystemExit("published release is not immutable")
+          required = {
+              "orchestra-compliance-registry.zip",
+              "orchestra-compliance-registry.zip.sha256",
+              "release-manifest.json",
+              "release-manifest.sha256",
+          }
+          assets = {item.get("name") for item in release.get("assets", [])}
+          if assets != required:
+              raise SystemExit("published release asset mismatch")
           print(f"release_id={release['id']}")
           print(f"release_url={release['html_url']}")
           print(f"published_at={release['published_at']}")
           PY
-            echo "Published release failed trust verification; attempting mutable cleanup." >&2
+          then
+            echo "Published release failed trust verification; removing mutable publication." >&2
             gh release delete "$TAG" --repo "$GITHUB_REPOSITORY" --cleanup-tag --yes || true
             exit 1
           fi
           TAG_SHA="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$TAG" --jq '.object.sha')"
-          test "$TAG_SHA" = "${{ steps.request.outputs.source_commit }}"
+          test "$TAG_SHA" = "$SOURCE_COMMIT"
 
       - name: Record trusted release evidence
         shell: bash
         run: |
+          echo "RECORD_TRUSTED_EVIDENCE" > "$RUNNER_TEMP/release-stage.txt"
           python - <<'PY'
           import json
           from pathlib import Path
@@ -312,7 +362,7 @@ jobs:
               "workflow_run_id": "${{ github.run_id }}",
               "workflow_run_attempt": "${{ github.run_attempt }}",
               "workflow_commit": "${{ github.sha }}",
-              "padayon_reconciliation_required": True,
+              "padayon_reconciliation_required": True
           }
           Path("trusted-release-evidence.json").write_text(json.dumps(evidence, indent=2) + "\n", encoding="utf-8")
           PY
@@ -345,6 +395,7 @@ jobs:
         continue-on-error: true
         shell: bash
         run: |
+          echo "OPEN_RELEASE_EVIDENCE_ISSUE" > "$RUNNER_TEMP/release-stage.txt"
           gh issue create \
             --repo "$GITHUB_REPOSITORY" \
             --title "release evidence: registry-v0.2.0" \
@@ -367,3 +418,23 @@ jobs:
           else
             gh api --method DELETE "repos/$GITHUB_REPOSITORY/git/refs/tags/$TAG" >/dev/null 2>&1 || true
           fi
+
+      - name: Record publication failure
+        if: failure()
+        continue-on-error: true
+        shell: bash
+        run: |
+          STAGE="$(cat "$RUNNER_TEMP/release-stage.txt" 2>/dev/null || echo UNKNOWN)"
+          cat > "$RUNNER_TEMP/release-failure.md" <<EOF
+          Registry v0.2.0 publication attempt failed closed.
+
+          - Workflow run ID: $GITHUB_RUN_ID
+          - Workflow run attempt: $GITHUB_RUN_ATTEMPT
+          - Trigger commit: $GITHUB_SHA
+          - Last recorded stage: $STAGE
+          - Trusted tag/release must be reverified before any retry.
+          EOF
+          gh issue create \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "release failure: registry-v0.2.0 run $GITHUB_RUN_ID" \
+            --body-file "$RUNNER_TEMP/release-failure.md" || true
