@@ -23,6 +23,7 @@ class ReadmeMachineIndexTests(unittest.TestCase):
         cls.obligations = load("registry/obligations.json")["obligations"]
         cls.publication = load("machine/publication-state.json")
         cls.representation = load("machine/representation-policy.json")
+        cls.provenance_audit = load("machine/source-provenance-audit.v1.json")
 
     def test_machine_index_identity(self) -> None:
         self.assertEqual("README.md", self.index["human_readme"])
@@ -108,6 +109,23 @@ class ReadmeMachineIndexTests(unittest.TestCase):
             pair["machine_index_authority"],
         )
         self.assertEqual("README.json", self.representation["machine_authority"]["repository_index"])
+
+    def test_machine_index_binds_latest_source_provenance_audit(self) -> None:
+        source_model = self.index["source_model"]
+        audit = source_model["latest_provenance_audit"]
+        self.assertEqual("OFFICIAL_PRIMARY_ONLY", source_model["canonical_source_policy"])
+        self.assertFalse(source_model["wikipedia_allowed_as_canonical_source"])
+        self.assertFalse(source_model["social_media_allowed_as_canonical_source"])
+        self.assertEqual(self.provenance_audit["audited_at"], audit["audited_at"])
+        self.assertEqual(self.provenance_audit["summary"]["audited_source_count"], audit["audited_sources"])
+        self.assertEqual(self.provenance_audit["summary"]["rechecked_obligation_count"], audit["rechecked_obligations"])
+        self.assertEqual(self.provenance_audit["summary"]["audit_result"], audit["result"])
+        self.assertEqual(
+            "machine/source-provenance-audit.v1.json",
+            self.index["records"]["source_provenance_audit"]["path"],
+        )
+        self.assertTrue((ROOT / self.index["documentation"]["human"]["source_provenance_audit"]).is_file())
+        self.assertTrue((ROOT / self.index["documentation"]["machine"]["source_provenance_audit"]).is_file())
 
 
 if __name__ == "__main__":
