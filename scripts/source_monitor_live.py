@@ -20,9 +20,25 @@ source_monitor.USER_AGENT = (
 
 EU_GDPR_SOURCE_ID = "EU-GDPR-2016-679"
 EU_GDPR_CELLAR_URL = "https://publications.europa.eu/resource/celex/32016R0679?language=eng"
-EU_CELLAR_AUTHORITY_DOMAIN = "publications.europa.eu"
+EU_PUBLICATION_AUTHORITY_DOMAINS = (
+    "publications.europa.eu",
+    "op.europa.eu",
+    "eur-lex.europa.eu",
+    "data.europa.eu",
+)
+EU_GDPR_TEXT_SENTINELS = (
+    "REGULATION (EU) 2016/679",
+    "Article 99",
+)
 
 _core_fetch = source_monitor._fetch
+
+
+def _official_eu_publication_host(hostname: str | None) -> bool:
+    return any(
+        source_monitor._authorized_host(hostname, authority_domain)
+        for authority_domain in EU_PUBLICATION_AUTHORITY_DOMAINS
+    )
 
 
 def _eu_cellar_fetch(source: dict[str, Any], config: dict[str, Any]) -> dict[str, Any]:
@@ -48,7 +64,7 @@ def _eu_cellar_fetch(source: dict[str, Any], config: dict[str, Any]) -> dict[str
         ) from exc
 
     parsed = urlparse(final_url)
-    if parsed.scheme != "https" or not source_monitor._authorized_host(parsed.hostname, EU_CELLAR_AUTHORITY_DOMAIN):
+    if parsed.scheme != "https" or not _official_eu_publication_host(parsed.hostname):
         return {
             "source_id": source["source_id"],
             "canonical_url": source["canonical_url"],
@@ -67,6 +83,11 @@ def _eu_cellar_fetch(source: dict[str, Any], config: dict[str, Any]) -> dict[str
     if not normalized:
         raise source_monitor.SourceMonitorError(
             f"official Cellar source {source['source_id']} normalized text is empty"
+        )
+    missing_sentinels = [sentinel for sentinel in EU_GDPR_TEXT_SENTINELS if sentinel not in normalized]
+    if missing_sentinels:
+        raise source_monitor.SourceMonitorError(
+            f"official Cellar source {source['source_id']} is missing expected GDPR text sentinels {missing_sentinels}"
         )
 
     return {
