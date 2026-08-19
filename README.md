@@ -21,8 +21,19 @@ Current source-backed work is an **international privacy pilot**. Broader softwa
 | Humans | `README.md` | Quick orientation, coverage, usage, and trust boundaries |
 | AI / agents / tooling | [`README.json`](README.json) | Complete repository map and ordered machine-readable references |
 | Registry consumers | [`registry/manifest.json`](registry/manifest.json) | Canonical editable record map and source-state identity |
+| Source reviewers | [`docs/SOURCE_PROVENANCE_AUDIT.md`](docs/SOURCE_PROVENANCE_AUDIT.md) | Official citations, date provenance, and the latest source rerun |
 | Release consumers | [`machine/publication-state.json`](machine/publication-state.json) | Last verified publication identity; live release must still be reverified |
 | Contributors | [`CONTRIBUTING.md`](CONTRIBUTING.md) | Source, evidence, review, and contribution requirements |
+
+## Source provenance
+
+Canonical sources are **official primary sources only**. Government and regulatory records must use the issuing government, regulator, or official legislation service. Provider/platform records must use the provider's own official developer, policy, legal, security, compliance, or documentation site. Wikipedia, social media, blogs, aggregators, and secondary summaries cannot replace an available official primary source.
+
+Every source records an official citation and source locator plus the dates supported by the authority, including issuance/publication, entry into force, application, current text/version, last amendment, gathering, and verification where available. Dates are left unset rather than guessed when the reviewed official source does not establish an exact value.
+
+**Latest provenance rerun:** `2026-08-19`  
+Human audit: [`docs/SOURCE_PROVENANCE_AUDIT.md`](docs/SOURCE_PROVENANCE_AUDIT.md)  
+Machine audit: [`machine/source-provenance-audit.v1.json`](machine/source-provenance-audit.v1.json)
 
 ## Jurisdiction coverage
 
@@ -77,7 +88,7 @@ The next provider phase will distinguish **contractual platform rules** from **g
 | `README.md` / `docs/*.md` | Compact human explanation and review material | Non-authoritative human reference |
 | `README.json` | Complete machine-readable repository index | Derived and parity-validated index |
 | `registry/*.json` | Canonical structured registry records | Editable machine authority as mapped by the manifest |
-| `machine/*.json` | Publication, representation, and control metadata | Machine control/reference state as defined per record |
+| `machine/*.json` | Publication, representation, provenance-audit, and control metadata | Machine control/reference or evidence state as defined per record |
 | JSON Schema | Deterministic machine-contract validation | Validation contract |
 | TOON | Optional compact AI context projection | Derived, non-authoritative |
 
@@ -97,6 +108,7 @@ When prose and a machine record disagree on an exact deterministic fact, use the
 | Topic | Human reference | Machine reference |
 | --- | --- | --- |
 | Repository overview | `README.md` | [`README.json`](README.json) |
+| Source provenance | [`docs/SOURCE_PROVENANCE_AUDIT.md`](docs/SOURCE_PROVENANCE_AUDIT.md) | [`machine/source-provenance-audit.v1.json`](machine/source-provenance-audit.v1.json) |
 | Governance | [`GOVERNANCE.md`](GOVERNANCE.md) | [`machine/representation-policy.json`](machine/representation-policy.json) |
 | Registry records | Documentation and pilot notes | [`registry/manifest.json`](registry/manifest.json) |
 | Publication state | [`docs/RELEASE_PACKAGING.md`](docs/RELEASE_PACKAGING.md) | [`machine/publication-state.json`](machine/publication-state.json) |
