@@ -11,6 +11,7 @@ on:
       - "schema/source-monitor-*.json"
       - "schema/source-watch-receipt.schema.json"
       - "scripts/source_monitor.py"
+      - "scripts/source_monitor_live.py"
       - "tests/test_source_monitor.py"
       - ".github/workflows/source-monitor.yml"
   schedule:
@@ -42,7 +43,7 @@ jobs:
       - name: Generate live official-source baseline preview
         run: |
           mkdir -p artifacts/source-monitor
-          python scripts/source_monitor.py bootstrap \
+          python scripts/source_monitor_live.py bootstrap \
             --output artifacts/source-monitor/current-baseline.json
       - name: Preserve baseline preview
         uses: actions/upload-artifact@v7
@@ -77,7 +78,7 @@ jobs:
         run: |
           mkdir -p artifacts/source-monitor
           set +e
-          python scripts/source_monitor.py check \
+          python scripts/source_monitor_live.py check \
             --receipt-output artifacts/source-monitor/source-watch-receipt.json
           rc=$?
           set -e
