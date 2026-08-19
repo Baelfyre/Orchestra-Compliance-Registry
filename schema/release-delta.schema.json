@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "orchestra.compliance-registry.release-delta.v1",
+  "title": "Compliance Registry Release Delta",
+  "type": "object",
+  "required": ["schema_version", "authority", "base", "target", "disposition", "changed_record_types", "affected", "structural_changes", "requires_human_review", "digest"],
+  "properties": {
+    "schema_version": {"const": "orchestra.compliance-registry.release-delta.v1"},
+    "authority": {"const": "EVIDENCE_ONLY_NON_AUTHORIZING"},
+    "base": {
+      "type": "object",
+      "required": ["registry_version", "release_sequence", "manifest_sha256"],
+      "properties": {
+        "registry_version": {"type": "string", "minLength": 1},
+        "release_sequence": {"type": "integer", "minimum": 0},
+        "manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "additionalProperties": false
+    },
+    "target": {
+      "type": "object",
+      "required": ["registry_version", "release_sequence", "manifest_sha256"],
+      "properties": {
+        "registry_version": {"type": "string", "minLength": 1},
+        "release_sequence": {"type": "integer", "minimum": 0},
+        "manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "additionalProperties": false
+    },
+    "disposition": {"enum": ["UNCHANGED", "COMPATIBLE_SCOPED_CHANGE", "REVALIDATION_REQUIRED", "UNSUPPORTED_CAPABILITY_CHANGE", "HUMAN_REVIEW_REQUIRED"]},
+    "changed_record_types": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "affected": {
+      "type": "object",
+      "required": ["capability_ids", "domains", "jurisdiction_ids", "provider_ids", "source_ids", "obligation_ids"],
+      "properties": {
+        "capability_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "domains": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "jurisdiction_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "provider_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "source_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "obligation_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true}
+      },
+      "additionalProperties": false
+    },
+    "structural_changes": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "requires_human_review": {"type": "boolean"},
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": false
+}

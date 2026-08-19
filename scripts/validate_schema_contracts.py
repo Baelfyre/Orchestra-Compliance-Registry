@@ -19,6 +19,7 @@ RECORD_CONTRACTS = {
 }
 DOCUMENT_CONTRACTS = {
     "schema/manifest.schema.json": "registry/manifest.json",
+    "schema/capability-manifest.schema.json": "registry/capabilities.json",
     "schema/representation-policy.schema.json": "machine/representation-policy.json",
     "schema/publication-state.schema.json": "machine/publication-state.json",
     "schema/readme-machine-index.schema.json": "README.json",
@@ -30,6 +31,7 @@ DOCUMENT_CONTRACTS = {
 STANDALONE_CONTRACTS = (
     "schema/query-receipt.schema.json",
     "schema/source-watch-receipt.schema.json",
+    "schema/release-delta.schema.json",
 )
 
 
