@@ -7,16 +7,27 @@
       "source_type": "STATUTE",
       "authority": "National Privacy Commission / Republic of the Philippines",
       "canonical_url": "https://privacy.gov.ph/data-privacy-act/",
+      "citation": {
+        "source_origin": "REGULATOR",
+        "primary_source": true,
+        "official_source": true,
+        "publisher": "National Privacy Commission",
+        "identifier": "Republic Act No. 10173",
+        "official_url": "https://privacy.gov.ph/data-privacy-act/",
+        "locator": "Republic Act No. 10173; Sections 11, 20 and 45; approval line"
+      },
       "jurisdiction_ids": ["PH"],
       "domains": ["privacy", "data-protection", "personal-data-processing"],
       "issued_date": "2012-08-15",
+      "gathered_at": "2026-08-19",
+      "date_reference_note": "The official NPC text records presidential approval on 2012-08-15. Section 45 states that the Act takes effect 15 days after publication in at least two national newspapers; this record does not infer an exact effectivity date because the reviewed NPC page does not state those publication dates.",
       "verification": {
         "status": "VERIFIED_CURRENT",
-        "verified_at": "2026-08-14",
-        "method": "PRIMARY_AUTHORITY_WEB_REVIEW",
+        "verified_at": "2026-08-19",
+        "method": "PRIMARY_OFFICIAL_NPC_TEXT_REVIEW",
         "authority_domain": "privacy.gov.ph"
       },
-      "interpretation_boundary": "SOURCE_IDENTITY_AND_TEXT_ONLY; GOVERNOR_MUST DETERMINE PROJECT_APPLICABILITY"
+      "interpretation_boundary": "SOURCE_IDENTITY_AND_TEXT_ONLY; GOVERNOR MUST DETERMINE PROJECT_APPLICABILITY"
     },
     {
       "source_id": "PH-DPA-IRR-2016",
@@ -24,15 +35,27 @@
       "source_type": "IMPLEMENTING_RULES",
       "authority": "National Privacy Commission",
       "canonical_url": "https://privacy.gov.ph/implementing-rules-regulations-data-privacy-act-2012/",
+      "citation": {
+        "source_origin": "REGULATOR",
+        "primary_source": true,
+        "official_source": true,
+        "publisher": "National Privacy Commission",
+        "identifier": "Implementing Rules and Regulations of Republic Act No. 10173",
+        "official_url": "https://privacy.gov.ph/implementing-rules-regulations-data-privacy-act-2012/",
+        "locator": "Promulgated 24 August 2016; Rule VI Sections 25-29; Rule XI"
+      },
       "jurisdiction_ids": ["PH"],
       "domains": ["privacy", "data-protection", "personal-data-processing", "security"],
+      "issued_date": "2016-08-24",
+      "gathered_at": "2026-08-19",
+      "date_reference_note": "The official NPC text records promulgation on 2016-08-24. The NPC release states that the IRR takes effect 15 days after publication; this record does not infer an exact effectivity date without the reviewed official publication date.",
       "verification": {
         "status": "VERIFIED_CURRENT",
-        "verified_at": "2026-08-14",
-        "method": "PRIMARY_AUTHORITY_WEB_REVIEW",
+        "verified_at": "2026-08-19",
+        "method": "PRIMARY_OFFICIAL_NPC_TEXT_AND_ISSUANCE_REVIEW",
         "authority_domain": "privacy.gov.ph"
       },
-      "interpretation_boundary": "SOURCE_IDENTITY_AND_TEXT_ONLY; GOVERNOR_MUST DETERMINE PROJECT_APPLICABILITY"
+      "interpretation_boundary": "SOURCE_IDENTITY_AND_TEXT_ONLY; GOVERNOR MUST DETERMINE PROJECT_APPLICABILITY"
     },
     {
       "source_id": "PH-NPC-CIRC-2023-06",
@@ -40,15 +63,26 @@
       "source_type": "REGULATORY_CIRCULAR",
       "authority": "National Privacy Commission",
       "canonical_url": "https://privacy.gov.ph/wp-content/uploads/2024/03/NPC-Circular-Repeal-16-01-Signed.pdf",
+      "citation": {
+        "source_origin": "REGULATOR",
+        "primary_source": true,
+        "official_source": true,
+        "publisher": "National Privacy Commission",
+        "identifier": "NPC Circular 2023-06",
+        "official_url": "https://privacy.gov.ph/wp-content/uploads/2024/03/NPC-Circular-Repeal-16-01-Signed.pdf",
+        "locator": "NPC Circular 2023-06; dated 01 December 2023; Sections 4-21"
+      },
       "jurisdiction_ids": ["PH"],
       "domains": ["privacy", "data-protection", "security", "privacy-engineering", "business-continuity"],
       "issued_date": "2023-12-01",
       "effective_date": "2024-03-30",
+      "gathered_at": "2026-08-19",
+      "date_reference_note": "The signed circular is dated 2023-12-01. The NPC's official publication notice states that Circular 2023-06 took effect on 2024-03-30 and expressly repealed Circular 16-01.",
       "supersession_note": "Expressly repeals NPC Circular No. 16-01 according to the National Privacy Commission publication notice.",
       "verification": {
         "status": "VERIFIED_CURRENT",
-        "verified_at": "2026-08-14",
-        "method": "PRIMARY_AUTHORITY_SIGNED_PDF_AND_ISSUANCE_INDEX_REVIEW",
+        "verified_at": "2026-08-19",
+        "method": "PRIMARY_OFFICIAL_SIGNED_PDF_AND_CURRENT_NPC_ISSUANCE_INDEX_REVIEW",
         "authority_domain": "privacy.gov.ph"
       },
       "interpretation_boundary": "DIRECT REGULATORY TEXT; GOVERNOR MUST DETERMINE PIC/PIP AND PROJECT APPLICABILITY"
@@ -59,13 +93,24 @@
       "source_type": "REGULATORY_ADVISORY",
       "authority": "National Privacy Commission",
       "canonical_url": "https://privacy.gov.ph/wp-content/uploads/2025/12/NPC_Advisory2025-02.pdf",
+      "citation": {
+        "source_origin": "REGULATOR",
+        "primary_source": true,
+        "official_source": true,
+        "publisher": "National Privacy Commission",
+        "identifier": "NPC Advisory No. 2025-02",
+        "official_url": "https://privacy.gov.ph/wp-content/uploads/2025/12/NPC_Advisory2025-02.pdf",
+        "locator": "NPC Advisory No. 2025-02; dated 27 August 2025; Sections 1-5"
+      },
       "jurisdiction_ids": ["PH"],
       "domains": ["privacy", "privacy-engineering", "systems-lifecycle"],
       "issued_date": "2025-08-27",
+      "gathered_at": "2026-08-19",
+      "date_reference_note": "The signed NPC advisory states DATE: 27 August 2025. It is guidance for privacy engineering across planning, design/development, testing, deployment, operation and maintenance; it is not recorded as a standalone statute.",
       "verification": {
         "status": "VERIFIED_CURRENT",
-        "verified_at": "2026-08-14",
-        "method": "PRIMARY_AUTHORITY_SIGNED_PDF_AND_ISSUANCE_INDEX_REVIEW",
+        "verified_at": "2026-08-19",
+        "method": "PRIMARY_OFFICIAL_SIGNED_PDF_AND_CURRENT_NPC_ISSUANCE_INDEX_REVIEW",
         "authority_domain": "privacy.gov.ph"
       },
       "interpretation_boundary": "ADVISORY GUIDANCE; NOT RECORDED AS A STANDALONE MANDATORY OBLIGATION WITHOUT GOVERNOR REVIEW"
@@ -76,14 +121,27 @@
       "source_type": "REGULATION",
       "authority": "European Union / EUR-Lex",
       "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32016R0679",
+      "citation": {
+        "source_origin": "SUPRANATIONAL",
+        "primary_source": true,
+        "official_source": true,
+        "publisher": "European Union / EUR-Lex",
+        "identifier": "Regulation (EU) 2016/679; CELEX 32016R0679; OJ L 119, 4.5.2016, pp. 1-88",
+        "official_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32016R0679",
+        "locator": "Articles 25, 32, 35 and 99"
+      },
       "jurisdiction_ids": ["EU-EEA"],
       "domains": ["privacy", "data-protection", "personal-data-processing", "security", "privacy-engineering"],
       "issued_date": "2016-04-27",
-      "effective_date": "2018-05-25",
+      "publication_date": "2016-05-04",
+      "effective_date": "2016-05-24",
+      "applicable_date": "2018-05-25",
+      "gathered_at": "2026-08-19",
+      "date_reference_note": "EUR-Lex records signature on 2016-04-27, Official Journal publication on 2016-05-04, entry into force on 2016-05-24, and application from 2018-05-25 under Article 99.",
       "verification": {
         "status": "VERIFIED_CURRENT",
         "verified_at": "2026-08-19",
-        "method": "PRIMARY_AUTHORITY_CURRENT_TEXT_REVIEW",
+        "method": "PRIMARY_OFFICIAL_EUR_LEX_LEGAL_STATUS_AND_TEXT_REVIEW",
         "authority_domain": "eur-lex.europa.eu"
       },
       "interpretation_boundary": "DIRECT REGULATION TEXT; GOVERNOR MUST DETERMINE TERRITORIAL_SCOPE, ROLE, DEROGATIONS, MEMBER_STATE LAW, AND PROJECT APPLICABILITY"
@@ -94,13 +152,27 @@
       "source_type": "STATUTE",
       "authority": "Department of Justice Canada / Government of Canada",
       "canonical_url": "https://laws-lois.justice.gc.ca/eng/acts/P-8.6/",
+      "citation": {
+        "source_origin": "GOVERNMENT",
+        "primary_source": true,
+        "official_source": true,
+        "publisher": "Department of Justice Canada / Justice Laws Website",
+        "identifier": "S.C. 2000, c. 5",
+        "official_url": "https://laws-lois.justice.gc.ca/eng/acts/P-8.6/",
+        "locator": "Part 1 section 5; Schedule 1 clauses 4.1 and 4.7; section 72 coming-into-force note"
+      },
       "jurisdiction_ids": ["CA"],
       "domains": ["privacy", "data-protection", "personal-data-processing", "security"],
+      "applicable_date": "2001-01-01",
+      "current_text_as_of": "2026-06-14",
+      "last_amended_date": "2025-03-04",
+      "gathered_at": "2026-08-19",
+      "date_reference_note": "Justice Laws states that the Act is current to 2026-06-14 and last amended on 2025-03-04. Its coming-into-force note states that Part 1 entered into force on 2001-01-01. Justice Laws also lists amendments not yet in force, so pending provisions are not treated as currently effective obligations.",
       "supersession_note": "Justice Laws identifies amendments not yet in force; the Registry records the current consolidated Act and requires applicability review for pending provisions.",
       "verification": {
         "status": "CURRENT_WITH_PENDING_CHANGE",
         "verified_at": "2026-08-19",
-        "method": "PRIMARY_AUTHORITY_CURRENT_TEXT_AND_AMENDMENTS_NOT_IN_FORCE_REVIEW",
+        "method": "PRIMARY_OFFICIAL_JUSTICE_LAWS_CURRENT_TEXT_AND_AMENDMENTS_NOT_IN_FORCE_REVIEW",
         "authority_domain": "laws-lois.justice.gc.ca"
       },
       "interpretation_boundary": "DIRECT FEDERAL STATUTE TEXT; GOVERNOR MUST DETERMINE COMMERCIAL-ACTIVITY, FEDERAL/PROVINCIAL, SUBSTANTIALLY-SIMILAR-LAW, AND PROJECT APPLICABILITY"
@@ -111,12 +183,26 @@
       "source_type": "STATUTE",
       "authority": "Federal Register of Legislation / Commonwealth of Australia",
       "canonical_url": "https://www.legislation.gov.au/C2004A03712/latest/text",
+      "citation": {
+        "source_origin": "GOVERNMENT",
+        "primary_source": true,
+        "official_source": true,
+        "publisher": "Federal Register of Legislation / Commonwealth of Australia",
+        "identifier": "Privacy Act 1988 No. 119, 1988; Title ID C2004A03712; compilation C2026C00227 C104",
+        "official_url": "https://www.legislation.gov.au/C2004A03712/latest/text",
+        "locator": "Sections 14-15; Schedule 1 Australian Privacy Principles 1 and 11"
+      },
       "jurisdiction_ids": ["AU"],
       "domains": ["privacy", "data-protection", "personal-data-processing", "security"],
+      "issued_date": "1988-12-14",
+      "effective_date": "1989-01-01",
+      "current_text_as_of": "2026-06-04",
+      "gathered_at": "2026-08-19",
+      "date_reference_note": "The Federal Register records assent on 1988-12-14 and commencement on 1989-01-01. The latest in-force compilation reviewed is C2026C00227 C104, effective 2026-06-04.",
       "verification": {
         "status": "VERIFIED_CURRENT",
         "verified_at": "2026-08-19",
-        "method": "PRIMARY_AUTHORITY_LATEST_COMPILATION_REVIEW",
+        "method": "PRIMARY_OFFICIAL_FEDERAL_REGISTER_LATEST_COMPILATION_AND_LEGISLATION_HISTORY_REVIEW",
         "authority_domain": "legislation.gov.au"
       },
       "interpretation_boundary": "DIRECT FEDERAL STATUTE TEXT; GOVERNOR MUST DETERMINE APP-ENTITY, EXEMPTION, STATE_OR_TERRITORY_OVERLAP, AND PROJECT APPLICABILITY"
@@ -127,12 +213,27 @@
       "source_type": "STATUTE",
       "authority": "Singapore Statutes Online / Attorney-General's Chambers",
       "canonical_url": "https://sso.agc.gov.sg/Act/PDPA2012",
+      "citation": {
+        "source_origin": "GOVERNMENT",
+        "primary_source": true,
+        "official_source": true,
+        "publisher": "Singapore Statutes Online / Attorney-General's Chambers",
+        "identifier": "Act 26 of 2012",
+        "official_url": "https://sso.agc.gov.sg/Act/PDPA2012",
+        "locator": "Parts 3-6; sections 24-25; Legislative History"
+      },
       "jurisdiction_ids": ["SG"],
       "domains": ["privacy", "data-protection", "personal-data-processing", "security"],
+      "publication_date": "2012-12-03",
+      "applicable_date": "2014-07-02",
+      "current_text_as_of": "2026-08-07",
+      "last_amended_date": "2025-12-05",
+      "gathered_at": "2026-08-19",
+      "date_reference_note": "Singapore Statutes Online records publication in the Acts Supplement on 2012-12-03. The Act commenced in phases; Parts III-VII, which include the principal personal-data obligations used in this pilot, commenced on 2014-07-02. The current text reviewed is shown as current as at 2026-08-07, with the latest timeline amendment on 2025-12-05 by Act 19 of 2025.",
       "verification": {
         "status": "VERIFIED_CURRENT",
         "verified_at": "2026-08-19",
-        "method": "PRIMARY_AUTHORITY_CURRENT_VERSION_REVIEW",
+        "method": "PRIMARY_OFFICIAL_SSO_CURRENT_VERSION_AND_LEGISLATIVE_HISTORY_REVIEW",
         "authority_domain": "sso.agc.gov.sg"
       },
       "interpretation_boundary": "DIRECT STATUTE TEXT; GOVERNOR MUST DETERMINE ORGANISATION, EXEMPTION, SECTORAL-LAW, AND PROJECT APPLICABILITY"
