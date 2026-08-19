@@ -16,6 +16,8 @@ SEQUENCE = 1
 TAG = "registry-vtest-candidate"
 PUBLISHED_V0_1_MANIFEST_SHA256 = "9922ddcce77dfac0c01cac80fe6669aaffe37636826a56a4b54a8312558ee2d1"
 PUBLISHED_V0_1_ASSET_SHA256 = "b64889933d30a8dea27bcbbb95c952e4f053c14a4f345e1e04b27777b5025ec0"
+PUBLISHED_V0_2_MANIFEST_SHA256 = "cb98e4496da8952cff1432207d57f04379364bac2e95cc422de173681a8fb2b4"
+PUBLISHED_V0_2_ASSET_SHA256 = "71414aaead10634c2a4b79ec519b4fc76fb32af71cd831ef48f2133bcc211388"
 
 
 def sha256(path: Path) -> str:
@@ -92,15 +94,47 @@ class ReleaseBuilderTests(unittest.TestCase):
                 for relative, expected_digest in manifest["files"].items():
                     self.assertEqual(expected_digest, hashlib.sha256(archive.read(relative)).hexdigest())
 
-    def test_published_v0_1_identity_remains_frozen(self) -> None:
-        publication = json.loads((ROOT / "machine" / "publication-state.json").read_text(encoding="utf-8"))
-        trusted = publication["trusted_release"]
-        self.assertEqual("registry-v0.1.0", trusted["tag"])
+    def test_published_v0_1_identity_remains_frozen_in_history(self) -> None:
+        history = json.loads((ROOT / "machine" / "trusted-release-history.json").read_text(encoding="utf-8"))
+        matches = [item for item in history["releases"] if item["tag"] == "registry-v0.1.0"]
+        self.assertEqual(1, len(matches))
+        trusted = matches[0]
         self.assertEqual("0.1.0", trusted["registry_version"])
         self.assertEqual(1, trusted["release_sequence"])
+        self.assertEqual("3821bcb55125b4d8864f28b6423650e6e17ac67b", trusted["target_commit"])
         self.assertEqual(PUBLISHED_V0_1_MANIFEST_SHA256, trusted["release_manifest_sha256"])
         self.assertEqual(PUBLISHED_V0_1_ASSET_SHA256, trusted["bundle_sha256"])
         self.assertTrue(trusted["immutable"])
+        self.assertFalse(trusted["draft"])
+        self.assertFalse(trusted["prerelease"])
+
+    def test_current_trusted_release_is_v0_2_and_matches_history(self) -> None:
+        publication = json.loads((ROOT / "machine" / "publication-state.json").read_text(encoding="utf-8"))
+        history = json.loads((ROOT / "machine" / "trusted-release-history.json").read_text(encoding="utf-8"))
+        trusted = publication["trusted_release"]
+        self.assertEqual("registry-v0.2.0", trusted["tag"])
+        self.assertEqual("registry-v0.2.0", history["current_trusted_release"])
+        matches = [item for item in history["releases"] if item["tag"] == trusted["tag"]]
+        self.assertEqual(1, len(matches))
+        historical = matches[0]
+        self.assertEqual("0.2.0", trusted["registry_version"])
+        self.assertEqual(2, trusted["release_sequence"])
+        self.assertEqual(PUBLISHED_V0_2_MANIFEST_SHA256, trusted["release_manifest_sha256"])
+        self.assertEqual(PUBLISHED_V0_2_ASSET_SHA256, trusted["bundle_sha256"])
+        for key in (
+            "release_id",
+            "registry_version",
+            "release_sequence",
+            "target_commit",
+            "draft",
+            "prerelease",
+            "immutable",
+            "published_at",
+            "release_manifest_sha256",
+            "bundle_sha256",
+            "required_assets",
+        ):
+            self.assertEqual(trusted[key], historical[key], key)
 
     def test_two_builds_are_byte_identical(self) -> None:
         with tempfile.TemporaryDirectory() as first_dir, tempfile.TemporaryDirectory() as second_dir:

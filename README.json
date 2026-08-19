@@ -30,14 +30,21 @@
   },
   "trusted_release": {
     "state": "PUBLISHED_IMMUTABLE_VERIFIED",
-    "tag": "registry-v0.1.0",
-    "registry_version": "0.1.0",
-    "release_sequence": 1,
-    "target_commit": "3821bcb55125b4d8864f28b6423650e6e17ac67b",
-    "release_manifest_sha256": "9922ddcce77dfac0c01cac80fe6669aaffe37636826a56a4b54a8312558ee2d1",
-    "bundle_sha256": "b64889933d30a8dea27bcbbb95c952e4f053c14a4f345e1e04b27777b5025ec0",
+    "tag": "registry-v0.2.0",
+    "release_id": 373113025,
+    "registry_version": "0.2.0",
+    "release_sequence": 2,
+    "target_commit": "cb32038a2683eb2c19f52646892d3257996a06eb",
+    "source_tree": "10ce7849fd5b95b3ca756eff213bb506d00a89de",
+    "published_at": "2026-08-19T14:20:56Z",
+    "draft": false,
+    "prerelease": false,
+    "immutable": true,
+    "release_manifest_sha256": "cb98e4496da8952cff1432207d57f04379364bac2e95cc422de173681a8fb2b4",
+    "bundle_sha256": "71414aaead10634c2a4b79ec519b4fc76fb32af71cd831ef48f2133bcc211388",
+    "release_evidence": "machine/release-evidence-v0.2.0.json",
     "publication_reverification_required": true,
-    "scope_note": "The trusted v0.1.0 release is the immutable Philippine privacy pilot. Editable source state has advanced separately and is not trusted publication merely because it validates."
+    "scope_note": "The trusted v0.2.0 release is the immutable bounded international privacy pilot. Editable repository state remains a separate DRAFT source and must not be treated as trusted publication merely because it validates."
   },
   "representation": {
     "human_entry_point": {"path": "README.md", "role": "COMPACT_HUMAN_ORIENTATION", "authority": "NON_AUTHORITATIVE_HUMAN_READABLE_REFERENCE"},
@@ -60,7 +67,8 @@
     "review_due": {"path": "registry/review-due.json", "role": "SOURCE_REVIEW_CADENCE_AND_FRESHNESS_LEDGER"},
     "publication_state": {"path": "machine/publication-state.json", "role": "LAST_VERIFIED_SOURCE_AND_TRUSTED_PUBLICATION_IDENTITY"},
     "representation_policy": {"path": "machine/representation-policy.json", "role": "MACHINE_HUMAN_AND_DERIVED_CONTEXT_REPRESENTATION_BOUNDARY"},
-    "source_provenance_audit": {"path": "machine/source-provenance-audit.v1.json", "role": "EVIDENCE_ONLY_OFFICIAL_SOURCE_AND_DATE_PROVENANCE_AUDIT"}
+    "source_provenance_audit": {"path": "machine/source-provenance-audit.v1.json", "role": "EVIDENCE_ONLY_OFFICIAL_SOURCE_AND_DATE_PROVENANCE_AUDIT"},
+    "release_evidence_v0_2_0": {"path": "machine/release-evidence-v0.2.0.json", "role": "TRUSTED_RELEASE_PUBLICATION_EVIDENCE"}
   },
   "coverage": {
     "coverage_status_semantics": {
@@ -150,7 +158,9 @@
     "readme_machine_index_schema": "schema/readme-machine-index.schema.json",
     "readme_parity_test": "tests/test_readme_machine_index.py",
     "source_provenance_audit_schema": "schema/source-provenance-audit.schema.json",
-    "source_provenance_regression_test": "tests/test_source_provenance.py"
+    "source_provenance_regression_test": "tests/test_source_provenance.py",
+    "release_evidence_schema": "schema/release-evidence.schema.json",
+    "release_evidence_regression_test": "tests/test_release_evidence.py"
   },
   "query_and_context": {
     "context_exporter": "scripts/context_export.py",
@@ -167,6 +177,7 @@
       "governance": "GOVERNANCE.md",
       "contributing": "CONTRIBUTING.md",
       "source_provenance_audit": "docs/SOURCE_PROVENANCE_AUDIT.md",
+      "release_evidence_v0_2_0": "docs/REGISTRY_V0_2_0_RELEASE_EVIDENCE.md",
       "international_privacy_pilot": "docs/INTERNATIONAL_PRIVACY_PILOT.md",
       "philippines_privacy_pilot": "docs/PH_PRIVACY_PILOT.md",
       "release_packaging": "docs/RELEASE_PACKAGING.md",
@@ -178,12 +189,19 @@
       "publication_state": "machine/publication-state.json",
       "representation_policy": "machine/representation-policy.json",
       "source_provenance_audit": "machine/source-provenance-audit.v1.json",
+      "release_evidence_v0_2_0": "machine/release-evidence-v0.2.0.json",
       "registry_root": "registry/",
       "schema_root": "schema/"
     }
   },
   "roadmap": {
-    "current": {"program": "INTERNATIONAL_PRIVACY_PILOT", "editable_version": "0.2.0-dev.1", "publication_authorized": false},
+    "current": {
+      "program": "INTERNATIONAL_PRIVACY_PILOT",
+      "editable_version": "0.2.0-dev.1",
+      "trusted_release": "registry-v0.2.0",
+      "trusted_release_state": "PUBLISHED_IMMUTABLE_VERIFIED",
+      "publication_authorized": false
+    },
     "next": {
       "program": "CROSS_DOMAIN_AND_PROVIDER_COMPLIANCE_EXPANSION",
       "status": "RESEARCH_AND_CONTRACT_DESIGN",

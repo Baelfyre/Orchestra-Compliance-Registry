@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "orchestra.compliance-registry.release-evidence.v1",
+  "title": "Compliance Registry Trusted Release Evidence",
+  "type": "object",
+  "required": [
+    "$schema",
+    "schema_version",
+    "trust_state",
+    "release_tag",
+    "registry_version",
+    "release_sequence",
+    "release_id",
+    "release_url",
+    "published_at",
+    "source_commit",
+    "source_tree",
+    "draft",
+    "prerelease",
+    "immutable",
+    "release_manifest_sha256",
+    "bundle_sha256",
+    "assets",
+    "workflow_run_id",
+    "workflow_run_attempt",
+    "workflow_trigger_commit",
+    "release_evidence_issue",
+    "recorded_at",
+    "external_reverification_required_before_trust_or_mutation"
+  ],
+  "properties": {
+    "$schema": {"const": "../schema/release-evidence.schema.json"},
+    "schema_version": {"const": "orchestra.compliance-registry.release-evidence.v1"},
+    "trust_state": {"const": "PUBLISHED_IMMUTABLE_VERIFIED"},
+    "release_tag": {"type": "string", "pattern": "^registry-v[A-Za-z0-9][A-Za-z0-9._+-]{0,127}$"},
+    "registry_version": {"type": "string", "minLength": 1},
+    "release_sequence": {"type": "integer", "minimum": 1},
+    "release_id": {"type": "integer", "minimum": 1},
+    "release_url": {"type": "string", "pattern": "^https://github\\.com/[^\\s]+$"},
+    "published_at": {"type": "string", "minLength": 1},
+    "source_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "source_tree": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "draft": {"const": false},
+    "prerelease": {"const": false},
+    "immutable": {"const": true},
+    "release_manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "bundle_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "assets": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "orchestra-compliance-registry.zip",
+          "orchestra-compliance-registry.zip.sha256",
+          "release-manifest.json",
+          "release-manifest.sha256"
+        ]
+      }
+    },
+    "workflow_run_id": {"type": "integer", "minimum": 1},
+    "workflow_run_attempt": {"type": "integer", "minimum": 1},
+    "workflow_trigger_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "release_evidence_issue": {"type": "integer", "minimum": 1},
+    "recorded_at": {"type": "string", "minLength": 1},
+    "external_reverification_required_before_trust_or_mutation": {"const": true}
+  },
+  "additionalProperties": false
+}
