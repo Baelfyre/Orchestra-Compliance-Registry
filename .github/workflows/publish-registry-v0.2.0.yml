@@ -24,6 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ github.token }}
+      RELEASE_TITLE: Orchestra Compliance Registry v0.2.0
     steps:
       - name: Record publication attempt
         continue-on-error: true
@@ -172,6 +173,28 @@ jobs:
           echo "manifest_sha=$MANIFEST_SHA" >> "$GITHUB_OUTPUT"
           echo "bundle_sha=$BUNDLE_SHA" >> "$GITHUB_OUTPUT"
 
+      - name: Cleanup stale mutable draft from prior attempt
+        shell: bash
+        run: |
+          echo "CLEANUP_STALE_DRAFT" > "$RUNNER_TEMP/release-stage.txt"
+          gh api "repos/$GITHUB_REPOSITORY/releases?per_page=100" > "$RUNNER_TEMP/releases-before.json"
+          python - <<'PY' > "$RUNNER_TEMP/stale-draft-ids.txt"
+          import json
+          import os
+          from pathlib import Path
+
+          releases = json.loads(Path(os.environ["RUNNER_TEMP"], "releases-before.json").read_text(encoding="utf-8"))
+          title = os.environ["RELEASE_TITLE"]
+          for release in releases:
+              if release.get("draft") is True and release.get("name") == title:
+                  print(release["id"])
+          PY
+          while IFS= read -r release_id; do
+            [ -n "$release_id" ] || continue
+            gh api --method DELETE "repos/$GITHUB_REPOSITORY/releases/$release_id"
+          done < "$RUNNER_TEMP/stale-draft-ids.txt"
+          gh api --method DELETE "repos/$GITHUB_REPOSITORY/git/refs/tags/${{ steps.request.outputs.release_tag }}" >/dev/null 2>&1 || true
+
       - name: Verify release namespace is unused
         shell: bash
         run: |
@@ -182,7 +205,7 @@ jobs:
             exit 1
           fi
           if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            echo "Release already exists: $TAG" >&2
+            echo "Published or addressable release already exists: $TAG" >&2
             exit 1
           fi
 
@@ -236,7 +259,7 @@ jobs:
           echo "CREATE_DRAFT_RELEASE" > "$RUNNER_TEMP/release-stage.txt"
           gh release create "${{ steps.request.outputs.release_tag }}" \
             --repo "$GITHUB_REPOSITORY" \
-            --title "Orchestra Compliance Registry v0.2.0" \
+            --title "$RELEASE_TITLE" \
             --notes-file release-notes.md \
             --draft \
             artifacts/release-a/orchestra-compliance-registry.zip \
@@ -244,27 +267,41 @@ jobs:
             artifacts/release-a/release-manifest.json \
             artifacts/release-a/release-manifest.sha256
 
-      - name: Verify draft release before publication
+      - name: Verify draft release by release ID
         id: draft
         shell: bash
-        env:
-          TAG: ${{ steps.request.outputs.release_tag }}
         run: |
           echo "VERIFY_DRAFT_RELEASE" > "$RUNNER_TEMP/release-stage.txt"
-          gh api "repos/$GITHUB_REPOSITORY/releases?per_page=100" > releases.json
-          python - <<'PY' >> "$GITHUB_OUTPUT"
+          RELEASE_ID=""
+          for attempt in 1 2 3 4 5 6 7 8 9 10; do
+            gh api "repos/$GITHUB_REPOSITORY/releases?per_page=100" > "$RUNNER_TEMP/releases-draft.json"
+            RELEASE_ID="$(python - <<'PY'
           import json
           import os
           from pathlib import Path
 
-          tag = os.environ["TAG"]
-          releases = json.loads(Path("releases.json").read_text(encoding="utf-8"))
-          matches = [item for item in releases if item.get("tag_name") == tag]
-          if len(matches) != 1:
-              raise SystemExit(f"expected one draft release for {tag}, found {len(matches)}")
-          release = matches[0]
+          releases = json.loads(Path(os.environ["RUNNER_TEMP"], "releases-draft.json").read_text(encoding="utf-8"))
+          title = os.environ["RELEASE_TITLE"]
+          matches = [release for release in releases if release.get("draft") is True and release.get("name") == title]
+          if len(matches) == 1:
+              print(matches[0]["id"])
+          PY
+          )"
+            [ -n "$RELEASE_ID" ] && break
+            sleep 1
+          done
+          test -n "$RELEASE_ID"
+          gh api "repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID" > "$RUNNER_TEMP/draft-release.json"
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          release = json.loads(Path(os.environ["RUNNER_TEMP"], "draft-release.json").read_text(encoding="utf-8"))
           if release.get("draft") is not True or release.get("prerelease") is not False:
               raise SystemExit("release must be draft and non-prerelease before publication")
+          if release.get("name") != os.environ["RELEASE_TITLE"]:
+              raise SystemExit("draft release title mismatch")
           required = {
               "orchestra-compliance-registry.zip",
               "orchestra-compliance-registry.zip.sha256",
@@ -274,37 +311,47 @@ jobs:
           assets = {item.get("name") for item in release.get("assets", [])}
           if assets != required:
               raise SystemExit(f"release asset mismatch: {sorted(assets)}")
-          print(f"release_id={release['id']}")
           PY
-          TAG_SHA="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$TAG" --jq '.object.sha')"
+          TAG_SHA="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/${{ steps.request.outputs.release_tag }}" --jq '.object.sha')"
           test "$TAG_SHA" = "${{ steps.request.outputs.source_commit }}"
+          echo "release_id=$RELEASE_ID" >> "$GITHUB_OUTPUT"
 
-      - name: Publish trusted release
+      - name: Publish trusted release by release ID
         shell: bash
         run: |
           echo "PUBLISH_RELEASE" > "$RUNNER_TEMP/release-stage.txt"
-          gh release edit "${{ steps.request.outputs.release_tag }}" \
-            --repo "$GITHUB_REPOSITORY" \
-            --draft=false \
-            --latest
+          gh api --method PATCH \
+            "repos/$GITHUB_REPOSITORY/releases/${{ steps.draft.outputs.release_id }}" \
+            -f tag_name="${{ steps.request.outputs.release_tag }}" \
+            -F draft=false \
+            -F prerelease=false \
+            -f make_latest=true > "$RUNNER_TEMP/publish-response.json"
 
       - name: Verify published immutable release
         id: published
         shell: bash
-        env:
-          TAG: ${{ steps.request.outputs.release_tag }}
-          SOURCE_COMMIT: ${{ steps.request.outputs.source_commit }}
-          RELEASE_ID: ${{ steps.draft.outputs.release_id }}
         run: |
           echo "VERIFY_IMMUTABLE_RELEASE" > "$RUNNER_TEMP/release-stage.txt"
-          gh api "repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID" > published-release.json
+          RELEASE_ID="${{ steps.draft.outputs.release_id }}"
+          IMMUTABLE="false"
+          for attempt in 1 2 3 4 5 6 7 8 9 10; do
+            gh api "repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID" > published-release.json
+            IMMUTABLE="$(python - <<'PY'
+          import json
+          from pathlib import Path
+          release = json.loads(Path("published-release.json").read_text(encoding="utf-8"))
+          print("true" if release.get("immutable") is True else "false")
+          PY
+          )"
+            [ "$IMMUTABLE" = "true" ] && break
+            sleep 1
+          done
           if ! python - <<'PY' >> "$GITHUB_OUTPUT"
           import json
-          import os
           from pathlib import Path
 
           release = json.loads(Path("published-release.json").read_text(encoding="utf-8"))
-          if release.get("tag_name") != os.environ["TAG"]:
+          if release.get("tag_name") != "${{ steps.request.outputs.release_tag }}":
               raise SystemExit("published tag mismatch")
           if release.get("draft") is not False:
               raise SystemExit("published release remained draft")
@@ -326,12 +373,15 @@ jobs:
           print(f"published_at={release['published_at']}")
           PY
           then
-            echo "Published release failed trust verification; removing mutable publication." >&2
-            gh release delete "$TAG" --repo "$GITHUB_REPOSITORY" --cleanup-tag --yes || true
+            echo "Published release failed trust verification; removing it only if still mutable." >&2
+            if [ "$IMMUTABLE" != "true" ]; then
+              gh api --method DELETE "repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID" >/dev/null 2>&1 || true
+              gh api --method DELETE "repos/$GITHUB_REPOSITORY/git/refs/tags/${{ steps.request.outputs.release_tag }}" >/dev/null 2>&1 || true
+            fi
             exit 1
           fi
-          TAG_SHA="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$TAG" --jq '.object.sha')"
-          test "$TAG_SHA" = "$SOURCE_COMMIT"
+          TAG_SHA="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/${{ steps.request.outputs.release_tag }}" --jq '.object.sha')"
+          test "$TAG_SHA" = "${{ steps.request.outputs.source_commit }}"
 
       - name: Record trusted release evidence
         shell: bash
@@ -406,16 +456,25 @@ jobs:
         shell: bash
         run: |
           TAG="${{ steps.request.outputs.release_tag }}"
-          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            RELEASE_ID="$(gh api "repos/$GITHUB_REPOSITORY/releases?per_page=100" --jq ".[] | select(.tag_name == \"$TAG\") | .id" | head -n1)"
-            IMMUTABLE="false"
-            if [ -n "$RELEASE_ID" ]; then
-              IMMUTABLE="$(gh api "repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID" --jq '.immutable // false' 2>/dev/null || echo false)"
-            fi
-            if [ "$IMMUTABLE" != "true" ]; then
-              gh release delete "$TAG" --repo "$GITHUB_REPOSITORY" --cleanup-tag --yes || true
-            fi
-          else
+          gh api "repos/$GITHUB_REPOSITORY/releases?per_page=100" > "$RUNNER_TEMP/releases-cleanup.json" || true
+          python - <<'PY' > "$RUNNER_TEMP/cleanup-release-ids.txt"
+          import json
+          import os
+          from pathlib import Path
+
+          path = Path(os.environ["RUNNER_TEMP"], "releases-cleanup.json")
+          if path.exists():
+              releases = json.loads(path.read_text(encoding="utf-8"))
+              title = os.environ["RELEASE_TITLE"]
+              for release in releases:
+                  if release.get("draft") is True and release.get("name") == title:
+                      print(release["id"])
+          PY
+          while IFS= read -r release_id; do
+            [ -n "$release_id" ] || continue
+            gh api --method DELETE "repos/$GITHUB_REPOSITORY/releases/$release_id" >/dev/null 2>&1 || true
+          done < "$RUNNER_TEMP/cleanup-release-ids.txt"
+          if ! gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json isImmutable --jq '.isImmutable' 2>/dev/null | grep -qx true; then
             gh api --method DELETE "repos/$GITHUB_REPOSITORY/git/refs/tags/$TAG" >/dev/null 2>&1 || true
           fi
 
