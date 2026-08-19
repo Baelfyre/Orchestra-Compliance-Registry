@@ -24,6 +24,8 @@ class ReadmeMachineIndexTests(unittest.TestCase):
         cls.publication = load("machine/publication-state.json")
         cls.representation = load("machine/representation-policy.json")
         cls.provenance_audit = load("machine/source-provenance-audit.v1.json")
+        cls.source_monitor_policy = load("machine/source-monitor-policy.json")
+        cls.source_monitor_baseline = load("machine/source-monitor-baseline.v1.json")
 
     def test_machine_index_identity(self) -> None:
         self.assertEqual("README.md", self.index["human_readme"])
@@ -126,6 +128,28 @@ class ReadmeMachineIndexTests(unittest.TestCase):
         )
         self.assertTrue((ROOT / self.index["documentation"]["human"]["source_provenance_audit"]).is_file())
         self.assertTrue((ROOT / self.index["documentation"]["machine"]["source_provenance_audit"]).is_file())
+
+    def test_machine_index_binds_dynamic_source_monitor(self) -> None:
+        monitor = self.index["source_model"]["source_monitoring"]
+        self.assertEqual(self.source_monitor_policy["schedule_hours"], monitor["schedule_hours"])
+        self.assertEqual(self.source_monitor_baseline["baseline_state"], monitor["baseline_state"])
+        self.assertEqual(self.source_monitor_baseline["captured_at"], monitor["baseline_captured_at"])
+        self.assertEqual(len(self.source_monitor_baseline["source_fingerprints"]), monitor["monitored_source_count"])
+        self.assertEqual(self.source_monitor_policy["automatic_candidate_pull_request"], monitor["automatic_candidate_pull_request"])
+        self.assertEqual(self.source_monitor_policy["automatic_merge"], monitor["automatic_merge"])
+        self.assertEqual(self.source_monitor_policy["automatic_trusted_release"], monitor["automatic_trusted_release"])
+        self.assertTrue(monitor["substantive_change_requires_human_interpretation"])
+        self.assertEqual(
+            "machine/source-monitor-policy.json",
+            self.index["records"]["source_monitor_policy"]["path"],
+        )
+        self.assertEqual(
+            "machine/source-monitor-baseline.v1.json",
+            self.index["records"]["source_monitor_baseline"]["path"],
+        )
+        self.assertTrue((ROOT / self.index["documentation"]["human"]["source_monitoring"]).is_file())
+        self.assertTrue((ROOT / self.index["documentation"]["machine"]["source_monitor_policy"]).is_file())
+        self.assertTrue((ROOT / self.index["documentation"]["machine"]["source_monitor_baseline"]).is_file())
 
 
 if __name__ == "__main__":
