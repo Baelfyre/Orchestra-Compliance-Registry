@@ -68,6 +68,7 @@ jobs:
           print("SOURCE_MONITOR_REVIEWED_BASELINE_CURRENT")
           PY
       - name: Preserve live source-monitor evidence
+        if: always()
         uses: actions/upload-artifact@v7
         with:
           name: source-monitor-baseline-preview-${{ github.sha }}
