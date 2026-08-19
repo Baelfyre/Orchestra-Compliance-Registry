@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "orchestra.compliance-registry.capability-manifest.v1",
+  "title": "Compliance Registry Capability Manifest",
+  "type": "object",
+  "required": ["schema_version", "canonical_repository", "authority", "capabilities", "authority_boundaries"],
+  "properties": {
+    "schema_version": {"const": "orchestra.compliance-registry.capability-manifest.v1"},
+    "canonical_repository": {"const": "Baelfyre/Orchestra-Compliance-Registry"},
+    "authority": {"const": "DESCRIPTIVE_NON_AUTHORIZING"},
+    "capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["capability_id", "contract_version", "status", "required_records", "optional", "fallback"],
+        "properties": {
+          "capability_id": {"type": "string", "pattern": "^cap\\.[a-z0-9.-]+\\.v[0-9]+$"},
+          "contract_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+          "status": {"enum": ["SUPPORTED", "DEPRECATED", "EXPERIMENTAL"]},
+          "required_records": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+          "optional": {"type": "boolean"},
+          "fallback": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      }
+    },
+    "authority_boundaries": {
+      "type": "object",
+      "required": ["legal_interpretation", "project_applicability", "orchestra_execution", "automatic_merge", "trusted_release_publication"],
+      "properties": {
+        "legal_interpretation": {"const": false},
+        "project_applicability": {"const": false},
+        "orchestra_execution": {"const": false},
+        "automatic_merge": {"const": false},
+        "trusted_release_publication": {"const": false}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
