@@ -28,6 +28,34 @@
       "checked_at": "2026-08-14",
       "check_method": "SIGNED_PDF_AND_CURRENT_NPC_ISSUANCE_INDEX_REVIEW",
       "note": "Current NPC issuance index still lists Advisory 2025-02 as privacy-engineering guidance."
+    },
+    {
+      "source_id": "EU-GDPR-2016-679",
+      "status": "VERIFIED_CURRENT",
+      "checked_at": "2026-08-19",
+      "check_method": "PRIMARY_AUTHORITY_CURRENT_TEXT_REVIEW",
+      "note": "The current official EUR-Lex text for Regulation (EU) 2016/679 was reviewed as the source for this pilot."
+    },
+    {
+      "source_id": "CA-PIPEDA-SC2000-C5",
+      "status": "CURRENT_WITH_PENDING_CHANGE",
+      "checked_at": "2026-08-19",
+      "check_method": "PRIMARY_AUTHORITY_CURRENT_TEXT_AND_AMENDMENTS_NOT_IN_FORCE_REVIEW",
+      "note": "Justice Laws publishes the current consolidated Act and identifies amendments that are not yet in force; applicability and commencement must be re-evaluated before relying on pending provisions."
+    },
+    {
+      "source_id": "AU-PRIVACY-ACT-1988",
+      "status": "VERIFIED_CURRENT",
+      "checked_at": "2026-08-19",
+      "check_method": "PRIMARY_AUTHORITY_LATEST_COMPILATION_REVIEW",
+      "note": "The latest in-force Privacy Act 1988 compilation on the Federal Register of Legislation was reviewed for this pilot."
+    },
+    {
+      "source_id": "SG-PDPA-2012",
+      "status": "VERIFIED_CURRENT",
+      "checked_at": "2026-08-19",
+      "check_method": "PRIMARY_AUTHORITY_CURRENT_VERSION_REVIEW",
+      "note": "The current Singapore Statutes Online version and amendment timeline for the Personal Data Protection Act 2012 were reviewed for this pilot."
     }
   ]
 }
