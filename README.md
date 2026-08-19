@@ -1,78 +1,118 @@
 # Orchestra Compliance Registry
 
-Public, versioned compliance intelligence for Orchestra.
+**Public, versioned compliance intelligence for governed software and AI-assisted development.**
 
-## Status
+The Registry turns reviewed compliance sources into structured, evidence-oriented records that humans and AI tooling can query without treating documentation, validation, or source discovery as legal advice or execution authority.
 
-**FOUNDATION / SOURCE-BACKED PILOT / registry-v0.1.0 TRUSTED RELEASE PUBLISHED**
+> **Machine entry point:** [`README.json`](README.json)  
+> **Editable source state:** `0.2.0-dev.1` / `DRAFT`  
+> **Current trusted release:** `registry-v0.1.0`
 
-This repository is the canonical public registry for Orchestra compliance intelligence. Canonical `main` remains editable `DRAFT` source state and must not be treated as a trusted distribution merely because it is public or internally valid.
+## Purpose
 
-The first trusted distribution, `registry-v0.1.0`, is published as a non-draft, non-prerelease, immutable GitHub Release from canonical commit `3821bcb55125b4d8864f28b6423650e6e17ac67b`. Its release sequence is `1`, release-manifest SHA-256 is `9922ddcce77dfac0c01cac80fe6669aaffe37636826a56a4b54a8312558ee2d1`, and bundle SHA-256 is `b64889933d30a8dea27bcbbb95c952e4f053c14a4f345e1e04b27777b5025ec0`.
+The Registry is designed to help software projects identify compliance considerations across jurisdictions, technical domains, and platform/provider requirements while preserving source provenance, freshness, applicability review, and explicit trust boundaries.
 
-These are intentionally separate states:
+Current source-backed work is an **international privacy pilot**. Broader software-development, cybersecurity, database/data-governance, AI, and provider/platform coverage is the next expansion program.
 
-- canonical Registry `main`: editable `DRAFT` source state, release sequence `0`;
-- published distribution: immutable `registry-v0.1.0` trusted release, release sequence `1`.
+## How to use it
 
-## Machine-first representation
+| Audience | Start here | Use for |
+| --- | --- | --- |
+| Humans | `README.md` | Quick orientation, coverage, usage, and trust boundaries |
+| AI / agents / tooling | [`README.json`](README.json) | Complete repository map and ordered machine-readable references |
+| Registry consumers | [`registry/manifest.json`](registry/manifest.json) | Canonical editable record map and source-state identity |
+| Source reviewers | [`docs/SOURCE_PROVENANCE_AUDIT.md`](docs/SOURCE_PROVENANCE_AUDIT.md) | Official citations, date provenance, and the latest source rerun |
+| Release consumers | [`machine/publication-state.json`](machine/publication-state.json) | Last verified publication identity; live release must still be reverified |
+| Contributors | [`CONTRIBUTING.md`](CONTRIBUTING.md) | Source, evidence, review, and contribution requirements |
 
-Registry machine state is JSON-first. Markdown is a human-readable reference and must not be parsed to reconstruct machine state when a corresponding JSON record exists.
+## Source provenance
 
-Machine entry points:
+Canonical sources are **official primary sources only**. Government and regulatory records must use the issuing government, regulator, or official legislation service. Provider/platform records must use the provider's own official developer, policy, legal, security, compliance, or documentation site. Wikipedia, social media, blogs, aggregators, and secondary summaries cannot replace an available official primary source.
 
-- `registry/manifest.json`: editable Registry source-state authority and canonical record map;
-- `machine/publication-state.json`: machine-readable publication index for current source and trusted release identity;
-- `machine/representation-policy.json`: representation rules separating machine authority, external publication reality, and human-readable views;
-- `registry/*.json`: compliance data, source status, review state, and other Registry records referenced by the manifest.
+Every source records an official citation and source locator plus the dates supported by the authority, including issuance/publication, entry into force, application, current text/version, last amendment, gathering, and verification where available. Dates are left unset rather than guessed when the reviewed official source does not establish an exact value.
 
-The immutable GitHub Release remains external publication reality and must be re-read before trust or mutation. `machine/publication-state.json` records the last verified publication identity so agents and tooling do not need to reconstruct it from Markdown.
+**Latest provenance rerun:** `2026-08-19`  
+Human audit: [`docs/SOURCE_PROVENANCE_AUDIT.md`](docs/SOURCE_PROVENANCE_AUDIT.md)  
+Machine audit: [`machine/source-provenance-audit.v1.json`](machine/source-provenance-audit.v1.json)
 
-Human-facing files such as this README, `GOVERNANCE.md`, and files under `docs/` explain the machine records. They do not override them.
+## Jurisdiction coverage
 
-See `docs/REGISTRY_V0_1_0_RELEASE_READINESS.md` for historical revision-bound candidate evidence that preceded publication.
+`SOURCE_BACKED_PILOT` means reviewed primary sources and a bounded obligation set exist. It does **not** mean exhaustive legal coverage or automatic project applicability.
+
+| Jurisdiction | Status | Current scope |
+| --- | --- | --- |
+| Philippines | `SOURCE_BACKED_PILOT` | Privacy, data protection, security, privacy engineering |
+| EU / EEA | `SOURCE_BACKED_PILOT` | GDPR design/default, security, DPIA |
+| Canada | `SOURCE_BACKED_PILOT` | Federal PIPEDA accountability and safeguards |
+| Australia | `SOURCE_BACKED_PILOT` | Privacy Act / APP governance, security, retention |
+| Singapore | `SOURCE_BACKED_PILOT` | PDPA protection and retention |
+| United States | `FOUNDATION_ONLY` | Federal/state model pending |
+| Mexico | `FOUNDATION_ONLY` | Source-backed obligation set pending |
+
+See [`docs/INTERNATIONAL_PRIVACY_PILOT.md`](docs/INTERNATIONAL_PRIVACY_PILOT.md) for the bounded international scope.
+
+## Compliance topics
+
+| Topic | Current state | Examples |
+| --- | --- | --- |
+| Privacy & data protection | `SOURCE_BACKED_PILOT` | Processing, accountability, impact assessment |
+| Security | `SOURCE_BACKED_PILOT` | Access control, safeguards, resilience, testing |
+| Data lifecycle | `SOURCE_BACKED_PILOT` | Retention, disposal, de-identification |
+| Privacy engineering | `SOURCE_BACKED_PILOT` | Privacy by design/default, lifecycle traceability |
+| Governance & risk | `SOURCE_BACKED_PILOT` | PIA/DPIA, accountability, management programs |
+| Software development | `NEXT_EXPANSION` | Secure development, software assurance, accessibility |
+| Database & data governance | `NEXT_EXPANSION` | Data handling, storage, retention, access, residency |
+| AI usage & AI systems | `NEXT_EXPANSION` | AI regulation, risk frameworks, model/provider rules |
+| Provider/platform requirements | `NEXT_EXPANSION` | App stores, operating systems, cloud and developer platforms |
+
+## Provider and platform catalog
+
+Provider entries currently establish structure only. They are not yet source-backed policy obligation sets.
+
+| Provider / ecosystem | Status |
+| --- | --- |
+| Apple | `FOUNDATION_ONLY` |
+| Google Play | `FOUNDATION_ONLY` |
+| Microsoft / Windows | `FOUNDATION_ONLY` |
+| Debian | `FOUNDATION_ONLY` |
+| Fedora | `FOUNDATION_ONLY` |
+| Snap Store | `FOUNDATION_ONLY` |
+| Flathub | `FOUNDATION_ONLY` |
+
+The next provider phase will distinguish **contractual platform rules** from **government law/regulation** and from **voluntary technical frameworks**.
+
+## Representation model
+
+| Format | Role | Authority |
+| --- | --- | --- |
+| `README.md` / `docs/*.md` | Compact human explanation and review material | Non-authoritative human reference |
+| `README.json` | Complete machine-readable repository index | Derived and parity-validated index |
+| `registry/*.json` | Canonical structured registry records | Editable machine authority as mapped by the manifest |
+| `machine/*.json` | Publication, representation, provenance-audit, and control metadata | Machine control/reference or evidence state as defined per record |
+| JSON Schema | Deterministic machine-contract validation | Validation contract |
+| TOON | Optional compact AI context projection | Derived, non-authoritative |
+
+When prose and a machine record disagree on an exact deterministic fact, use the machine record and treat the mismatch as documentation drift.
 
 ## Trust boundary
 
-- Public read access does not grant authority to modify canonical registry state.
-- Registry records provide sourced compliance intelligence, not legal advice, project-specific applicability decisions, execution authority, deployment authority, release authority, or policy activation.
-- Contributions and source-monitor output are untrusted until validated and approved through the governed repository workflow.
-- Orchestra users should use verified versioned releases or an explicitly pinned local snapshot, not arbitrary live `main` content.
+- Registry records provide sourced compliance intelligence, **not legal advice**.
+- Applicability to a specific product, organization, user, sector, or processing activity requires explicit review.
+- A platform rule can be mandatory for distribution without being a law.
+- A government or industry framework can be highly relevant without itself being legally binding.
+- Validation proves internal consistency; it does not create legal applicability or publication authority.
+- Trusted distribution requires the separately governed immutable release boundary.
 
-## Current source-backed pilot
+## Go deeper
 
-The first bounded data pilot covers Philippine privacy/data-protection sources published by the National Privacy Commission. It establishes the registry mechanics for source identity, source-status parity, review cadence, direct source locators, evidence-oriented obligations, and fail-closed freshness handling before the broader jurisdiction/provider catalog is populated.
+| Topic | Human reference | Machine reference |
+| --- | --- | --- |
+| Repository overview | `README.md` | [`README.json`](README.json) |
+| Source provenance | [`docs/SOURCE_PROVENANCE_AUDIT.md`](docs/SOURCE_PROVENANCE_AUDIT.md) | [`machine/source-provenance-audit.v1.json`](machine/source-provenance-audit.v1.json) |
+| Governance | [`GOVERNANCE.md`](GOVERNANCE.md) | [`machine/representation-policy.json`](machine/representation-policy.json) |
+| Registry records | Documentation and pilot notes | [`registry/manifest.json`](registry/manifest.json) |
+| Publication state | [`docs/RELEASE_PACKAGING.md`](docs/RELEASE_PACKAGING.md) | [`machine/publication-state.json`](machine/publication-state.json) |
+| International privacy pilot | [`docs/INTERNATIONAL_PRIVACY_PILOT.md`](docs/INTERNATIONAL_PRIVACY_PILOT.md) | `registry/jurisdictions.json`, `registry/sources.json`, `registry/obligations.json` |
+| Contributions | [`CONTRIBUTING.md`](CONTRIBUTING.md) | JSON Schemas under `schema/` |
 
-Canonical source state deliberately remains `DRAFT`:
-
-- source presence and currentness are verified against primary NPC publications;
-- obligation records preserve source IDs and section locators rather than presenting project-specific legal conclusions;
-- Governor remains responsible for applicability and material interpretation;
-- every source must have matching `source-status.json` and `review-due.json` entries;
-- a missed review date fails validation unless the source is explicitly marked `REVIEW_OVERDUE`;
-- Registry Validation also runs on a daily schedule so freshness debt cannot remain invisible indefinitely.
-
-See `docs/PH_PRIVACY_PILOT.md` for the bounded source set and interpretation boundary.
-
-## Deterministic release candidates and trusted publication
-
-`scripts/build_release.py` can transform validated `DRAFT` Registry source state into a deterministic **candidate bundle** without modifying the canonical source files. The candidate contains a `TRUSTED_RELEASE` staging manifest, exact SHA-256 inventory, external `release-manifest.sha256`, and `orchestra-compliance-registry.zip.sha256` evidence.
-
-Candidate construction is not publication. Content hashes establish integrity, while trusted provenance requires the separately governed immutable GitHub Release boundary, or an independently obtained release-manifest SHA-256 for offline installation. CI builds and preserves candidates as revision-bound workflow artifacts so packaging remains continuously testable without silently turning branch content into a trusted release.
-
-Machine metadata under `machine/` is intentionally outside the distributed `registry/` root. It must not silently change the trusted Registry bundle inventory or the immutable v0.1.0 release identity.
-
-`registry-v0.1.0` has completed that separate publication transition and is the current trusted release. Future candidates remain untrusted until their own governed publication and independent verification complete.
-
-See `docs/RELEASE_PACKAGING.md` for the bundle contract, deterministic-build rules, and publication gate, and `docs/REGISTRY_V0_1_0_RELEASE_READINESS.md` for the first candidate's readiness evidence.
-
-## Planned registry domains
-
-- Jurisdictions: Philippines, EU/EEA, United States, Canada, Mexico
-- Standards: accessibility, privacy, security, software quality
-- Providers: Apple, Google, Microsoft/Windows, Linux distribution ecosystems
-- Source freshness, supersession, applicability, provenance, and review tracking
-
-## Security
-
-Canonical changes use the active protected pull-request ruleset, required Registry Validation, Squash-only promotion, immutable release manifests, and least-privilege automation. Trusted publication remains a separate release transition.
+Canonical changes remain pull-request governed. A trusted Registry release is a separate publication transition.

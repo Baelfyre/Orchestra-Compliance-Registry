@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "orchestra.compliance-registry.source-provenance-audit.v1",
+  "title": "Compliance Registry Source Provenance Audit",
+  "type": "object",
+  "required": [
+    "$schema",
+    "schema_version",
+    "audit_id",
+    "authority",
+    "audited_at",
+    "canonical_source_policy",
+    "date_model",
+    "summary",
+    "sources",
+    "obligation_recheck",
+    "corrections",
+    "human_companion",
+    "canonical_source_records",
+    "external_reverification_required_before_trust_or_mutation"
+  ],
+  "properties": {
+    "$schema": {"const": "../schema/source-provenance-audit.schema.json"},
+    "schema_version": {"const": "orchestra.compliance-registry.source-provenance-audit.v1"},
+    "audit_id": {"type": "string", "minLength": 1},
+    "authority": {"const": "EVIDENCE_ONLY_DOES_NOT_REPLACE_REGISTRY_SOURCE_AUTHORITY"},
+    "audited_at": {"type": "string", "format": "date"},
+    "canonical_source_policy": {
+      "type": "object",
+      "required": [
+        "policy",
+        "government_and_regulator_rule",
+        "provider_rule",
+        "secondary_material_may_replace_canonical_source",
+        "wikipedia_allowed_as_canonical_source",
+        "social_media_allowed_as_canonical_source",
+        "blogs_or_aggregators_allowed_as_canonical_source"
+      ],
+      "properties": {
+        "policy": {"const": "OFFICIAL_PRIMARY_ONLY"},
+        "government_and_regulator_rule": {"type": "string", "minLength": 1},
+        "provider_rule": {"type": "string", "minLength": 1},
+        "secondary_material_may_replace_canonical_source": {"const": false},
+        "wikipedia_allowed_as_canonical_source": {"const": false},
+        "social_media_allowed_as_canonical_source": {"const": false},
+        "blogs_or_aggregators_allowed_as_canonical_source": {"const": false}
+      },
+      "additionalProperties": false
+    },
+    "date_model": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {"type": "string", "minLength": 1}
+    },
+    "summary": {
+      "type": "object",
+      "required": ["audited_source_count", "rechecked_obligation_count", "substantive_obligation_corrections", "metadata_date_corrections", "audit_result"],
+      "properties": {
+        "audited_source_count": {"type": "integer", "minimum": 0},
+        "rechecked_obligation_count": {"type": "integer", "minimum": 0},
+        "substantive_obligation_corrections": {"type": "integer", "minimum": 0},
+        "metadata_date_corrections": {"type": "integer", "minimum": 0},
+        "audit_result": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["source_id", "official_domain", "official_url", "identifier", "gathered_at", "verified_at", "date_findings", "result"],
+        "properties": {
+          "source_id": {"type": "string", "minLength": 1},
+          "official_domain": {"type": "string", "minLength": 1},
+          "official_url": {"type": "string", "pattern": "^https://[^\\s]+$"},
+          "identifier": {"type": "string", "minLength": 1},
+          "gathered_at": {"type": "string", "format": "date"},
+          "verified_at": {"type": "string", "format": "date"},
+          "date_findings": {
+            "type": "array",
+            "minItems": 1,
+            "items": {"type": "string", "minLength": 1}
+          },
+          "result": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      }
+    },
+    "obligation_recheck": {
+      "type": "object",
+      "required": ["result", "source_locator_recheck", "jurisdictions", "interpretation_boundary_preserved"],
+      "properties": {
+        "result": {"type": "string", "minLength": 1},
+        "source_locator_recheck": {"const": true},
+        "jurisdictions": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "interpretation_boundary_preserved": {"const": true}
+      },
+      "additionalProperties": false
+    },
+    "corrections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source_id", "field", "previous_representation", "corrected_representation", "reason"],
+        "properties": {
+          "source_id": {"type": "string", "minLength": 1},
+          "field": {"type": "string", "minLength": 1},
+          "previous_representation": {"type": "string", "minLength": 1},
+          "corrected_representation": {"type": "string", "minLength": 1},
+          "reason": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      }
+    },
+    "human_companion": {"const": "docs/SOURCE_PROVENANCE_AUDIT.md"},
+    "canonical_source_records": {"const": "registry/sources.json"},
+    "external_reverification_required_before_trust_or_mutation": {"const": true}
+  },
+  "additionalProperties": false
+}

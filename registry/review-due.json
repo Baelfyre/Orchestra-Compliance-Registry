@@ -3,31 +3,59 @@
   "entries": [
     {
       "source_id": "PH-DPA-RA10173",
-      "last_reviewed": "2026-08-14",
-      "next_review_due": "2026-11-12",
+      "last_reviewed": "2026-08-19",
+      "next_review_due": "2026-11-17",
       "review_interval_days": 90,
       "review_scope": "SOURCE_AVAILABILITY_SUPERSESSION_AMENDMENT_AND_CURRENTNESS"
     },
     {
       "source_id": "PH-DPA-IRR-2016",
-      "last_reviewed": "2026-08-14",
-      "next_review_due": "2026-11-12",
+      "last_reviewed": "2026-08-19",
+      "next_review_due": "2026-11-17",
       "review_interval_days": 90,
       "review_scope": "SOURCE_AVAILABILITY_SUPERSESSION_AMENDMENT_AND_CURRENTNESS"
     },
     {
       "source_id": "PH-NPC-CIRC-2023-06",
-      "last_reviewed": "2026-08-14",
-      "next_review_due": "2026-11-12",
+      "last_reviewed": "2026-08-19",
+      "next_review_due": "2026-11-17",
       "review_interval_days": 90,
       "review_scope": "SOURCE_AVAILABILITY_SUPERSESSION_AMENDMENT_EFFECTIVITY_AND_CURRENTNESS"
     },
     {
       "source_id": "PH-NPC-ADV-2025-02",
-      "last_reviewed": "2026-08-14",
-      "next_review_due": "2026-10-13",
+      "last_reviewed": "2026-08-19",
+      "next_review_due": "2026-10-18",
       "review_interval_days": 60,
       "review_scope": "SOURCE_AVAILABILITY_SUPERSESSION_REPLACEMENT_AND_CURRENTNESS"
+    },
+    {
+      "source_id": "EU-GDPR-2016-679",
+      "last_reviewed": "2026-08-19",
+      "next_review_due": "2026-11-17",
+      "review_interval_days": 90,
+      "review_scope": "SOURCE_AVAILABILITY_SUPERSESSION_AMENDMENT_AND_CURRENTNESS"
+    },
+    {
+      "source_id": "CA-PIPEDA-SC2000-C5",
+      "last_reviewed": "2026-08-19",
+      "next_review_due": "2026-10-18",
+      "review_interval_days": 60,
+      "review_scope": "SOURCE_AVAILABILITY_AMENDMENT_COMMENCEMENT_PENDING_CHANGE_AND_CURRENTNESS"
+    },
+    {
+      "source_id": "AU-PRIVACY-ACT-1988",
+      "last_reviewed": "2026-08-19",
+      "next_review_due": "2026-10-18",
+      "review_interval_days": 60,
+      "review_scope": "SOURCE_AVAILABILITY_SUPERSESSION_AMENDMENT_COMPILATION_AND_CURRENTNESS"
+    },
+    {
+      "source_id": "SG-PDPA-2012",
+      "last_reviewed": "2026-08-19",
+      "next_review_due": "2026-10-18",
+      "review_interval_days": 60,
+      "review_scope": "SOURCE_AVAILABILITY_SUPERSESSION_AMENDMENT_VERSION_TIMELINE_AND_CURRENTNESS"
     }
   ]
 }

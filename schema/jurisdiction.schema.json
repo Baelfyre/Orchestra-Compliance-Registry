@@ -10,7 +10,9 @@
     "kind": {
       "enum": ["COUNTRY", "REGIONAL_FRAMEWORK", "COUNTRY_WITH_SUBJURISDICTIONS"]
     },
-    "status": {"const": "FOUNDATION_ONLY"}
+    "status": {
+      "enum": ["FOUNDATION_ONLY", "SOURCE_BACKED_PILOT"]
+    }
   },
   "additionalProperties": false
 }

@@ -1,0 +1,134 @@
+{
+  "$schema": "../schema/source-provenance-audit.schema.json",
+  "schema_version": "orchestra.compliance-registry.source-provenance-audit.v1",
+  "audit_id": "international-privacy-pilot-provenance-2026-08-19",
+  "authority": "EVIDENCE_ONLY_DOES_NOT_REPLACE_REGISTRY_SOURCE_AUTHORITY",
+  "audited_at": "2026-08-19",
+  "canonical_source_policy": {
+    "policy": "OFFICIAL_PRIMARY_ONLY",
+    "government_and_regulator_rule": "USE_ISSUING_GOVERNMENT_REGULATOR_OR_OFFICIAL_LEGISLATION_SERVICE",
+    "provider_rule": "USE_PROVIDER_OFFICIAL_DEVELOPER_POLICY_LEGAL_SECURITY_COMPLIANCE_OR_DOCUMENTATION_SITE",
+    "secondary_material_may_replace_canonical_source": false,
+    "wikipedia_allowed_as_canonical_source": false,
+    "social_media_allowed_as_canonical_source": false,
+    "blogs_or_aggregators_allowed_as_canonical_source": false
+  },
+  "date_model": {
+    "issued_date": "ASSENT_PROMULGATION_ADOPTION_SIGNATURE_OR_ISSUANCE_WHERE_OFFICIALLY_STATED",
+    "publication_date": "OFFICIAL_PUBLICATION_DATE_WHERE_DISTINCT",
+    "effective_date": "ENTRY_INTO_FORCE_OR_COMMENCEMENT_WHERE_OFFICIALLY_ESTABLISHED",
+    "applicable_date": "DATE_RELEVANT_PROVISIONS_BECAME_APPLICABLE_WHERE_DISTINCT",
+    "current_text_as_of": "DATE_OR_VERSION_OF_OFFICIAL_CONSOLIDATED_TEXT_REVIEWED",
+    "last_amended_date": "LATEST_AMENDMENT_DATE_STATED_BY_OFFICIAL_SOURCE",
+    "gathered_at": "DATE_SOURCE_WAS_RETRIEVED_FOR_REGISTRY",
+    "verified_at": "DATE_SOURCE_CURRENTNESS_AND_IDENTITY_WERE_CHECKED",
+    "missing_date_rule": "DO_NOT_INFER_EXACT_DATE_WITHOUT_OFFICIAL_SOURCE_SUPPORT"
+  },
+  "summary": {
+    "audited_source_count": 8,
+    "rechecked_obligation_count": 15,
+    "substantive_obligation_corrections": 0,
+    "metadata_date_corrections": 1,
+    "audit_result": "PASS_WITH_GDPR_DATE_SEMANTIC_CORRECTION"
+  },
+  "sources": [
+    {
+      "source_id": "PH-DPA-RA10173",
+      "official_domain": "privacy.gov.ph",
+      "official_url": "https://privacy.gov.ph/data-privacy-act/",
+      "identifier": "Republic Act No. 10173",
+      "gathered_at": "2026-08-19",
+      "verified_at": "2026-08-19",
+      "date_findings": ["issued_date=2012-08-15", "exact_effective_date_not_asserted_from_reviewed_official_page"],
+      "result": "VERIFIED_OFFICIAL_PRIMARY_SOURCE"
+    },
+    {
+      "source_id": "PH-DPA-IRR-2016",
+      "official_domain": "privacy.gov.ph",
+      "official_url": "https://privacy.gov.ph/implementing-rules-regulations-data-privacy-act-2012/",
+      "identifier": "Implementing Rules and Regulations of Republic Act No. 10173",
+      "gathered_at": "2026-08-19",
+      "verified_at": "2026-08-19",
+      "date_findings": ["issued_date=2016-08-24", "exact_effective_date_not_asserted_without_official_publication_date"],
+      "result": "VERIFIED_OFFICIAL_PRIMARY_SOURCE"
+    },
+    {
+      "source_id": "PH-NPC-CIRC-2023-06",
+      "official_domain": "privacy.gov.ph",
+      "official_url": "https://privacy.gov.ph/wp-content/uploads/2024/03/NPC-Circular-Repeal-16-01-Signed.pdf",
+      "identifier": "NPC Circular 2023-06",
+      "gathered_at": "2026-08-19",
+      "verified_at": "2026-08-19",
+      "date_findings": ["issued_date=2023-12-01", "effective_date=2024-03-30"],
+      "result": "VERIFIED_OFFICIAL_PRIMARY_SOURCE"
+    },
+    {
+      "source_id": "PH-NPC-ADV-2025-02",
+      "official_domain": "privacy.gov.ph",
+      "official_url": "https://privacy.gov.ph/wp-content/uploads/2025/12/NPC_Advisory2025-02.pdf",
+      "identifier": "NPC Advisory No. 2025-02",
+      "gathered_at": "2026-08-19",
+      "verified_at": "2026-08-19",
+      "date_findings": ["issued_date=2025-08-27", "source_class=regulatory_advisory_guidance"],
+      "result": "VERIFIED_OFFICIAL_PRIMARY_SOURCE"
+    },
+    {
+      "source_id": "EU-GDPR-2016-679",
+      "official_domain": "eur-lex.europa.eu",
+      "official_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32016R0679",
+      "identifier": "Regulation (EU) 2016/679; CELEX 32016R0679",
+      "gathered_at": "2026-08-19",
+      "verified_at": "2026-08-19",
+      "date_findings": ["issued_date=2016-04-27", "publication_date=2016-05-04", "effective_date=2016-05-24", "applicable_date=2018-05-25"],
+      "result": "VERIFIED_OFFICIAL_PRIMARY_SOURCE_DATE_SEMANTICS_CORRECTED"
+    },
+    {
+      "source_id": "CA-PIPEDA-SC2000-C5",
+      "official_domain": "laws-lois.justice.gc.ca",
+      "official_url": "https://laws-lois.justice.gc.ca/eng/acts/P-8.6/",
+      "identifier": "S.C. 2000, c. 5",
+      "gathered_at": "2026-08-19",
+      "verified_at": "2026-08-19",
+      "date_findings": ["applicable_date_part_1=2001-01-01", "current_text_as_of=2026-06-14", "last_amended_date=2025-03-04", "amendments_not_in_force_tracked_separately"],
+      "result": "CURRENT_OFFICIAL_PRIMARY_SOURCE_WITH_PENDING_CHANGE"
+    },
+    {
+      "source_id": "AU-PRIVACY-ACT-1988",
+      "official_domain": "legislation.gov.au",
+      "official_url": "https://www.legislation.gov.au/C2004A03712/latest/text",
+      "identifier": "Privacy Act 1988 No. 119, 1988; C2026C00227 C104",
+      "gathered_at": "2026-08-19",
+      "verified_at": "2026-08-19",
+      "date_findings": ["issued_date=1988-12-14", "effective_date=1989-01-01", "current_text_as_of=2026-06-04"],
+      "result": "VERIFIED_OFFICIAL_PRIMARY_SOURCE"
+    },
+    {
+      "source_id": "SG-PDPA-2012",
+      "official_domain": "sso.agc.gov.sg",
+      "official_url": "https://sso.agc.gov.sg/Act/PDPA2012",
+      "identifier": "Act 26 of 2012",
+      "gathered_at": "2026-08-19",
+      "verified_at": "2026-08-19",
+      "date_findings": ["publication_date=2012-12-03", "applicable_date_principal_parts=2014-07-02", "current_text_as_of=2026-08-07", "last_amended_date=2025-12-05"],
+      "result": "VERIFIED_OFFICIAL_PRIMARY_SOURCE"
+    }
+  ],
+  "obligation_recheck": {
+    "result": "PASS_NO_SUBSTANTIVE_CORRECTION_REQUIRED",
+    "source_locator_recheck": true,
+    "jurisdictions": ["PH", "EU-EEA", "CA", "AU", "SG"],
+    "interpretation_boundary_preserved": true
+  },
+  "corrections": [
+    {
+      "source_id": "EU-GDPR-2016-679",
+      "field": "date_semantics",
+      "previous_representation": "2018-05-25 recorded as effective_date",
+      "corrected_representation": "effective_date=2016-05-24; applicable_date=2018-05-25",
+      "reason": "EUR-Lex and Article 99 distinguish entry into force from application."
+    }
+  ],
+  "human_companion": "docs/SOURCE_PROVENANCE_AUDIT.md",
+  "canonical_source_records": "registry/sources.json",
+  "external_reverification_required_before_trust_or_mutation": true
+}

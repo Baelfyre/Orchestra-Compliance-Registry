@@ -8,6 +8,7 @@
     "canonical_repository",
     "machine_priority",
     "machine_authority",
+    "repository_overview_pair",
     "external_source_reality",
     "human_views",
     "ai_context_views",
@@ -22,11 +23,24 @@
     "machine_priority": {"const": true},
     "machine_authority": {
       "type": "object",
-      "required": ["editable_registry_state", "publication_state", "registry_records_from_manifest"],
+      "required": ["editable_registry_state", "publication_state", "repository_index", "registry_records_from_manifest"],
       "properties": {
         "editable_registry_state": {"const": "registry/manifest.json"},
         "publication_state": {"const": "machine/publication-state.json"},
+        "repository_index": {"const": "README.json"},
         "registry_records_from_manifest": {"const": true}
+      },
+      "additionalProperties": false
+    },
+    "repository_overview_pair": {
+      "type": "object",
+      "required": ["human", "machine", "human_role", "machine_role", "machine_index_authority"],
+      "properties": {
+        "human": {"const": "README.md"},
+        "machine": {"const": "README.json"},
+        "human_role": {"const": "COMPACT_HUMAN_ORIENTATION"},
+        "machine_role": {"const": "COMPLETE_MACHINE_REPOSITORY_INDEX"},
+        "machine_index_authority": {"const": "DERIVED_AND_PARITY_VALIDATED_PROJECTION"}
       },
       "additionalProperties": false
     },

@@ -10,12 +10,7 @@
       "domains": ["privacy", "risk-management", "systems-lifecycle"],
       "source_locator": "NPC Circular 2023-06 Sections 4(D) and 5",
       "summary": "A PIC or PIP processing personal data should maintain a Privacy Impact Assessment covering the processing lifecycle and update it when material processing, regulatory, contractual, feature, or processor changes occur.",
-      "required_evidence": [
-        "privacy_impact_assessment_record",
-        "data_inventory_and_processing_lifecycle",
-        "privacy_risk_and_control_mapping",
-        "material_change_reassessment_record"
-      ],
+      "required_evidence": ["privacy_impact_assessment_record", "data_inventory_and_processing_lifecycle", "privacy_risk_and_control_mapping", "material_change_reassessment_record"],
       "interpretation_state": "DIRECT_TEXTUAL_DUTY_REQUIRES_GOVERNOR_APPLICABILITY_REVIEW"
     },
     {
@@ -27,12 +22,7 @@
       "domains": ["privacy", "governance", "training"],
       "source_locator": "NPC Circular 2023-06 Section 4(E)-(F)",
       "summary": "A PIC or PIP should maintain an organizational privacy management program with leadership responsibility, a control framework, continuous improvement, and periodic privacy/data-protection training.",
-      "required_evidence": [
-        "privacy_management_program",
-        "privacy_control_framework",
-        "privacy_training_records",
-        "continuous_improvement_review"
-      ],
+      "required_evidence": ["privacy_management_program", "privacy_control_framework", "privacy_training_records", "continuous_improvement_review"],
       "interpretation_state": "DIRECT_TEXTUAL_DUTY_REQUIRES_GOVERNOR_APPLICABILITY_REVIEW"
     },
     {
@@ -44,12 +34,7 @@
       "domains": ["privacy", "privacy-engineering", "systems-lifecycle"],
       "source_locator": "NPC Circular 2023-06 Sections 7-8; NPC Advisory 2025-02 provides lifecycle guidance",
       "summary": "For applicable data-processing systems, privacy safeguards should be considered in system design and only data necessary for the stated processing purpose should be enabled by default.",
-      "required_evidence": [
-        "privacy_requirements_in_system_design",
-        "default_processing_configuration_review",
-        "data_minimization_design_evidence",
-        "privacy_engineering_traceability"
-      ],
+      "required_evidence": ["privacy_requirements_in_system_design", "default_processing_configuration_review", "data_minimization_design_evidence", "privacy_engineering_traceability"],
       "interpretation_state": "CIRCULAR_DUTY_WITH_ADVISORY_GUIDANCE_REQUIRES_GOVERNOR_APPLICABILITY_REVIEW"
     },
     {
@@ -61,12 +46,7 @@
       "domains": ["privacy", "data-lifecycle", "retention"],
       "source_locator": "NPC Circular 2023-06 Section 9; Data Privacy Act Section 11",
       "summary": "Personal data should not be retained longer than necessary for its lawful purpose, and the organization should document, periodically review, and update retention periods.",
-      "required_evidence": [
-        "documented_retention_policy",
-        "retention_schedule",
-        "retention_review_record",
-        "deletion_or_disposal_control_evidence"
-      ],
+      "required_evidence": ["documented_retention_policy", "retention_schedule", "retention_review_record", "deletion_or_disposal_control_evidence"],
       "interpretation_state": "DIRECT_TEXTUAL_DUTY_REQUIRES_GOVERNOR_APPLICABILITY_REVIEW"
     },
     {
@@ -78,12 +58,7 @@
       "domains": ["privacy", "security", "access-control"],
       "source_locator": "NPC Circular 2023-06 Sections 12-16",
       "summary": "Access to personal data should be restricted to authorized personnel on a need-to-know basis, governed by access-control procedures and appropriate authentication mechanisms for applicable online access.",
-      "required_evidence": [
-        "access_control_policy",
-        "authorized_access_review",
-        "authentication_control_evidence",
-        "processor_access_contract_or_equivalent"
-      ],
+      "required_evidence": ["access_control_policy", "authorized_access_review", "authentication_control_evidence", "processor_access_contract_or_equivalent"],
       "interpretation_state": "DIRECT_TEXTUAL_DUTY_REQUIRES_GOVERNOR_APPLICABILITY_REVIEW"
     },
     {
@@ -95,12 +70,115 @@
       "domains": ["privacy", "security", "business-continuity", "resilience"],
       "source_locator": "NPC Circular 2023-06 Section 21",
       "summary": "A PIC or PIP should maintain business-continuity planning that addresses personal-data backup, restoration and remedial time and is periodically reviewed and tested.",
-      "required_evidence": [
-        "business_continuity_plan",
-        "personal_data_backup_and_restore_procedure",
-        "business_continuity_test_evidence",
-        "periodic_bcp_review_record"
-      ],
+      "required_evidence": ["business_continuity_plan", "personal_data_backup_and_restore_procedure", "business_continuity_test_evidence", "periodic_bcp_review_record"],
+      "interpretation_state": "DIRECT_TEXTUAL_DUTY_REQUIRES_GOVERNOR_APPLICABILITY_REVIEW"
+    },
+    {
+      "obligation_id": "EU-GDPR-BY-DESIGN-DEFAULT",
+      "title": "Implement data protection by design and by default",
+      "source_ids": ["EU-GDPR-2016-679"],
+      "jurisdiction_ids": ["EU-EEA"],
+      "provider_ids": [],
+      "domains": ["privacy", "privacy-engineering", "data-minimization", "systems-lifecycle"],
+      "source_locator": "GDPR Article 25",
+      "summary": "For processing within scope, the controller must implement appropriate technical and organisational measures designed to implement data-protection principles and integrate safeguards, including default settings that limit processing to personal data necessary for each specific purpose.",
+      "required_evidence": ["data_protection_by_design_assessment", "default_processing_configuration_review", "data_minimization_control_evidence", "technical_and_organizational_measure_traceability"],
+      "interpretation_state": "DIRECT_TEXTUAL_DUTY_REQUIRES_GOVERNOR_APPLICABILITY_REVIEW"
+    },
+    {
+      "obligation_id": "EU-GDPR-SECURITY",
+      "title": "Implement security of processing appropriate to risk",
+      "source_ids": ["EU-GDPR-2016-679"],
+      "jurisdiction_ids": ["EU-EEA"],
+      "provider_ids": [],
+      "domains": ["privacy", "security", "resilience", "risk-management"],
+      "source_locator": "GDPR Article 32",
+      "summary": "Controllers and processors within scope must implement appropriate technical and organisational measures to provide a level of security appropriate to processing risk, including measures for confidentiality, integrity, availability, resilience, recovery, and regular effectiveness testing as appropriate.",
+      "required_evidence": ["security_risk_assessment", "technical_and_organizational_security_controls", "resilience_and_restore_evidence", "security_control_testing_record"],
+      "interpretation_state": "DIRECT_TEXTUAL_DUTY_REQUIRES_GOVERNOR_APPLICABILITY_REVIEW"
+    },
+    {
+      "obligation_id": "EU-GDPR-DPIA",
+      "title": "Conduct a Data Protection Impact Assessment for likely high-risk processing",
+      "source_ids": ["EU-GDPR-2016-679"],
+      "jurisdiction_ids": ["EU-EEA"],
+      "provider_ids": [],
+      "domains": ["privacy", "risk-management", "systems-lifecycle"],
+      "source_locator": "GDPR Article 35",
+      "summary": "Where a type of processing is likely to result in a high risk to the rights and freedoms of natural persons, the controller must carry out an assessment of the envisaged processing operations on personal-data protection before the processing.",
+      "required_evidence": ["data_protection_impact_assessment", "high_risk_processing_assessment", "privacy_risk_mitigation_record", "pre_processing_review_record"],
+      "interpretation_state": "DIRECT_TEXTUAL_DUTY_REQUIRES_GOVERNOR_APPLICABILITY_REVIEW"
+    },
+    {
+      "obligation_id": "CA-PIPEDA-ACCOUNTABILITY",
+      "title": "Assign accountability for personal-information compliance",
+      "source_ids": ["CA-PIPEDA-SC2000-C5"],
+      "jurisdiction_ids": ["CA"],
+      "provider_ids": [],
+      "domains": ["privacy", "governance", "accountability"],
+      "source_locator": "PIPEDA Section 5(1); Schedule 1 Clause 4.1",
+      "summary": "For organizations within scope, responsibility for personal information under the organization's control includes designating one or more individuals accountable for compliance and implementing policies and practices that give effect to the Schedule 1 principles.",
+      "required_evidence": ["privacy_accountability_assignment", "privacy_policies_and_practices", "complaint_and_inquiry_procedure", "privacy_training_or_staff_communication_record"],
+      "interpretation_state": "DIRECT_TEXTUAL_DUTY_REQUIRES_GOVERNOR_APPLICABILITY_REVIEW"
+    },
+    {
+      "obligation_id": "CA-PIPEDA-SAFEGUARDS",
+      "title": "Protect personal information using safeguards appropriate to sensitivity",
+      "source_ids": ["CA-PIPEDA-SC2000-C5"],
+      "jurisdiction_ids": ["CA"],
+      "provider_ids": [],
+      "domains": ["privacy", "security", "access-control", "risk-management"],
+      "source_locator": "PIPEDA Section 5(1); Schedule 1 Clause 4.7",
+      "summary": "For organizations within scope, personal information must be protected by security safeguards appropriate to its sensitivity, including protection against loss, theft, unauthorized access, disclosure, copying, use, or modification.",
+      "required_evidence": ["information_sensitivity_assessment", "security_safeguard_inventory", "access_restriction_evidence", "personal_information_security_review"],
+      "interpretation_state": "DIRECT_TEXTUAL_DUTY_REQUIRES_GOVERNOR_APPLICABILITY_REVIEW"
+    },
+    {
+      "obligation_id": "AU-APP-OPEN-TRANSPARENT-MANAGEMENT",
+      "title": "Manage personal information openly and transparently",
+      "source_ids": ["AU-PRIVACY-ACT-1988"],
+      "jurisdiction_ids": ["AU"],
+      "provider_ids": [],
+      "domains": ["privacy", "governance", "transparency"],
+      "source_locator": "Privacy Act 1988 Schedule 1, Australian Privacy Principle 1",
+      "summary": "An APP entity within scope must take reasonable steps to implement practices, procedures, and systems that support APP compliance and complaint handling, and must maintain a clearly expressed, up-to-date privacy policy about its management of personal information.",
+      "required_evidence": ["app_compliance_practices_and_procedures", "privacy_complaint_handling_process", "current_privacy_policy", "privacy_management_review_record"],
+      "interpretation_state": "DIRECT_TEXTUAL_DUTY_REQUIRES_GOVERNOR_APPLICABILITY_REVIEW"
+    },
+    {
+      "obligation_id": "AU-APP-SECURITY-RETENTION",
+      "title": "Protect personal information and destroy or de-identify it when no longer required",
+      "source_ids": ["AU-PRIVACY-ACT-1988"],
+      "jurisdiction_ids": ["AU"],
+      "provider_ids": [],
+      "domains": ["privacy", "security", "retention", "data-lifecycle"],
+      "source_locator": "Privacy Act 1988 Schedule 1, Australian Privacy Principle 11",
+      "summary": "An APP entity that holds personal information must take reasonable steps to protect it from misuse, interference, loss, and unauthorized access, modification, or disclosure, and must take reasonable steps to destroy or de-identify information when APP 11.2 conditions are met.",
+      "required_evidence": ["personal_information_security_controls", "security_control_review", "retention_and_disposal_policy", "destruction_or_deidentification_evidence"],
+      "interpretation_state": "DIRECT_TEXTUAL_DUTY_REQUIRES_GOVERNOR_APPLICABILITY_REVIEW"
+    },
+    {
+      "obligation_id": "SG-PDPA-PROTECTION",
+      "title": "Protect personal data with reasonable security arrangements",
+      "source_ids": ["SG-PDPA-2012"],
+      "jurisdiction_ids": ["SG"],
+      "provider_ids": [],
+      "domains": ["privacy", "security", "access-control"],
+      "source_locator": "Personal Data Protection Act 2012 Section 24",
+      "summary": "An organisation within scope must protect personal data in its possession or under its control by making reasonable security arrangements against unauthorized access, collection, use, disclosure, copying, modification, disposal, similar risks, and loss of storage media or devices.",
+      "required_evidence": ["personal_data_security_arrangements", "access_control_evidence", "storage_media_protection_controls", "security_review_record"],
+      "interpretation_state": "DIRECT_TEXTUAL_DUTY_REQUIRES_GOVERNOR_APPLICABILITY_REVIEW"
+    },
+    {
+      "obligation_id": "SG-PDPA-RETENTION",
+      "title": "Cease retention when personal data is no longer needed for its purpose or legal/business needs",
+      "source_ids": ["SG-PDPA-2012"],
+      "jurisdiction_ids": ["SG"],
+      "provider_ids": [],
+      "domains": ["privacy", "retention", "data-lifecycle"],
+      "source_locator": "Personal Data Protection Act 2012 Section 25",
+      "summary": "An organisation within scope must cease retaining documents containing personal data, or remove the means by which the data can be associated with particular individuals, once the collection purpose is no longer served by retention and retention is no longer necessary for legal or business purposes.",
+      "required_evidence": ["personal_data_retention_policy", "retention_purpose_review", "legal_and_business_retention_basis", "disposal_or_deidentification_evidence"],
       "interpretation_state": "DIRECT_TEXTUAL_DUTY_REQUIRES_GOVERNOR_APPLICABILITY_REVIEW"
     }
   ]
