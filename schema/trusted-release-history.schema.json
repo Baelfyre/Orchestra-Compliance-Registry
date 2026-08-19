@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "orchestra.compliance-registry.trusted-release-history.v1",
+  "title": "Compliance Registry Trusted Release History",
+  "type": "object",
+  "required": [
+    "$schema",
+    "schema_version",
+    "canonical_repository",
+    "current_trusted_release",
+    "releases",
+    "external_reverification_required_before_trust_or_mutation"
+  ],
+  "properties": {
+    "$schema": {"const": "../schema/trusted-release-history.schema.json"},
+    "schema_version": {"const": "orchestra.compliance-registry.trusted-release-history.v1"},
+    "canonical_repository": {"const": "Baelfyre/Orchestra-Compliance-Registry"},
+    "current_trusted_release": {"const": "registry-v0.2.0"},
+    "releases": {
+      "type": "array",
+      "minItems": 2,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "required": [
+          "tag",
+          "release_id",
+          "registry_version",
+          "release_sequence",
+          "target_commit",
+          "draft",
+          "prerelease",
+          "immutable",
+          "published_at",
+          "release_manifest_sha256",
+          "bundle_sha256",
+          "required_assets",
+          "state"
+        ],
+        "properties": {
+          "tag": {"type": "string", "pattern": "^registry-v[A-Za-z0-9][A-Za-z0-9._+-]{0,127}$"},
+          "release_id": {"type": "integer", "minimum": 1},
+          "registry_version": {"type": "string", "minLength": 1},
+          "release_sequence": {"type": "integer", "minimum": 1},
+          "target_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+          "draft": {"const": false},
+          "prerelease": {"const": false},
+          "immutable": {"const": true},
+          "published_at": {"type": "string", "minLength": 1},
+          "release_manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "bundle_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "required_assets": {
+            "type": "array",
+            "minItems": 4,
+            "maxItems": 4,
+            "uniqueItems": true,
+            "items": {
+              "enum": [
+                "orchestra-compliance-registry.zip",
+                "orchestra-compliance-registry.zip.sha256",
+                "release-manifest.json",
+                "release-manifest.sha256"
+              ]
+            }
+          },
+          "state": {"const": "PUBLISHED_IMMUTABLE_VERIFIED"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "external_reverification_required_before_trust_or_mutation": {"const": true}
+  },
+  "additionalProperties": false
+}
