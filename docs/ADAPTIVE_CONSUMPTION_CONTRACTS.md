@@ -2,7 +2,9 @@
 
 ## Status
 
-Candidate contracts layered on the validated R1-R4 source-monitor head. They do not merge Registry PR #23, publish a trusted Registry release, interpret law, decide project applicability, or grant Orchestra execution authority.
+R5-R6 are canonical on Registry `main` as part of the reconciled R1-R6 implementation at commit `be297335b55aa6a3a88a473c7e7da28614e95cd2` / tree `09df80b2bb26929cb1bdc1a641131bf68ef0b212`. The interface was reconciled against canonical Orchestra O1-O6 at `955a4b4918e28638a50e9564d1e3ea0127ae5f73`; the Registry capability manifest and Orchestra's frozen R5 fixture share Git blob SHA `978c1a6eecffe802df79e6d110a16b780ec6bd3f`.
+
+Canonical implementation does not mean trusted publication. The immutable trusted Registry release remains `registry-v0.2.0`, which predates R5-R6. No new trusted release is published by this state reconciliation. These contracts do not interpret law, decide project applicability, grant Orchestra execution authority, or authorize automatic merge/release behavior.
 
 ## R5 Capability Manifest
 
@@ -43,4 +45,4 @@ A release delta is evidence only. It cannot update obligations, approve applicab
 
 The current immutable `registry-v0.2.0` release predates R5-R6. Consumers must therefore support an explicit legacy compatibility profile for v0.2.0 rather than inventing capability metadata that is not present in that release.
 
-Future releases may include `registry/capabilities.json` because the release builder packages the Registry directory. Publication remains separately authorized.
+Future trusted releases may include `registry/capabilities.json` because the release builder packages the Registry directory. Publication remains separately authorized and must be validated against the exact release candidate.

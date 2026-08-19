@@ -65,6 +65,7 @@
     "providers": {"path": "registry/providers.json", "role": "PROVIDER_AND_PLATFORM_CATALOG"},
     "source_status": {"path": "registry/source-status.json", "role": "SOURCE_CURRENTNESS_LEDGER"},
     "review_due": {"path": "registry/review-due.json", "role": "SOURCE_REVIEW_CADENCE_AND_FRESHNESS_LEDGER"},
+    "capabilities": {"path": "registry/capabilities.json", "role": "DESCRIPTIVE_NON_AUTHORIZING_CAPABILITY_NEGOTIATION_SURFACE"},
     "publication_state": {"path": "machine/publication-state.json", "role": "LAST_VERIFIED_SOURCE_AND_TRUSTED_PUBLICATION_IDENTITY"},
     "representation_policy": {"path": "machine/representation-policy.json", "role": "MACHINE_HUMAN_AND_DERIVED_CONTEXT_REPRESENTATION_BOUNDARY"},
     "source_provenance_audit": {"path": "machine/source-provenance-audit.v1.json", "role": "EVIDENCE_ONLY_OFFICIAL_SOURCE_AND_DATE_PROVENANCE_AUDIT"},
@@ -125,7 +126,8 @@
       "result": "PASS_WITH_GDPR_DATE_SEMANTIC_CORRECTION"
     },
     "source_monitoring": {
-      "implementation_state": "DRAFT_PR_IMPLEMENTED_NOT_MERGED",
+      "implementation_state": "CANONICAL_MAIN_IMPLEMENTED_RELEASE_NOT_PUBLISHED",
+      "implementation_merge_sha": "be297335b55aa6a3a88a473c7e7da28614e95cd2",
       "workflow": ".github/workflows/source-monitor.yml",
       "schedule_hours": 6,
       "policy": "machine/source-monitor-policy.json",
@@ -176,6 +178,9 @@
     "source_monitor_workflow": ".github/workflows/source-monitor.yml",
     "source_monitor_regression_test": "tests/test_source_monitor.py",
     "source_monitor_live_bootstrap_preview": true,
+    "capability_manifest_schema": "schema/capability-manifest.schema.json",
+    "release_delta_schema": "schema/release-delta.schema.json",
+    "adaptive_consumption_regression_test": "tests/test_adaptive_consumption_contracts.py",
     "regression_command": "python -m unittest discover -s tests -p \"test_*.py\" -v",
     "release_candidate_builder": "scripts/build_release.py",
     "daily_freshness_validation": true,
@@ -194,7 +199,11 @@
     "toon_projection": "OPTIONAL_DERIVED_NON_AUTHORITATIVE",
     "query_receipts": "EVIDENCE_ONLY",
     "query_receipts_establish_publication_trust": false,
-    "external_reverification_required_before_trust_or_mutation": true
+    "external_reverification_required_before_trust_or_mutation": true,
+    "capability_manifest": "registry/capabilities.json",
+    "capability_manifest_authority": "DESCRIPTIVE_NON_AUTHORIZING",
+    "release_delta_producer": "scripts/release_delta.py",
+    "release_delta_authority": "EVIDENCE_ONLY_NON_AUTHORIZING"
   },
   "documentation": {
     "human": {
@@ -203,6 +212,7 @@
       "contributing": "CONTRIBUTING.md",
       "source_provenance_audit": "docs/SOURCE_PROVENANCE_AUDIT.md",
       "source_monitoring": "docs/SOURCE_MONITORING.md",
+      "adaptive_consumption_contracts": "docs/ADAPTIVE_CONSUMPTION_CONTRACTS.md",
       "release_evidence_v0_2_0": "docs/REGISTRY_V0_2_0_RELEASE_EVIDENCE.md",
       "international_privacy_pilot": "docs/INTERNATIONAL_PRIVACY_PILOT.md",
       "philippines_privacy_pilot": "docs/PH_PRIVACY_PILOT.md",
@@ -212,12 +222,15 @@
     "machine": {
       "overview": "README.json",
       "manifest": "registry/manifest.json",
+      "capabilities": "registry/capabilities.json",
       "publication_state": "machine/publication-state.json",
       "representation_policy": "machine/representation-policy.json",
       "source_provenance_audit": "machine/source-provenance-audit.v1.json",
       "source_monitor_policy": "machine/source-monitor-policy.json",
       "source_monitor_baseline": "machine/source-monitor-baseline.v1.json",
       "release_evidence_v0_2_0": "machine/release-evidence-v0.2.0.json",
+      "capability_manifest_schema": "schema/capability-manifest.schema.json",
+      "release_delta_schema": "schema/release-delta.schema.json",
       "registry_root": "registry/",
       "schema_root": "schema/"
     }
@@ -228,6 +241,8 @@
       "editable_version": "0.2.0-dev.1",
       "trusted_release": "registry-v0.2.0",
       "trusted_release_state": "PUBLISHED_IMMUTABLE_VERIFIED",
+      "r1_r6_implementation_state": "CANONICAL_MAIN_RELEASE_NOT_PUBLISHED",
+      "r1_r6_implementation_merge_sha": "be297335b55aa6a3a88a473c7e7da28614e95cd2",
       "publication_authorized": false
     },
     "next": {
