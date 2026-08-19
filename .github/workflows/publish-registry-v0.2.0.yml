@@ -90,6 +90,9 @@ jobs:
           print(f"source_tree={request['source_tree']}")
           PY
 
+      - name: Verify frozen source identity
+        shell: bash
+        run: |
           SOURCE_COMMIT="${{ steps.request.outputs.source_commit }}"
           SOURCE_TREE="${{ steps.request.outputs.source_tree }}"
           git merge-base --is-ancestor "$SOURCE_COMMIT" "$GITHUB_SHA"
@@ -150,6 +153,17 @@ jobs:
             exit 1
           fi
 
+      - name: Create and verify exact release tag
+        shell: bash
+        run: |
+          TAG="${{ steps.request.outputs.release_tag }}"
+          SOURCE_COMMIT="${{ steps.request.outputs.source_commit }}"
+          gh api --method POST "repos/$GITHUB_REPOSITORY/git/refs" \
+            -f ref="refs/tags/$TAG" \
+            -f sha="$SOURCE_COMMIT" >/dev/null
+          TAG_SHA="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$TAG" --jq '.object.sha')"
+          test "$TAG_SHA" = "$SOURCE_COMMIT"
+
       - name: Prepare release notes
         shell: bash
         run: |
@@ -200,10 +214,11 @@ jobs:
       - name: Verify draft release before publication
         id: draft
         shell: bash
+        env:
+          TAG: ${{ steps.request.outputs.release_tag }}
+          SOURCE_COMMIT: ${{ steps.request.outputs.source_commit }}
         run: |
-          TAG="${{ steps.request.outputs.release_tag }}"
-          SOURCE_COMMIT="${{ steps.request.outputs.source_commit }}"
-          gh api "repos/$GITHUB_REPOSITORY/releases" --paginate > releases.json
+          gh api "repos/$GITHUB_REPOSITORY/releases?per_page=100" > releases.json
           python - <<'PY' >> "$GITHUB_OUTPUT"
           import json
           import os
@@ -231,17 +246,6 @@ jobs:
               raise SystemExit(f"release asset mismatch: {sorted(assets)}")
           print(f"release_id={release['id']}")
           PY
-        env:
-          TAG: ${{ steps.request.outputs.release_tag }}
-          SOURCE_COMMIT: ${{ steps.request.outputs.source_commit }}
-
-      - name: Verify tag targets exact source before publication
-        shell: bash
-        run: |
-          TAG="${{ steps.request.outputs.release_tag }}"
-          SOURCE_COMMIT="${{ steps.request.outputs.source_commit }}"
-          TAG_SHA="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$TAG" --jq '.object.sha')"
-          test "$TAG_SHA" = "$SOURCE_COMMIT"
 
       - name: Publish trusted release
         shell: bash
@@ -258,7 +262,7 @@ jobs:
           TAG="${{ steps.request.outputs.release_tag }}"
           RELEASE_ID="${{ steps.draft.outputs.release_id }}"
           gh api "repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID" > published-release.json
-          python - <<'PY' >> "$GITHUB_OUTPUT"
+          if ! python - <<'PY' >> "$GITHUB_OUTPUT"; then
           import json
           from pathlib import Path
 
@@ -273,6 +277,12 @@ jobs:
           print(f"release_url={release['html_url']}")
           print(f"published_at={release['published_at']}")
           PY
+            echo "Published release failed trust verification; attempting mutable cleanup." >&2
+            gh release delete "$TAG" --repo "$GITHUB_REPOSITORY" --cleanup-tag --yes || true
+            exit 1
+          fi
+          TAG_SHA="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$TAG" --jq '.object.sha')"
+          test "$TAG_SHA" = "${{ steps.request.outputs.source_commit }}"
 
       - name: Record trusted release evidence
         shell: bash
@@ -332,9 +342,28 @@ jobs:
           retention-days: 90
 
       - name: Open release evidence issue
+        continue-on-error: true
         shell: bash
         run: |
           gh issue create \
             --repo "$GITHUB_REPOSITORY" \
             --title "release evidence: registry-v0.2.0" \
             --body-file trusted-release-evidence.md
+
+      - name: Cleanup failed mutable publication
+        if: failure()
+        shell: bash
+        run: |
+          TAG="${{ steps.request.outputs.release_tag }}"
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            RELEASE_ID="$(gh api "repos/$GITHUB_REPOSITORY/releases?per_page=100" --jq ".[] | select(.tag_name == \"$TAG\") | .id" | head -n1)"
+            IMMUTABLE="false"
+            if [ -n "$RELEASE_ID" ]; then
+              IMMUTABLE="$(gh api "repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID" --jq '.immutable // false' 2>/dev/null || echo false)"
+            fi
+            if [ "$IMMUTABLE" != "true" ]; then
+              gh release delete "$TAG" --repo "$GITHUB_REPOSITORY" --cleanup-tag --yes || true
+            fi
+          else
+            gh api --method DELETE "repos/$GITHUB_REPOSITORY/git/refs/tags/$TAG" >/dev/null 2>&1 || true
+          fi
