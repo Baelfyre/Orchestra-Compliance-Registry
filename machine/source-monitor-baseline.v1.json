@@ -1,0 +1,8 @@
+{
+  "$schema": "../schema/source-monitor-baseline.schema.json",
+  "schema_version": "orchestra.compliance-registry.source-monitor-baseline.v1",
+  "canonical_repository": "Baelfyre/Orchestra-Compliance-Registry",
+  "baseline_state": "BOOTSTRAP_REQUIRED",
+  "captured_at": null,
+  "source_fingerprints": []
+}
