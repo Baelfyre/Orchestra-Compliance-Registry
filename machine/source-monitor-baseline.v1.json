@@ -1,8 +1,97 @@
 {
   "$schema": "../schema/source-monitor-baseline.schema.json",
-  "schema_version": "orchestra.compliance-registry.source-monitor-baseline.v1",
+  "baseline_state": "ACTIVE",
   "canonical_repository": "Baelfyre/Orchestra-Compliance-Registry",
-  "baseline_state": "BOOTSTRAP_REQUIRED",
-  "captured_at": null,
-  "source_fingerprints": []
+  "captured_at": "2026-08-19T15:36:28Z",
+  "schema_version": "orchestra.compliance-registry.source-monitor-baseline.v1",
+  "source_fingerprints": [
+    {
+      "canonical_url": "https://www.legislation.gov.au/C2004A03712/latest/text",
+      "content_length": 299781,
+      "content_type": "text/html",
+      "fetched_at": "2026-08-19T15:36:27Z",
+      "final_url": "https://www.legislation.gov.au/C2004A03712/latest/text",
+      "normalized_text_sha256": "5d3e3a9c8028bab80a7f6fcda8a22918a2c82bcc5fce051bd9481a8c8f846ea1",
+      "raw_sha256": "d0b9bfe3a6931c6b58acb99c51a2a7e3dc2c95c28fd642bba0d00ede97e81d36",
+      "source_id": "AU-PRIVACY-ACT-1988",
+      "strategy": "HTML_NORMALIZED_TEXT"
+    },
+    {
+      "canonical_url": "https://laws-lois.justice.gc.ca/eng/acts/P-8.6/",
+      "content_length": 24616,
+      "content_type": "text/html",
+      "fetched_at": "2026-08-19T15:36:27Z",
+      "final_url": "https://laws-lois.justice.gc.ca/eng/acts/P-8.6/",
+      "normalized_text_sha256": "2b8317ec777a56e2092b5c03a9511f5114d6fe3b77e71cad8a70759a43d64a69",
+      "raw_sha256": "4d0e29c3dc3bc231767aeb7498de5e9478f1b9f5ed3d6d741a93727d80c8ee9d",
+      "source_id": "CA-PIPEDA-SC2000-C5",
+      "strategy": "HTML_NORMALIZED_TEXT"
+    },
+    {
+      "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32016R0679",
+      "content_length": 2035,
+      "content_type": "text/html",
+      "fetched_at": "2026-08-19T15:36:27Z",
+      "final_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32016R0679",
+      "normalized_text_sha256": null,
+      "raw_sha256": "5a5b77014e34145c3a76650e143c9c79422398c5f8de50b11a604123ee60f487",
+      "source_id": "EU-GDPR-2016-679",
+      "strategy": "BINARY_SHA256"
+    },
+    {
+      "canonical_url": "https://privacy.gov.ph/implementing-rules-regulations-data-privacy-act-2012/",
+      "content_length": 347104,
+      "content_type": "text/html",
+      "fetched_at": "2026-08-19T15:36:27Z",
+      "final_url": "https://privacy.gov.ph/implementing-rules-regulations-data-privacy-act-2012/",
+      "normalized_text_sha256": "898fd899676e1346a2d5f4b743c23934b1b8a61a494fc7458ed4feb1f1661c2d",
+      "raw_sha256": "0ef1b31077c140464e68ae9288a91304fe0fc0c08a14c844f98d54fdd6163d13",
+      "source_id": "PH-DPA-IRR-2016",
+      "strategy": "HTML_NORMALIZED_TEXT"
+    },
+    {
+      "canonical_url": "https://privacy.gov.ph/data-privacy-act/",
+      "content_length": 277792,
+      "content_type": "text/html",
+      "fetched_at": "2026-08-19T15:36:27Z",
+      "final_url": "https://privacy.gov.ph/data-privacy-act/",
+      "normalized_text_sha256": "4df92aabed4c1b0e98ff8681e5137389a3383659eec25aa51a467496d3b281cc",
+      "raw_sha256": "088671f34e642ca1b5c6333c9b4fd2b1b839addb77315638edf19bfcea1e5ada",
+      "source_id": "PH-DPA-RA10173",
+      "strategy": "HTML_NORMALIZED_TEXT"
+    },
+    {
+      "canonical_url": "https://privacy.gov.ph/wp-content/uploads/2025/12/NPC_Advisory2025-02.pdf",
+      "content_length": 249682,
+      "content_type": "application/pdf",
+      "fetched_at": "2026-08-19T15:36:27Z",
+      "final_url": "https://privacy.gov.ph/wp-content/uploads/2025/12/NPC_Advisory2025-02.pdf",
+      "normalized_text_sha256": null,
+      "raw_sha256": "06c53a09e228b5818c1955da9135cc0982856c494901623d4054741b89f7a2ce",
+      "source_id": "PH-NPC-ADV-2025-02",
+      "strategy": "BINARY_SHA256"
+    },
+    {
+      "canonical_url": "https://privacy.gov.ph/wp-content/uploads/2024/03/NPC-Circular-Repeal-16-01-Signed.pdf",
+      "content_length": 473121,
+      "content_type": "application/pdf",
+      "fetched_at": "2026-08-19T15:36:27Z",
+      "final_url": "https://privacy.gov.ph/wp-content/uploads/2024/03/NPC-Circular-Repeal-16-01-Signed.pdf",
+      "normalized_text_sha256": null,
+      "raw_sha256": "d717c2a447765723f004b48abcafeb0dc0376b8c7d44e90fd16021bc1bc6c4bc",
+      "source_id": "PH-NPC-CIRC-2023-06",
+      "strategy": "BINARY_SHA256"
+    },
+    {
+      "canonical_url": "https://sso.agc.gov.sg/Act/PDPA2012",
+      "content_length": 263894,
+      "content_type": "text/html",
+      "fetched_at": "2026-08-19T15:36:28Z",
+      "final_url": "https://sso.agc.gov.sg/Act/PDPA2012",
+      "normalized_text_sha256": "6785d98c67a188ddc12fefc4fde33a8ed726e77d75f7e187cd359df93348ed80",
+      "raw_sha256": "d513a3e56b8eb256e118657d5e58be7d6df88e58e9d429c86cb1785976f57cc6",
+      "source_id": "SG-PDPA-2012",
+      "strategy": "HTML_NORMALIZED_TEXT"
+    }
+  ]
 }
