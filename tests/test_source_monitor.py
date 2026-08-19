@@ -19,8 +19,8 @@ class SourceMonitorTests(unittest.TestCase):
         )
         self.assertEqual(result["source_count"], 8)
         self.assertEqual(result["configured_source_count"], 8)
-        self.assertEqual(result["baseline_state"], "BOOTSTRAP_REQUIRED")
-        self.assertEqual(result["baseline_source_count"], 0)
+        self.assertEqual(result["baseline_state"], "ACTIVE")
+        self.assertEqual(result["baseline_source_count"], 8)
 
     def test_html_normalization_ignores_scripts_styles_and_whitespace(self) -> None:
         first = "<html><style>x{}</style><body><h1>Privacy Act</h1><script>dynamic()</script><p>Section 1</p></body></html>"
