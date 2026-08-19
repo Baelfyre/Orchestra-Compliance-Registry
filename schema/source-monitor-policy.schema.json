@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "orchestra.compliance-registry.source-monitor-policy.v1",
+  "title": "Compliance Registry Source Monitor Policy",
+  "type": "object",
+  "required": [
+    "$schema",
+    "schema_version",
+    "canonical_repository",
+    "monitoring_enabled",
+    "schedule_hours",
+    "official_primary_only",
+    "automatic_candidate_pull_request",
+    "automatic_merge",
+    "automatic_trusted_release",
+    "human_interpretation_required_for_substantive_change",
+    "sources"
+  ],
+  "properties": {
+    "$schema": {"type": "string", "minLength": 1},
+    "schema_version": {"const": "orchestra.compliance-registry.source-monitor-policy.v1"},
+    "canonical_repository": {"const": "Baelfyre/Orchestra-Compliance-Registry"},
+    "monitoring_enabled": {"const": true},
+    "schedule_hours": {"type": "integer", "minimum": 1},
+    "official_primary_only": {"const": true},
+    "automatic_candidate_pull_request": {"const": true},
+    "automatic_merge": {"const": false},
+    "automatic_trusted_release": {"const": false},
+    "human_interpretation_required_for_substantive_change": {"const": true},
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["source_id", "enabled", "strategy", "timeout_seconds", "max_bytes"],
+        "properties": {
+          "source_id": {"type": "string", "minLength": 1},
+          "enabled": {"const": true},
+          "strategy": {"enum": ["HTML_NORMALIZED_TEXT", "BINARY_SHA256"]},
+          "timeout_seconds": {"type": "integer", "minimum": 1},
+          "max_bytes": {"type": "integer", "minimum": 1}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
