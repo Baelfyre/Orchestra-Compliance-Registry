@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "orchestra.compliance-registry.source-monitor-baseline.v1",
+  "title": "Compliance Registry Source Monitor Baseline",
+  "type": "object",
+  "required": [
+    "$schema",
+    "schema_version",
+    "canonical_repository",
+    "baseline_state",
+    "captured_at",
+    "source_fingerprints"
+  ],
+  "properties": {
+    "$schema": {"type": "string", "minLength": 1},
+    "schema_version": {"const": "orchestra.compliance-registry.source-monitor-baseline.v1"},
+    "canonical_repository": {"const": "Baelfyre/Orchestra-Compliance-Registry"},
+    "baseline_state": {"enum": ["BOOTSTRAP_REQUIRED", "ACTIVE"]},
+    "captured_at": {"type": ["string", "null"]},
+    "source_fingerprints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "source_id",
+          "canonical_url",
+          "final_url",
+          "strategy",
+          "content_type",
+          "content_length",
+          "raw_sha256",
+          "normalized_text_sha256",
+          "fetched_at"
+        ],
+        "properties": {
+          "source_id": {"type": "string", "minLength": 1},
+          "canonical_url": {"type": "string", "pattern": "^https://[^\\s]+$"},
+          "final_url": {"type": "string", "pattern": "^https://[^\\s]+$"},
+          "strategy": {"enum": ["HTML_NORMALIZED_TEXT", "BINARY_SHA256"]},
+          "content_type": {"type": "string", "minLength": 1},
+          "content_length": {"type": "integer", "minimum": 1},
+          "raw_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "normalized_text_sha256": {"type": ["string", "null"]},
+          "fetched_at": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
