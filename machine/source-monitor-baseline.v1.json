@@ -33,10 +33,10 @@
       "content_type": "application/pdf",
       "fetched_at": "2026-08-19T15:52:57Z",
       "final_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32016R0679",
-      "normalized_text_sha256": "adcefbb9abcd35db1d7a263a4415c7192ff0ae2774eebb683470cf3217a2bba5",
+      "normalized_text_sha256": null,
       "raw_sha256": "bd84e63f5b622b739a83389afc3b30d240f792bb88d8eb03a816c9a82b0c2499",
       "source_id": "EU-GDPR-2016-679",
-      "strategy": "HTML_NORMALIZED_TEXT"
+      "strategy": "BINARY_SHA256"
     },
     {
       "canonical_url": "https://privacy.gov.ph/implementing-rules-regulations-data-privacy-act-2012/",

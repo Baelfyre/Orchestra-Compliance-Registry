@@ -24,6 +24,10 @@ _core_fetch = source_monitor._fetch
 def _live_fetch(source: dict[str, Any], config: dict[str, Any]) -> dict[str, Any]:
     if source["source_id"] != EU_GDPR_SOURCE_ID:
         return _core_fetch(source, config)
+    if config["strategy"] != "BINARY_SHA256":
+        raise source_monitor.SourceMonitorError(
+            f"official EUR-Lex PDF monitor for {source['source_id']} must use BINARY_SHA256"
+        )
     original_canonical_url = source["canonical_url"]
     monitor_source = dict(source)
     monitor_source["canonical_url"] = EU_GDPR_PDF_URL
