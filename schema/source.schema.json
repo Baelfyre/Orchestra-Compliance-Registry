@@ -18,7 +18,7 @@
     "source_id": {"type": "string", "minLength": 1},
     "title": {"type": "string", "minLength": 1},
     "source_type": {
-      "enum": ["STATUTE", "IMPLEMENTING_RULES", "REGULATORY_CIRCULAR", "REGULATORY_ADVISORY"]
+      "enum": ["STATUTE", "REGULATION", "IMPLEMENTING_RULES", "REGULATORY_CIRCULAR", "REGULATORY_ADVISORY"]
     },
     "authority": {"type": "string", "minLength": 1},
     "canonical_url": {"type": "string", "pattern": "^https://[^\\s]+$"},
