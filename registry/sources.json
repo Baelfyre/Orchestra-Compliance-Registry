@@ -16,7 +16,7 @@
         "method": "PRIMARY_AUTHORITY_WEB_REVIEW",
         "authority_domain": "privacy.gov.ph"
       },
-      "interpretation_boundary": "SOURCE_IDENTITY_AND_TEXT_ONLY; GOVERNOR_MUST_DETERMINE PROJECT_APPLICABILITY"
+      "interpretation_boundary": "SOURCE_IDENTITY_AND_TEXT_ONLY; GOVERNOR_MUST DETERMINE PROJECT_APPLICABILITY"
     },
     {
       "source_id": "PH-DPA-IRR-2016",
@@ -32,7 +32,7 @@
         "method": "PRIMARY_AUTHORITY_WEB_REVIEW",
         "authority_domain": "privacy.gov.ph"
       },
-      "interpretation_boundary": "SOURCE_IDENTITY_AND_TEXT_ONLY; GOVERNOR_MUST_DETERMINE PROJECT_APPLICABILITY"
+      "interpretation_boundary": "SOURCE_IDENTITY_AND_TEXT_ONLY; GOVERNOR_MUST DETERMINE PROJECT_APPLICABILITY"
     },
     {
       "source_id": "PH-NPC-CIRC-2023-06",
@@ -69,6 +69,73 @@
         "authority_domain": "privacy.gov.ph"
       },
       "interpretation_boundary": "ADVISORY GUIDANCE; NOT RECORDED AS A STANDALONE MANDATORY OBLIGATION WITHOUT GOVERNOR REVIEW"
+    },
+    {
+      "source_id": "EU-GDPR-2016-679",
+      "title": "Regulation (EU) 2016/679 — General Data Protection Regulation",
+      "source_type": "REGULATION",
+      "authority": "European Union / EUR-Lex",
+      "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32016R0679",
+      "jurisdiction_ids": ["EU-EEA"],
+      "domains": ["privacy", "data-protection", "personal-data-processing", "security", "privacy-engineering"],
+      "issued_date": "2016-04-27",
+      "effective_date": "2018-05-25",
+      "verification": {
+        "status": "VERIFIED_CURRENT",
+        "verified_at": "2026-08-19",
+        "method": "PRIMARY_AUTHORITY_CURRENT_TEXT_REVIEW",
+        "authority_domain": "eur-lex.europa.eu"
+      },
+      "interpretation_boundary": "DIRECT REGULATION TEXT; GOVERNOR MUST DETERMINE TERRITORIAL_SCOPE, ROLE, DEROGATIONS, MEMBER_STATE LAW, AND PROJECT APPLICABILITY"
+    },
+    {
+      "source_id": "CA-PIPEDA-SC2000-C5",
+      "title": "Personal Information Protection and Electronic Documents Act (PIPEDA)",
+      "source_type": "STATUTE",
+      "authority": "Department of Justice Canada / Government of Canada",
+      "canonical_url": "https://laws-lois.justice.gc.ca/eng/acts/P-8.6/",
+      "jurisdiction_ids": ["CA"],
+      "domains": ["privacy", "data-protection", "personal-data-processing", "security"],
+      "supersession_note": "Justice Laws identifies amendments not yet in force; the Registry records the current consolidated Act and requires applicability review for pending provisions.",
+      "verification": {
+        "status": "CURRENT_WITH_PENDING_CHANGE",
+        "verified_at": "2026-08-19",
+        "method": "PRIMARY_AUTHORITY_CURRENT_TEXT_AND_AMENDMENTS_NOT_IN_FORCE_REVIEW",
+        "authority_domain": "laws-lois.justice.gc.ca"
+      },
+      "interpretation_boundary": "DIRECT FEDERAL STATUTE TEXT; GOVERNOR MUST DETERMINE COMMERCIAL-ACTIVITY, FEDERAL/PROVINCIAL, SUBSTANTIALLY-SIMILAR-LAW, AND PROJECT APPLICABILITY"
+    },
+    {
+      "source_id": "AU-PRIVACY-ACT-1988",
+      "title": "Privacy Act 1988 — Australian Privacy Principles",
+      "source_type": "STATUTE",
+      "authority": "Federal Register of Legislation / Commonwealth of Australia",
+      "canonical_url": "https://www.legislation.gov.au/C2004A03712/latest/text",
+      "jurisdiction_ids": ["AU"],
+      "domains": ["privacy", "data-protection", "personal-data-processing", "security"],
+      "verification": {
+        "status": "VERIFIED_CURRENT",
+        "verified_at": "2026-08-19",
+        "method": "PRIMARY_AUTHORITY_LATEST_COMPILATION_REVIEW",
+        "authority_domain": "legislation.gov.au"
+      },
+      "interpretation_boundary": "DIRECT FEDERAL STATUTE TEXT; GOVERNOR MUST DETERMINE APP-ENTITY, EXEMPTION, STATE_OR_TERRITORY_OVERLAP, AND PROJECT APPLICABILITY"
+    },
+    {
+      "source_id": "SG-PDPA-2012",
+      "title": "Personal Data Protection Act 2012",
+      "source_type": "STATUTE",
+      "authority": "Singapore Statutes Online / Attorney-General's Chambers",
+      "canonical_url": "https://sso.agc.gov.sg/Act/PDPA2012",
+      "jurisdiction_ids": ["SG"],
+      "domains": ["privacy", "data-protection", "personal-data-processing", "security"],
+      "verification": {
+        "status": "VERIFIED_CURRENT",
+        "verified_at": "2026-08-19",
+        "method": "PRIMARY_AUTHORITY_CURRENT_VERSION_REVIEW",
+        "authority_domain": "sso.agc.gov.sg"
+      },
+      "interpretation_boundary": "DIRECT STATUTE TEXT; GOVERNOR MUST DETERMINE ORGANISATION, EXEMPTION, SECTORAL-LAW, AND PROJECT APPLICABILITY"
     }
   ]
 }
