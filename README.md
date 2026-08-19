@@ -22,6 +22,7 @@ The current trusted distribution is the bounded **international privacy pilot**.
 | AI / agents / tooling | [`README.json`](README.json) | Complete repository map and ordered machine-readable references |
 | Registry consumers | [`registry/manifest.json`](registry/manifest.json) | Canonical editable record map and source-state identity |
 | Source reviewers | [`docs/SOURCE_PROVENANCE_AUDIT.md`](docs/SOURCE_PROVENANCE_AUDIT.md) | Official citations, date provenance, and the latest source rerun |
+| Source-monitor reviewers | [`docs/SOURCE_MONITORING.md`](docs/SOURCE_MONITORING.md) | Dynamic official-source monitoring, fingerprints, change states, and automation boundaries |
 | Release consumers | [`docs/REGISTRY_V0_2_0_RELEASE_EVIDENCE.md`](docs/REGISTRY_V0_2_0_RELEASE_EVIDENCE.md) | Human-readable trusted-release identity and integrity evidence |
 | Release tooling / agents | [`machine/release-evidence-v0.2.0.json`](machine/release-evidence-v0.2.0.json) | Machine-readable exact release ID, source identity, hashes, assets, and workflow evidence |
 | Contributors | [`CONTRIBUTING.md`](CONTRIBUTING.md) | Source, evidence, review, and contribution requirements |
@@ -46,6 +47,28 @@ Every source records an official citation and source locator plus the dates supp
 **Latest provenance rerun:** `2026-08-19`  
 Human audit: [`docs/SOURCE_PROVENANCE_AUDIT.md`](docs/SOURCE_PROVENANCE_AUDIT.md)  
 Machine audit: [`machine/source-provenance-audit.v1.json`](machine/source-provenance-audit.v1.json)
+
+## Dynamic source monitoring
+
+The draft source-monitor subsystem tracks all eight current canonical official sources against a reviewed fingerprint baseline. It is configured for six-hour polling through `.github/workflows/source-monitor.yml` using `HTML_NORMALIZED_TEXT` or `BINARY_SHA256` according to the official source surface.
+
+| Behavior | Automation |
+| --- | --- |
+| Fetch official canonical sources and verify authority-domain redirects | Automatic |
+| Compare live fingerprints with the reviewed baseline | Automatic |
+| Preserve machine-readable source-watch evidence | Automatic |
+| Open a bounded **draft** candidate PR for a potential substantive change or source move | Automatic |
+| Determine project/legal applicability | Human/Governor review required |
+| Extract or rewrite legal obligations from detected page changes | Not automatic |
+| Accept a new reviewed source baseline | Not automatic |
+| Merge a source-change candidate | Not automatic |
+| Publish a trusted Registry release | Not automatic |
+
+The current reviewed monitor baseline is `ACTIVE`, covers all eight canonical sources, and was captured from the official primary-source endpoints on `2026-08-19T15:36:28Z`. A detected substantive fingerprint change is evidence that the source must be reviewed; it is **not** itself proof that a law, regulation, obligation, or project applicability changed.
+
+See [`docs/SOURCE_MONITORING.md`](docs/SOURCE_MONITORING.md) for the monitoring architecture. Machine controls are [`machine/source-monitor-policy.json`](machine/source-monitor-policy.json) and [`machine/source-monitor-baseline.v1.json`](machine/source-monitor-baseline.v1.json).
+
+This monitoring subsystem is currently held in an open draft implementation and does not change the trusted `registry-v0.2.0` publication until the coupled Orchestra integration is completed and separately approved.
 
 ## Jurisdiction coverage
 
@@ -100,7 +123,7 @@ The next provider phase will distinguish **contractual platform rules** from **g
 | `README.md` / `docs/*.md` | Compact human explanation and review material | Non-authoritative human reference |
 | `README.json` | Complete machine-readable repository index | Derived and parity-validated index |
 | `registry/*.json` | Canonical structured registry records | Editable machine authority as mapped by the manifest |
-| `machine/*.json` | Publication, release-evidence, representation, provenance-audit, and control metadata | Machine control/reference or evidence state as defined per record |
+| `machine/*.json` | Publication, release-evidence, representation, provenance-audit, monitoring, and control metadata | Machine control/reference or evidence state as defined per record |
 | JSON Schema | Deterministic machine-contract validation | Validation contract |
 | TOON | Optional compact AI context projection | Derived, non-authoritative |
 
@@ -110,6 +133,7 @@ When prose and a machine record disagree on an exact deterministic fact, use the
 
 - Registry records provide sourced compliance intelligence, **not legal advice**.
 - Applicability to a specific product, organization, user, sector, or processing activity requires explicit review.
+- Automated source-change detection is evidence for review, not legal interpretation.
 - A platform rule can be mandatory for distribution without being a law.
 - A government or industry framework can be highly relevant without itself being legally binding.
 - Validation proves internal consistency; it does not create legal applicability or publication authority.
@@ -122,6 +146,7 @@ When prose and a machine record disagree on an exact deterministic fact, use the
 | Repository overview | `README.md` | [`README.json`](README.json) |
 | Trusted v0.2.0 release | [`docs/REGISTRY_V0_2_0_RELEASE_EVIDENCE.md`](docs/REGISTRY_V0_2_0_RELEASE_EVIDENCE.md) | [`machine/release-evidence-v0.2.0.json`](machine/release-evidence-v0.2.0.json) |
 | Source provenance | [`docs/SOURCE_PROVENANCE_AUDIT.md`](docs/SOURCE_PROVENANCE_AUDIT.md) | [`machine/source-provenance-audit.v1.json`](machine/source-provenance-audit.v1.json) |
+| Dynamic source monitoring | [`docs/SOURCE_MONITORING.md`](docs/SOURCE_MONITORING.md) | [`machine/source-monitor-policy.json`](machine/source-monitor-policy.json), [`machine/source-monitor-baseline.v1.json`](machine/source-monitor-baseline.v1.json) |
 | Governance | [`GOVERNANCE.md`](GOVERNANCE.md) | [`machine/representation-policy.json`](machine/representation-policy.json) |
 | Registry records | Documentation and pilot notes | [`registry/manifest.json`](registry/manifest.json) |
 | Publication state | [`docs/RELEASE_PACKAGING.md`](docs/RELEASE_PACKAGING.md) | [`machine/publication-state.json`](machine/publication-state.json) |
