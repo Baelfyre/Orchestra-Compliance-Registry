@@ -16,7 +16,7 @@
   "purpose": {
     "summary": "Public, versioned compliance intelligence for governed software and AI-assisted development.",
     "registry_role": "Normalize reviewed compliance sources into provenance-bound machine records and evidence-oriented obligations that can be queried by humans and AI tooling without converting source discovery, documentation, validation, or platform policy into legal advice or execution authority.",
-    "current_program": "INTERNATIONAL_PRIVACY_SOURCE_BACKED_PILOT",
+    "current_program": "INTERNATIONAL_PRIVACY_SOURCE_BACKED_PILOT_WITH_ADAPTIVE_MONITORING_AND_CONSUMPTION_CONTRACTS",
     "planned_expansion_domains": ["software-development", "cybersecurity", "database-and-data-governance", "ai-usage-and-ai-systems", "accessibility", "provider-and-platform-requirements"],
     "not_legal_advice": true,
     "project_applicability_requires_review": true
@@ -30,21 +30,21 @@
   },
   "trusted_release": {
     "state": "PUBLISHED_IMMUTABLE_VERIFIED",
-    "tag": "registry-v0.2.0",
-    "release_id": 373113025,
-    "registry_version": "0.2.0",
-    "release_sequence": 2,
-    "target_commit": "cb32038a2683eb2c19f52646892d3257996a06eb",
-    "source_tree": "10ce7849fd5b95b3ca756eff213bb506d00a89de",
-    "published_at": "2026-08-19T14:20:56Z",
+    "tag": "registry-v0.3.0",
+    "release_id": 373417769,
+    "registry_version": "0.3.0",
+    "release_sequence": 3,
+    "target_commit": "20eb859db153f17e24c052a13765e982d51cedbf",
+    "source_tree": "763be9062a0c23031c794403dc4592f5db4389b0",
+    "published_at": "2026-08-20T00:11:24Z",
     "draft": false,
     "prerelease": false,
     "immutable": true,
-    "release_manifest_sha256": "cb98e4496da8952cff1432207d57f04379364bac2e95cc422de173681a8fb2b4",
-    "bundle_sha256": "71414aaead10634c2a4b79ec519b4fc76fb32af71cd831ef48f2133bcc211388",
-    "release_evidence": "machine/release-evidence-v0.2.0.json",
+    "release_manifest_sha256": "2674c7625188e20047274f3f3e7a25836299c640913bfc2eb20de2d4349808a9",
+    "bundle_sha256": "dc74b59f3c11dd7c740a91a4c6667064b84c3505d8bfc62382cd2ce0f4f0bfea",
+    "release_evidence": "machine/release-evidence-v0.3.0.json",
     "publication_reverification_required": true,
-    "scope_note": "The trusted v0.2.0 release is the immutable bounded international privacy pilot. Editable repository state remains a separate DRAFT source and must not be treated as trusted publication merely because it validates."
+    "scope_note": "The trusted v0.3.0 release is the immutable bounded international privacy pilot plus canonical official-source monitoring, R5 capability negotiation, and R6 release-delta contracts jointly reconciled with Orchestra O1-O6. Editable repository state remains a separate DRAFT source and must not be treated as trusted publication merely because it validates."
   },
   "representation": {
     "human_entry_point": {"path": "README.md", "role": "COMPACT_HUMAN_ORIENTATION", "authority": "NON_AUTHORITATIVE_HUMAN_READABLE_REFERENCE"},
@@ -69,7 +69,8 @@
     "publication_state": {"path": "machine/publication-state.json", "role": "LAST_VERIFIED_SOURCE_AND_TRUSTED_PUBLICATION_IDENTITY"},
     "representation_policy": {"path": "machine/representation-policy.json", "role": "MACHINE_HUMAN_AND_DERIVED_CONTEXT_REPRESENTATION_BOUNDARY"},
     "source_provenance_audit": {"path": "machine/source-provenance-audit.v1.json", "role": "EVIDENCE_ONLY_OFFICIAL_SOURCE_AND_DATE_PROVENANCE_AUDIT"},
-    "release_evidence_v0_2_0": {"path": "machine/release-evidence-v0.2.0.json", "role": "TRUSTED_RELEASE_PUBLICATION_EVIDENCE"},
+    "release_evidence_v0_2_0": {"path": "machine/release-evidence-v0.2.0.json", "role": "HISTORICAL_TRUSTED_RELEASE_PUBLICATION_EVIDENCE"},
+    "release_evidence_v0_3_0": {"path": "machine/release-evidence-v0.3.0.json", "role": "CURRENT_TRUSTED_RELEASE_PUBLICATION_EVIDENCE"},
     "source_monitor_policy": {"path": "machine/source-monitor-policy.json", "role": "OFFICIAL_SOURCE_MONITOR_POLICY_AND_AUTOMATION_BOUNDARY"},
     "source_monitor_baseline": {"path": "machine/source-monitor-baseline.v1.json", "role": "REVIEWED_OFFICIAL_SOURCE_FINGERPRINT_BASELINE"}
   },
@@ -126,7 +127,7 @@
       "result": "PASS_WITH_GDPR_DATE_SEMANTIC_CORRECTION"
     },
     "source_monitoring": {
-      "implementation_state": "CANONICAL_MAIN_IMPLEMENTED_RELEASE_NOT_PUBLISHED",
+      "implementation_state": "CANONICAL_MAIN_AND_TRUSTED_V0_3_0",
       "implementation_merge_sha": "be297335b55aa6a3a88a473c7e7da28614e95cd2",
       "workflow": ".github/workflows/source-monitor.yml",
       "schedule_hours": 6,
@@ -214,6 +215,8 @@
       "source_monitoring": "docs/SOURCE_MONITORING.md",
       "adaptive_consumption_contracts": "docs/ADAPTIVE_CONSUMPTION_CONTRACTS.md",
       "release_evidence_v0_2_0": "docs/REGISTRY_V0_2_0_RELEASE_EVIDENCE.md",
+      "release_evidence_v0_3_0": "docs/REGISTRY_V0_3_0_RELEASE_EVIDENCE.md",
+      "trusted_release_history": "docs/TRUSTED_RELEASE_HISTORY.md",
       "international_privacy_pilot": "docs/INTERNATIONAL_PRIVACY_PILOT.md",
       "philippines_privacy_pilot": "docs/PH_PRIVACY_PILOT.md",
       "release_packaging": "docs/RELEASE_PACKAGING.md",
@@ -229,6 +232,8 @@
       "source_monitor_policy": "machine/source-monitor-policy.json",
       "source_monitor_baseline": "machine/source-monitor-baseline.v1.json",
       "release_evidence_v0_2_0": "machine/release-evidence-v0.2.0.json",
+      "release_evidence_v0_3_0": "machine/release-evidence-v0.3.0.json",
+      "trusted_release_history": "machine/trusted-release-history.json",
       "capability_manifest_schema": "schema/capability-manifest.schema.json",
       "release_delta_schema": "schema/release-delta.schema.json",
       "registry_root": "registry/",
@@ -237,11 +242,11 @@
   },
   "roadmap": {
     "current": {
-      "program": "INTERNATIONAL_PRIVACY_PILOT",
+      "program": "INTERNATIONAL_PRIVACY_PILOT_WITH_ADAPTIVE_MONITORING_AND_CONSUMPTION_CONTRACTS",
       "editable_version": "0.2.0-dev.1",
-      "trusted_release": "registry-v0.2.0",
+      "trusted_release": "registry-v0.3.0",
       "trusted_release_state": "PUBLISHED_IMMUTABLE_VERIFIED",
-      "r1_r6_implementation_state": "CANONICAL_MAIN_RELEASE_NOT_PUBLISHED",
+      "r1_r6_implementation_state": "CANONICAL_MAIN_AND_TRUSTED_V0_3_0",
       "r1_r6_implementation_merge_sha": "be297335b55aa6a3a88a473c7e7da28614e95cd2",
       "publication_authorized": false
     },
