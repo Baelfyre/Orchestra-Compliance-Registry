@@ -21,6 +21,7 @@ class SchemaContractTests(unittest.TestCase):
         root = Path(temp.name)
         for name in ("registry", "machine", "schema"):
             shutil.copytree(ROOT / name, root / name)
+        shutil.copy2(ROOT / "README.json", root / "README.json")
         return temp, root
 
     def test_repository_machine_records_match_closed_contracts(self) -> None:
