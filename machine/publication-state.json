@@ -1,10 +1,10 @@
 {
   "schema_version": "orchestra.compliance-registry.publication-state.v1",
   "canonical_repository": "Baelfyre/Orchestra-Compliance-Registry",
-  "recorded_at": "2026-08-19T22:22:08+08:00",
+  "recorded_at": "2026-08-20T08:11:24+08:00",
   "repository_source_boundary": {
     "canonical_branch": "main",
-    "observed_sha": "97a2f0ae45e1ebedbdd3aa533f79d12d17dff59c",
+    "observed_sha": "906f75c403fa643368aa2a8724748690577d83ec",
     "state_class": "VERIFIED_REPOSITORY_CHECKPOINT",
     "semantics": "LAST_EXPLICITLY_VERIFIED_REPOSITORY_BOUNDARY_NOT_CURRENT_HEAD_CLAIM",
     "live_head_reverification_required": true
@@ -17,17 +17,17 @@
   },
   "trusted_release": {
     "state": "PUBLISHED_IMMUTABLE_VERIFIED",
-    "tag": "registry-v0.2.0",
-    "release_id": 373113025,
-    "registry_version": "0.2.0",
-    "release_sequence": 2,
-    "target_commit": "cb32038a2683eb2c19f52646892d3257996a06eb",
+    "tag": "registry-v0.3.0",
+    "release_id": 373417769,
+    "registry_version": "0.3.0",
+    "release_sequence": 3,
+    "target_commit": "20eb859db153f17e24c052a13765e982d51cedbf",
     "draft": false,
     "prerelease": false,
     "immutable": true,
-    "published_at": "2026-08-19T14:20:56Z",
-    "release_manifest_sha256": "cb98e4496da8952cff1432207d57f04379364bac2e95cc422de173681a8fb2b4",
-    "bundle_sha256": "71414aaead10634c2a4b79ec519b4fc76fb32af71cd831ef48f2133bcc211388",
+    "published_at": "2026-08-20T00:11:24Z",
+    "release_manifest_sha256": "2674c7625188e20047274f3f3e7a25836299c640913bfc2eb20de2d4349808a9",
+    "bundle_sha256": "dc74b59f3c11dd7c740a91a4c6667064b84c3505d8bfc62382cd2ce0f4f0bfea",
     "required_assets": [
       "orchestra-compliance-registry.zip",
       "orchestra-compliance-registry.zip.sha256",
@@ -53,7 +53,8 @@
   },
   "human_companions": [
     "README.md",
-    "docs/REGISTRY_V0_2_0_RELEASE_EVIDENCE.md",
+    "docs/REGISTRY_V0_3_0_RELEASE_EVIDENCE.md",
+    "docs/TRUSTED_RELEASE_HISTORY.md",
     "docs/RELEASE_PACKAGING.md",
     "docs/INTERNATIONAL_PRIVACY_PILOT.md",
     "docs/SOURCE_PROVENANCE_AUDIT.md"
