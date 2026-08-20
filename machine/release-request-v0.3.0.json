@@ -1,0 +1,37 @@
+{
+  "$schema": "../schema/release-request.schema.json",
+  "schema_version": "orchestra.compliance-registry.release-request.v1",
+  "status": "AUTHORIZED_FOR_PUBLICATION",
+  "registry_version": "0.3.0",
+  "release_sequence": 3,
+  "release_tag": "registry-v0.3.0",
+  "source_commit": "20eb859db153f17e24c052a13765e982d51cedbf",
+  "source_tree": "763be9062a0c23031c794403dc4592f5db4389b0",
+  "source_registry_version": "0.2.0-dev.1",
+  "source_registry_status": "DRAFT",
+  "authorization": {
+    "type": "EXPLICIT_HUMAN_APPROVAL",
+    "approved_at": "2026-08-20T08:06:00+08:00",
+    "scope": [
+      "CANONICAL_MERGE",
+      "TRUSTED_RELEASE_PUBLICATION",
+      "PADAYON_RECONCILIATION"
+    ]
+  },
+  "publication_requirements": {
+    "official_source_provenance_validation": true,
+    "exact_source_validation": true,
+    "deterministic_double_build": true,
+    "non_draft_release": true,
+    "non_prerelease_release": true,
+    "immutable_release": true,
+    "release_assets_required": [
+      "orchestra-compliance-registry.zip",
+      "orchestra-compliance-registry.zip.sha256",
+      "release-manifest.json",
+      "release-manifest.sha256"
+    ],
+    "post_publication_reverification": true,
+    "padayon_update_required": true
+  }
+}
