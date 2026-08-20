@@ -84,6 +84,12 @@ The canonical R5 capability manifest was reconciled byte-for-byte with Orchestra
 
 See [`docs/ADAPTIVE_CONSUMPTION_CONTRACTS.md`](docs/ADAPTIVE_CONSUMPTION_CONTRACTS.md).
 
+## Token-efficient query architecture
+
+**R7 is approved and planned, not yet implemented.** It will keep canonical Registry JSON as authority while adding a deterministic typed read model, disposable indexed cache, bounded projections, context budgets, and a thin read-only MCP adapter so consumers can retrieve only the Registry slice they need.
+
+See [`docs/TOKEN_EFFICIENT_QUERY_ARCHITECTURE_R7.md`](docs/TOKEN_EFFICIENT_QUERY_ARCHITECTURE_R7.md) for the complete architecture, phases, compatibility rules, and efficiency benchmark plan.
+
 ## Jurisdiction coverage
 
 `SOURCE_BACKED_PILOT` means reviewed primary sources and a bounded obligation set exist. It does **not** mean exhaustive legal coverage or automatic project applicability.
@@ -164,6 +170,7 @@ When prose and a machine record disagree on an exact deterministic fact, use the
 | Source provenance | [`docs/SOURCE_PROVENANCE_AUDIT.md`](docs/SOURCE_PROVENANCE_AUDIT.md) | [`machine/source-provenance-audit.v1.json`](machine/source-provenance-audit.v1.json) |
 | Dynamic source monitoring | [`docs/SOURCE_MONITORING.md`](docs/SOURCE_MONITORING.md) | [`machine/source-monitor-policy.json`](machine/source-monitor-policy.json), [`machine/source-monitor-baseline.v1.json`](machine/source-monitor-baseline.v1.json) |
 | Adaptive consumption R5-R6 | [`docs/ADAPTIVE_CONSUMPTION_CONTRACTS.md`](docs/ADAPTIVE_CONSUMPTION_CONTRACTS.md) | [`registry/capabilities.json`](registry/capabilities.json), [`schema/release-delta.schema.json`](schema/release-delta.schema.json) |
+| Planned token-efficient R7 query architecture | [`docs/TOKEN_EFFICIENT_QUERY_ARCHITECTURE_R7.md`](docs/TOKEN_EFFICIENT_QUERY_ARCHITECTURE_R7.md) | [`README.json`](README.json) |
 | Governance | [`GOVERNANCE.md`](GOVERNANCE.md) | [`machine/representation-policy.json`](machine/representation-policy.json) |
 | Registry records | Documentation and pilot notes | [`registry/manifest.json`](registry/manifest.json) |
 | Publication state | [`docs/RELEASE_PACKAGING.md`](docs/RELEASE_PACKAGING.md) | [`machine/publication-state.json`](machine/publication-state.json) |

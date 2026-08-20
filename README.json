@@ -204,7 +204,42 @@
     "capability_manifest": "registry/capabilities.json",
     "capability_manifest_authority": "DESCRIPTIVE_NON_AUTHORIZING",
     "release_delta_producer": "scripts/release_delta.py",
-    "release_delta_authority": "EVIDENCE_ONLY_NON_AUTHORIZING"
+    "release_delta_authority": "EVIDENCE_ONLY_NON_AUTHORIZING",
+    "r7_token_efficient_query_architecture": {
+      "status": "APPROVED_PLANNED_NOT_IMPLEMENTED",
+      "human_reference": "docs/TOKEN_EFFICIENT_QUERY_ARCHITECTURE_R7.md",
+      "implementation_order": "AFTER_ORCHESTRA_CODEX_BASELINE_CLOSEOUT_AND_ORCHESTRA_V1_7_0",
+      "authority_model": {
+        "canonical_json": "REGISTRY_AUTHORITY",
+        "typed_entities": "DERIVED_NON_AUTHORITATIVE",
+        "sqlite_index": "DERIVED_DISPOSABLE_CACHE",
+        "query_gateway": "DETERMINISTIC_READ_LAYER",
+        "mcp": "READ_ONLY_TRANSPORT",
+        "ai_output": "NON_AUTHORITATIVE_INTERPRETATION_OR_PROJECTION"
+      },
+      "typed_entities": ["RegistrySource", "RegistryObligation", "RegistryJurisdiction", "RegistryProvider", "RegistrySourceStatus", "RegistryReviewSchedule", "RegistryCapability"],
+      "derived_relationships": ["SOURCE_OBLIGATION", "SOURCE_JURISDICTION", "OBLIGATION_JURISDICTION", "OBLIGATION_PROVIDER", "SOURCE_DOMAIN", "OBLIGATION_DOMAIN", "SOURCE_STATUS", "SOURCE_REVIEW_SCHEDULE"],
+      "planned_optional_capabilities": ["cap.query.projection.v1", "cap.query.relationships.v1", "cap.query.indexed-read.v1", "cap.query.budget.v1", "cap.transport.mcp.v1"],
+      "required_compatibility_floor": {"cap.query.v1": "1.0.0"},
+      "projection_levels": {
+        "MINIMAL": ["canonical_id", "title", "jurisdiction_ids", "domains"],
+        "SUMMARY": ["MINIMAL", "summary", "source_ids", "freshness"],
+        "EVIDENCE": ["SUMMARY", "source_locator", "required_evidence", "source_status", "review_state", "citation_identity"],
+        "FULL": ["COMPLETE_CANONICAL_RECORDS"]
+      },
+      "planned_query_controls": ["record_type", "jurisdiction", "provider", "domain", "source_id", "obligation_id", "fields", "detail", "limit", "cursor", "include_sources", "include_freshness", "max_context_bytes", "output_format"],
+      "preferred_processing_order": ["FILTER", "RELATIONSHIP_RESOLUTION", "FIELD_PROJECTION", "DETAIL_LEVEL", "BUDGET_BOUNDING", "JSON_OR_TOON_SERIALIZATION"],
+      "planned_mcp_tools": ["registry_status", "registry_query", "registry_get", "registry_relations", "registry_freshness", "registry_delta"],
+      "mcp_mutation_allowed": false,
+      "mcp_release_publication_allowed": false,
+      "mcp_legal_applicability_decision_allowed": false,
+      "phase_plan": ["R7.0_CONTRACT_FREEZE", "R7.1_TYPED_ENTITY_MODEL", "R7.2_RELATIONSHIP_MODEL", "R7.3_DETERMINISTIC_SQLITE_READ_INDEX", "R7.4_PROJECTION_CONTRACTS", "R7.5_QUERY_PLANNER_AND_CONTEXT_BUDGET", "R7.6_SHARED_QUERY_GATEWAY", "R7.7_READ_ONLY_MCP_ADAPTER", "R7.8_TRUSTED_RELEASE_CACHE_INTEGRATION", "R7.9_EFFICIENCY_BENCHMARK"],
+      "efficiency_benchmark_paths": ["RAW_REPOSITORY_CONTEXT", "CURRENT_FULL_JSON_QUERY", "CURRENT_JSON_TOON_EXPORT", "R7_PROJECTED_JSON", "R7_PROJECTED_TOON", "R7_INDEXED_DIRECT_QUERY", "R7_INDEXED_MCP_QUERY"],
+      "efficiency_metrics": ["input_bytes", "host_reported_input_tokens_when_available", "tool_calls", "files_scanned", "records_scanned", "records_returned", "latency", "cache_state", "source_coverage", "obligation_coverage", "receipt_correctness", "freshness_correctness", "governance_correctness"],
+      "completion_gates": ["CANONICAL_JSON_AUTHORITY_UNCHANGED", "EXISTING_VALIDATION_PASS", "V0_3_COMPATIBILITY_PASS", "DETERMINISTIC_INDEX_REBUILD", "INDEX_JSON_SEMANTIC_PARITY", "PROJECTION_PARITY", "QUERY_RECEIPT_PARITY", "MCP_DIRECT_QUERY_PARITY", "AUTHORITY_EXPANSION_FALSE", "EFFICIENCY_EVIDENCE_RECORDED"],
+      "planned_release_target": "registry-v0.4.0_AFTER_R7_AND_JOINT_R7_O7_CONFORMANCE",
+      "token_efficiency_claim": "NOT_CLAIMED_UNTIL_MEASURED"
+    }
   },
   "documentation": {
     "human": {
@@ -214,6 +249,7 @@
       "source_provenance_audit": "docs/SOURCE_PROVENANCE_AUDIT.md",
       "source_monitoring": "docs/SOURCE_MONITORING.md",
       "adaptive_consumption_contracts": "docs/ADAPTIVE_CONSUMPTION_CONTRACTS.md",
+      "token_efficient_query_architecture_r7": "docs/TOKEN_EFFICIENT_QUERY_ARCHITECTURE_R7.md",
       "release_evidence_v0_2_0": "docs/REGISTRY_V0_2_0_RELEASE_EVIDENCE.md",
       "release_evidence_v0_3_0": "docs/REGISTRY_V0_3_0_RELEASE_EVIDENCE.md",
       "trusted_release_history": "docs/TRUSTED_RELEASE_HISTORY.md",
@@ -251,6 +287,15 @@
       "publication_authorized": false
     },
     "next": {
+      "program": "R7_TOKEN_EFFICIENT_REGISTRY_READ_ARCHITECTURE",
+      "status": "APPROVED_PLANNED_NOT_IMPLEMENTED",
+      "human_reference": "docs/TOKEN_EFFICIENT_QUERY_ARCHITECTURE_R7.md",
+      "sequence_guard": "DO_NOT_BEGIN_IMPLEMENTATION_UNTIL_ORCHESTRA_CODEX_BASELINE_AND_V1_7_CLOSEOUT_COMPLETE",
+      "planned_release_target": "registry-v0.4.0",
+      "joint_consumer_phase": "ORCHESTRA_O7_AFTER_STABLE_R7_CONTRACT",
+      "token_efficiency_claim": "MEASUREMENT_REQUIRED"
+    },
+    "later": {
       "program": "CROSS_DOMAIN_AND_PROVIDER_COMPLIANCE_EXPANSION",
       "status": "RESEARCH_AND_CONTRACT_DESIGN",
       "country_dimensions": ["software-development", "security", "database-and-data-governance", "ai-usage-and-ai-systems", "accessibility"],
