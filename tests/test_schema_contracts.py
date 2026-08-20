@@ -21,6 +21,7 @@ class SchemaContractTests(unittest.TestCase):
         root = Path(temp.name)
         for name in ("registry", "machine", "schema"):
             shutil.copytree(ROOT / name, root / name)
+        shutil.copy2(ROOT / "README.json", root / "README.json")
         return temp, root
 
     def test_repository_machine_records_match_closed_contracts(self) -> None:
@@ -78,6 +79,17 @@ class SchemaContractTests(unittest.TestCase):
             doc = json.loads(path.read_text(encoding="utf-8"))
             doc["unreviewed_authority"] = True
             write_json(path, doc)
+            self.assertIn("unexpected property", validate_schema_contracts.validate(root)[0])
+        finally:
+            temp.cleanup()
+
+    def test_every_versioned_release_request_is_schema_validated(self) -> None:
+        temp, root = self.fixture()
+        try:
+            existing = root / "machine" / "release-request-v0.2.0.json"
+            doc = json.loads(existing.read_text(encoding="utf-8"))
+            doc["surprise"] = "must fail closed"
+            write_json(root / "machine" / "release-request-v9.9.9.json", doc)
             self.assertIn("unexpected property", validate_schema_contracts.validate(root)[0])
         finally:
             temp.cleanup()

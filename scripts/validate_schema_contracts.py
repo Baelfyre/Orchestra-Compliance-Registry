@@ -24,10 +24,11 @@ DOCUMENT_CONTRACTS = {
     "schema/publication-state.schema.json": "machine/publication-state.json",
     "schema/readme-machine-index.schema.json": "README.json",
     "schema/source-provenance-audit.schema.json": "machine/source-provenance-audit.v1.json",
-    "schema/release-request.schema.json": "machine/release-request-v0.2.0.json",
     "schema/source-monitor-policy.schema.json": "machine/source-monitor-policy.json",
     "schema/source-monitor-baseline.schema.json": "machine/source-monitor-baseline.v1.json",
 }
+RELEASE_REQUEST_SCHEMA = "schema/release-request.schema.json"
+RELEASE_REQUEST_GLOB = "machine/release-request-v*.json"
 STANDALONE_CONTRACTS = (
     "schema/query-receipt.schema.json",
     "schema/source-watch-receipt.schema.json",
@@ -175,6 +176,15 @@ def validate(root: Path = ROOT) -> list[str]:
             schema = load(root / schema_rel)
             _assert_closed_schema(schema, schema_rel)
             validate_value(load(root / document_rel), schema, document_rel)
+
+        release_schema = load(root / RELEASE_REQUEST_SCHEMA)
+        _assert_closed_schema(release_schema, RELEASE_REQUEST_SCHEMA)
+        release_requests = sorted(root.glob(RELEASE_REQUEST_GLOB))
+        if not release_requests:
+            raise ContractError(f"{RELEASE_REQUEST_GLOB}: at least one release request is required")
+        for request_path in release_requests:
+            request_rel = request_path.relative_to(root).as_posix()
+            validate_value(load(request_path), release_schema, request_rel)
 
         for schema_rel in STANDALONE_CONTRACTS:
             _assert_closed_schema(load(root / schema_rel), schema_rel)
