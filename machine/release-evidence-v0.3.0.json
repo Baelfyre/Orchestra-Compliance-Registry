@@ -1,0 +1,30 @@
+{
+  "$schema": "../schema/release-evidence.schema.json",
+  "schema_version": "orchestra.compliance-registry.release-evidence.v1",
+  "trust_state": "PUBLISHED_IMMUTABLE_VERIFIED",
+  "release_tag": "registry-v0.3.0",
+  "registry_version": "0.3.0",
+  "release_sequence": 3,
+  "release_id": 373417769,
+  "release_url": "https://github.com/Baelfyre/Orchestra-Compliance-Registry/releases/tag/registry-v0.3.0",
+  "published_at": "2026-08-20T00:11:24Z",
+  "source_commit": "20eb859db153f17e24c052a13765e982d51cedbf",
+  "source_tree": "763be9062a0c23031c794403dc4592f5db4389b0",
+  "draft": false,
+  "prerelease": false,
+  "immutable": true,
+  "release_manifest_sha256": "2674c7625188e20047274f3f3e7a25836299c640913bfc2eb20de2d4349808a9",
+  "bundle_sha256": "dc74b59f3c11dd7c740a91a4c6667064b84c3505d8bfc62382cd2ce0f4f0bfea",
+  "assets": [
+    "orchestra-compliance-registry.zip",
+    "orchestra-compliance-registry.zip.sha256",
+    "release-manifest.json",
+    "release-manifest.sha256"
+  ],
+  "workflow_run_id": 32316311024,
+  "workflow_run_attempt": 1,
+  "workflow_trigger_commit": "906f75c403fa643368aa2a8724748690577d83ec",
+  "release_evidence_issue": 28,
+  "recorded_at": "2026-08-20T08:11:24+08:00",
+  "external_reverification_required_before_trust_or_mutation": true
+}

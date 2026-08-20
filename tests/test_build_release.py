@@ -18,6 +18,8 @@ PUBLISHED_V0_1_MANIFEST_SHA256 = "9922ddcce77dfac0c01cac80fe6669aaffe37636826a56
 PUBLISHED_V0_1_ASSET_SHA256 = "b64889933d30a8dea27bcbbb95c952e4f053c14a4f345e1e04b27777b5025ec0"
 PUBLISHED_V0_2_MANIFEST_SHA256 = "cb98e4496da8952cff1432207d57f04379364bac2e95cc422de173681a8fb2b4"
 PUBLISHED_V0_2_ASSET_SHA256 = "71414aaead10634c2a4b79ec519b4fc76fb32af71cd831ef48f2133bcc211388"
+PUBLISHED_V0_3_MANIFEST_SHA256 = "2674c7625188e20047274f3f3e7a25836299c640913bfc2eb20de2d4349808a9"
+PUBLISHED_V0_3_ASSET_SHA256 = "dc74b59f3c11dd7c740a91a4c6667064b84c3505d8bfc62382cd2ce0f4f0bfea"
 
 
 def sha256(path: Path) -> str:
@@ -108,19 +110,33 @@ class ReleaseBuilderTests(unittest.TestCase):
         self.assertFalse(trusted["draft"])
         self.assertFalse(trusted["prerelease"])
 
-    def test_current_trusted_release_is_v0_2_and_matches_history(self) -> None:
+    def test_published_v0_2_identity_remains_frozen_in_history(self) -> None:
+        history = json.loads((ROOT / "machine" / "trusted-release-history.json").read_text(encoding="utf-8"))
+        matches = [item for item in history["releases"] if item["tag"] == "registry-v0.2.0"]
+        self.assertEqual(1, len(matches))
+        trusted = matches[0]
+        self.assertEqual("0.2.0", trusted["registry_version"])
+        self.assertEqual(2, trusted["release_sequence"])
+        self.assertEqual("cb32038a2683eb2c19f52646892d3257996a06eb", trusted["target_commit"])
+        self.assertEqual(PUBLISHED_V0_2_MANIFEST_SHA256, trusted["release_manifest_sha256"])
+        self.assertEqual(PUBLISHED_V0_2_ASSET_SHA256, trusted["bundle_sha256"])
+        self.assertTrue(trusted["immutable"])
+        self.assertFalse(trusted["draft"])
+        self.assertFalse(trusted["prerelease"])
+
+    def test_current_trusted_release_is_v0_3_and_matches_history(self) -> None:
         publication = json.loads((ROOT / "machine" / "publication-state.json").read_text(encoding="utf-8"))
         history = json.loads((ROOT / "machine" / "trusted-release-history.json").read_text(encoding="utf-8"))
         trusted = publication["trusted_release"]
-        self.assertEqual("registry-v0.2.0", trusted["tag"])
-        self.assertEqual("registry-v0.2.0", history["current_trusted_release"])
+        self.assertEqual("registry-v0.3.0", trusted["tag"])
+        self.assertEqual("registry-v0.3.0", history["current_trusted_release"])
         matches = [item for item in history["releases"] if item["tag"] == trusted["tag"]]
         self.assertEqual(1, len(matches))
         historical = matches[0]
-        self.assertEqual("0.2.0", trusted["registry_version"])
-        self.assertEqual(2, trusted["release_sequence"])
-        self.assertEqual(PUBLISHED_V0_2_MANIFEST_SHA256, trusted["release_manifest_sha256"])
-        self.assertEqual(PUBLISHED_V0_2_ASSET_SHA256, trusted["bundle_sha256"])
+        self.assertEqual("0.3.0", trusted["registry_version"])
+        self.assertEqual(3, trusted["release_sequence"])
+        self.assertEqual(PUBLISHED_V0_3_MANIFEST_SHA256, trusted["release_manifest_sha256"])
+        self.assertEqual(PUBLISHED_V0_3_ASSET_SHA256, trusted["bundle_sha256"])
         for key in (
             "release_id",
             "registry_version",
@@ -142,14 +158,8 @@ class ReleaseBuilderTests(unittest.TestCase):
             second = self.build(Path(second_dir))
             self.assertEqual(first["manifest_sha256"], second["manifest_sha256"])
             self.assertEqual(first["asset_sha256"], second["asset_sha256"])
-            self.assertEqual(
-                Path(first["asset"]).read_bytes(),
-                Path(second["asset"]).read_bytes(),
-            )
-            self.assertEqual(
-                Path(first["manifest"]).read_bytes(),
-                Path(second["manifest"]).read_bytes(),
-            )
+            self.assertEqual(Path(first["asset"]).read_bytes(), Path(second["asset"]).read_bytes())
+            self.assertEqual(Path(first["manifest"]).read_bytes(), Path(second["manifest"]).read_bytes())
 
     def test_zero_release_sequence_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

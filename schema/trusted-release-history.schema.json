@@ -15,10 +15,10 @@
     "$schema": {"const": "../schema/trusted-release-history.schema.json"},
     "schema_version": {"const": "orchestra.compliance-registry.trusted-release-history.v1"},
     "canonical_repository": {"const": "Baelfyre/Orchestra-Compliance-Registry"},
-    "current_trusted_release": {"const": "registry-v0.2.0"},
+    "current_trusted_release": {"const": "registry-v0.3.0"},
     "releases": {
       "type": "array",
-      "minItems": 2,
+      "minItems": 3,
       "uniqueItems": true,
       "items": {
         "type": "object",

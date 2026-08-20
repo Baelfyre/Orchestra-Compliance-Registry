@@ -6,13 +6,13 @@ The Registry turns reviewed compliance sources into structured, evidence-oriente
 
 > **Machine entry point:** [`README.json`](README.json)  
 > **Editable source state:** `0.2.0-dev.1` / `DRAFT`  
-> **Current trusted release:** `registry-v0.2.0`
+> **Current trusted release:** `registry-v0.3.0`
 
 ## Purpose
 
 The Registry is designed to help software projects identify compliance considerations across jurisdictions, technical domains, and platform/provider requirements while preserving source provenance, freshness, applicability review, and explicit trust boundaries.
 
-The current trusted distribution is the bounded **international privacy pilot**. Broader software-development, cybersecurity, database/data-governance, AI, and provider/platform coverage is the next expansion program.
+The current trusted distribution combines the bounded **international privacy pilot** with canonical official-source monitoring, capability negotiation, and release-delta contracts. Broader software-development, cybersecurity, database/data-governance, AI, and provider/platform source-backed coverage remains the next expansion program.
 
 ## How to use it
 
@@ -24,18 +24,18 @@ The current trusted distribution is the bounded **international privacy pilot**.
 | Adaptive consumers | [`docs/ADAPTIVE_CONSUMPTION_CONTRACTS.md`](docs/ADAPTIVE_CONSUMPTION_CONTRACTS.md) | R5 capability negotiation and R6 release-delta compatibility contracts |
 | Source reviewers | [`docs/SOURCE_PROVENANCE_AUDIT.md`](docs/SOURCE_PROVENANCE_AUDIT.md) | Official citations, date provenance, and the latest source rerun |
 | Source-monitor reviewers | [`docs/SOURCE_MONITORING.md`](docs/SOURCE_MONITORING.md) | Dynamic official-source monitoring, fingerprints, change states, and automation boundaries |
-| Release consumers | [`docs/REGISTRY_V0_2_0_RELEASE_EVIDENCE.md`](docs/REGISTRY_V0_2_0_RELEASE_EVIDENCE.md) | Human-readable trusted-release identity and integrity evidence |
-| Release tooling / agents | [`machine/release-evidence-v0.2.0.json`](machine/release-evidence-v0.2.0.json) | Machine-readable exact release ID, source identity, hashes, assets, and workflow evidence |
+| Release consumers | [`docs/REGISTRY_V0_3_0_RELEASE_EVIDENCE.md`](docs/REGISTRY_V0_3_0_RELEASE_EVIDENCE.md) | Human-readable trusted-release identity and integrity evidence |
+| Release tooling / agents | [`machine/release-evidence-v0.3.0.json`](machine/release-evidence-v0.3.0.json) | Machine-readable exact release ID, source identity, hashes, assets, and workflow evidence |
 | Contributors | [`CONTRIBUTING.md`](CONTRIBUTING.md) | Source, evidence, review, and contribution requirements |
 
 ## Trusted release
 
-`registry-v0.2.0` was published on **2026-08-19** as a non-draft, non-prerelease, immutable GitHub Release from exact source commit `cb32038a2683eb2c19f52646892d3257996a06eb` and source tree `10ce7849fd5b95b3ca756eff213bb506d00a89de`.
+`registry-v0.3.0` was published on **2026-08-20** as a non-draft, non-prerelease, immutable GitHub Release from exact source commit `20eb859db153f17e24c052a13765e982d51cedbf` and source tree `763be9062a0c23031c794403dc4592f5db4389b0`.
 
 | Evidence | SHA-256 |
 | --- | --- |
-| Release manifest | `cb98e4496da8952cff1432207d57f04379364bac2e95cc422de173681a8fb2b4` |
-| Registry bundle | `71414aaead10634c2a4b79ec519b4fc76fb32af71cd831ef48f2133bcc211388` |
+| Release manifest | `2674c7625188e20047274f3f3e7a25836299c640913bfc2eb20de2d4349808a9` |
+| Registry bundle | `dc74b59f3c11dd7c740a91a4c6667064b84c3505d8bfc62382cd2ce0f4f0bfea` |
 
 The editable repository remains `0.2.0-dev.1` `DRAFT` source state. Trusted publication is staged by the deterministic release builder and does not rewrite editable source records.
 
@@ -69,7 +69,7 @@ The current reviewed monitor baseline is `ACTIVE`, covers all eight canonical so
 
 See [`docs/SOURCE_MONITORING.md`](docs/SOURCE_MONITORING.md) for the monitoring architecture. Machine controls are [`machine/source-monitor-policy.json`](machine/source-monitor-policy.json) and [`machine/source-monitor-baseline.v1.json`](machine/source-monitor-baseline.v1.json).
 
-The source-monitor implementation is canonical on `main` as part of Registry R1-R6. It remains outside the immutable `registry-v0.2.0` distribution until a separately authorized trusted release is built, validated, and published.
+The source-monitor implementation is canonical on `main` as part of Registry R1-R6 and is included in the immutable `registry-v0.3.0` distribution. Monitoring remains evidence-only and cannot automatically publish a future trusted release.
 
 ## Adaptive consumption contracts
 
@@ -80,7 +80,7 @@ Registry R5-R6 are canonical on `main` and provide a machine-readable compatibil
 - `schema/release-delta.schema.json` validates R6 release-delta evidence.
 - `scripts/release_delta.py` deterministically compares Registry roots and classifies compatible, revalidation, unsupported-capability, and human-review impacts.
 
-The canonical R5 capability manifest was reconciled byte-for-byte with Orchestra's O1-O6 compatibility fixture before Registry R1-R6 merged. The immutable trusted `registry-v0.2.0` release predates R5-R6, so consumers must use the explicit v0.2 legacy compatibility boundary until a later trusted Registry release is separately authorized.
+The canonical R5 capability manifest was reconciled byte-for-byte with Orchestra's O1-O6 compatibility fixture before Registry R1-R6 merged. `registry-v0.3.0` is the first trusted release containing R5-R6. Consumers pinned to immutable `registry-v0.2.0` must continue using Orchestra's explicit v0.2 legacy compatibility profile rather than inventing capability metadata that release did not contain.
 
 See [`docs/ADAPTIVE_CONSUMPTION_CONTRACTS.md`](docs/ADAPTIVE_CONSUMPTION_CONTRACTS.md).
 
@@ -159,7 +159,8 @@ When prose and a machine record disagree on an exact deterministic fact, use the
 | Topic | Human reference | Machine reference |
 | --- | --- | --- |
 | Repository overview | `README.md` | [`README.json`](README.json) |
-| Trusted v0.2.0 release | [`docs/REGISTRY_V0_2_0_RELEASE_EVIDENCE.md`](docs/REGISTRY_V0_2_0_RELEASE_EVIDENCE.md) | [`machine/release-evidence-v0.2.0.json`](machine/release-evidence-v0.2.0.json) |
+| Trusted v0.3.0 release | [`docs/REGISTRY_V0_3_0_RELEASE_EVIDENCE.md`](docs/REGISTRY_V0_3_0_RELEASE_EVIDENCE.md) | [`machine/release-evidence-v0.3.0.json`](machine/release-evidence-v0.3.0.json) |
+| Trusted release history | [`docs/TRUSTED_RELEASE_HISTORY.md`](docs/TRUSTED_RELEASE_HISTORY.md) | [`machine/trusted-release-history.json`](machine/trusted-release-history.json) |
 | Source provenance | [`docs/SOURCE_PROVENANCE_AUDIT.md`](docs/SOURCE_PROVENANCE_AUDIT.md) | [`machine/source-provenance-audit.v1.json`](machine/source-provenance-audit.v1.json) |
 | Dynamic source monitoring | [`docs/SOURCE_MONITORING.md`](docs/SOURCE_MONITORING.md) | [`machine/source-monitor-policy.json`](machine/source-monitor-policy.json), [`machine/source-monitor-baseline.v1.json`](machine/source-monitor-baseline.v1.json) |
 | Adaptive consumption R5-R6 | [`docs/ADAPTIVE_CONSUMPTION_CONTRACTS.md`](docs/ADAPTIVE_CONSUMPTION_CONTRACTS.md) | [`registry/capabilities.json`](registry/capabilities.json), [`schema/release-delta.schema.json`](schema/release-delta.schema.json) |

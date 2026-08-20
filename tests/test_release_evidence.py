@@ -16,7 +16,7 @@ def load(relative: str) -> dict:
 class ReleaseEvidenceTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls.evidence = load("machine/release-evidence-v0.2.0.json")
+        cls.evidence = load("machine/release-evidence-v0.3.0.json")
         cls.schema = load("schema/release-evidence.schema.json")
         cls.history = load("machine/trusted-release-history.json")
         cls.history_schema = load("schema/trusted-release-history.schema.json")
@@ -27,7 +27,7 @@ class ReleaseEvidenceTests(unittest.TestCase):
         validate_schema_contracts.validate_value(
             self.evidence,
             self.schema,
-            "machine/release-evidence-v0.2.0.json",
+            "machine/release-evidence-v0.3.0.json",
         )
 
     def test_trusted_release_history_matches_schema(self) -> None:
@@ -54,11 +54,7 @@ class ReleaseEvidenceTests(unittest.TestCase):
             "assets": "required_assets",
         }
         for evidence_key, publication_key in mapping.items():
-            self.assertEqual(
-                trusted[publication_key],
-                self.evidence[evidence_key],
-                evidence_key,
-            )
+            self.assertEqual(trusted[publication_key], self.evidence[evidence_key], evidence_key)
 
     def test_readme_trusted_release_matches_evidence(self) -> None:
         trusted = self.readme["trusted_release"]
@@ -70,15 +66,9 @@ class ReleaseEvidenceTests(unittest.TestCase):
         self.assertEqual(self.evidence["source_tree"], trusted["source_tree"])
         self.assertEqual(self.evidence["published_at"], trusted["published_at"])
         self.assertEqual(self.evidence["immutable"], trusted["immutable"])
-        self.assertEqual(
-            self.evidence["release_manifest_sha256"],
-            trusted["release_manifest_sha256"],
-        )
+        self.assertEqual(self.evidence["release_manifest_sha256"], trusted["release_manifest_sha256"])
         self.assertEqual(self.evidence["bundle_sha256"], trusted["bundle_sha256"])
-        self.assertEqual(
-            "machine/release-evidence-v0.2.0.json",
-            trusted["release_evidence"],
-        )
+        self.assertEqual("machine/release-evidence-v0.3.0.json", trusted["release_evidence"])
 
     def test_history_current_pointer_matches_publication_state(self) -> None:
         trusted = self.publication["trusted_release"]
@@ -102,14 +92,8 @@ class ReleaseEvidenceTests(unittest.TestCase):
             self.assertEqual(trusted[key], historical[key], key)
 
     def test_release_source_is_frozen_and_external_reverification_remains_required(self) -> None:
-        self.assertEqual(
-            "cb32038a2683eb2c19f52646892d3257996a06eb",
-            self.evidence["source_commit"],
-        )
-        self.assertEqual(
-            "10ce7849fd5b95b3ca756eff213bb506d00a89de",
-            self.evidence["source_tree"],
-        )
+        self.assertEqual("20eb859db153f17e24c052a13765e982d51cedbf", self.evidence["source_commit"])
+        self.assertEqual("763be9062a0c23031c794403dc4592f5db4389b0", self.evidence["source_tree"])
         self.assertTrue(self.evidence["external_reverification_required_before_trust_or_mutation"])
         self.assertTrue(self.history["external_reverification_required_before_trust_or_mutation"])
 
