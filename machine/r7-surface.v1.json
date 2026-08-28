@@ -9,7 +9,7 @@
     "document_blob": "9f24a10f455a77509ec5246e6981ca2672624ca1"
   },
   "implementation": {
-    "status": "IMPLEMENTED_STABLE_DIRECT_SURFACE",
+    "status": "IMPLEMENTED_R7_1_R7_9_PENDING_TRUSTED_PUBLICATION_AND_O7_7_CONFORMANCE",
     "contract_version": "1.0.0",
     "phases": {
       "R7.1": "IMPLEMENTED_STABLE",
@@ -18,32 +18,50 @@
       "R7.4": "IMPLEMENTED_STABLE",
       "R7.5": "IMPLEMENTED_STABLE",
       "R7.6": "IMPLEMENTED_STABLE",
-      "R7.7": "NOT_IMPLEMENTED",
-      "R7.8": "NOT_IMPLEMENTED",
-      "R7.9": "NOT_IMPLEMENTED"
+      "R7.7": "IMPLEMENTED_VALIDATED",
+      "R7.8": "IMPLEMENTED_VALIDATED",
+      "R7.9": "IMPLEMENTED_VALIDATED"
     }
   },
   "gateway": {
     "path": "scripts/r7_query_gateway.py",
     "query_receipt_schema": "schema/r7-query-receipt.schema.json",
     "read_only": true,
-    "shared_selection_semantics": true
+    "shared_selection_semantics": true,
+    "mcp_adapter": "scripts/r7_mcp_server.py"
   },
   "index": {
     "schema_version": "orchestra.compliance-registry.r7-index.v1",
     "authority": "DERIVED_DISPOSABLE_READ_CACHE",
     "requires_trusted_release_identity": true,
-    "digest_mismatch_disposition": "REJECT_INDEX_REBUILD_OR_FALLBACK"
+    "digest_mismatch_disposition": "REJECT_INDEX_REBUILD_OR_FALLBACK",
+    "trusted_release_installer": "scripts/r7_trusted_release.py"
   },
   "projections": ["MINIMAL", "SUMMARY", "EVIDENCE", "FULL"],
   "transport": {
-    "precedence": ["DIRECT_LOCAL_INDEXED_GATEWAY", "DIRECT_LOCAL_JSON_QUERY"],
-    "mcp_available": false,
-    "mcp_disposition": "R7.7_NOT_IMPLEMENTED"
+    "precedence": ["DIRECT_LOCAL_INDEXED_GATEWAY", "DIRECT_LOCAL_JSON_QUERY", "OPTIONAL_MCP_TRANSPORT"],
+    "mcp_available": true,
+    "mcp_disposition": "IMPLEMENTED_READ_ONLY_TRANSPORT",
+    "mcp_tools": ["registry_status", "registry_query", "registry_get", "registry_relations", "registry_freshness", "registry_delta"]
   },
   "capabilities": {
-    "supported": ["cap.query.projection.v1", "cap.query.relationships.v1", "cap.query.indexed-read.v1", "cap.query.budget.v1"],
-    "not_yet_supported": ["cap.transport.mcp.v1"]
+    "supported": ["cap.query.projection.v1", "cap.query.relationships.v1", "cap.query.indexed-read.v1", "cap.query.budget.v1", "cap.transport.mcp.v1"],
+    "not_yet_supported": []
+  },
+  "trusted_release_integration": {
+    "path": "scripts/r7_trusted_release.py",
+    "verify_before_install": true,
+    "verify_member_digests": true,
+    "canonical_json_remains_authority": true,
+    "index_rebuildable": true,
+    "replacement_requires_explicit_flag": true
+  },
+  "benchmark": {
+    "path": "scripts/r7_benchmark.py",
+    "test": "tests/test_r7_benchmark.py",
+    "evidence_artifact": "r7-efficiency-benchmark-${GITHUB_SHA}",
+    "host_tokens_fabricated_when_unavailable": false,
+    "benefit_claim_requires_measured_evidence": true
   },
   "orchestra_entry_gate": {
     "token": "IMPLEMENTED_STABLE_REGISTRY_R7_SURFACE_REQUIRED",
@@ -61,6 +79,7 @@
   "release_boundary": {
     "planned_tag": "registry-v0.4.0",
     "published": false,
-    "trusted_publication_separate": true
+    "trusted_publication_separate": true,
+    "publication_state": "PENDING_JOINT_CONFORMANCE_AND_GOVERNED_RELEASE"
   }
 }
