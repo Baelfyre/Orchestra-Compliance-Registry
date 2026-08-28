@@ -1,0 +1,146 @@
+name: Temporary R7 documentation sync
+
+on:
+  push:
+    branches:
+      - feat/r7-complete-mcp-trusted-release-benchmark-20260828
+    paths:
+      - ".github/workflows/_r7-doc-sync-tmp.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/r7-complete-mcp-trusted-release-benchmark-20260828
+      - name: Apply asserted R7 documentation parity edits
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          def replace(path, old, new, *, count=None):
+              p = Path(path)
+              text = p.read_text(encoding="utf-8")
+              found = text.count(old)
+              if count is not None and found != count:
+                  raise SystemExit(f"{path}: expected {count} occurrence(s), found {found}: {old!r}")
+              if found == 0:
+                  raise SystemExit(f"{path}: missing asserted text: {old!r}")
+              p.write_text(text.replace(old, new), encoding="utf-8")
+
+          replace(
+              "README.md",
+              "**R7 is approved and planned, not yet implemented.** It will keep canonical Registry JSON as authority while adding a deterministic typed read model, disposable indexed cache, bounded projections, context budgets, and a thin read-only MCP adapter so consumers can retrieve only the Registry slice they need.",
+              "**R7.1 through R7.9 are implemented on the current candidate surface, with trusted `registry-v0.4.0` publication and final Orchestra O7.7 conformance still separately gated.** Canonical Registry JSON remains authority; R7 adds deterministic typed reads, a rebuildable verified-release index, bounded projections/context budgets, and a read-only MCP transport that delegates to the same query gateway.",
+              count=1,
+          )
+          replace(
+              "README.md",
+              "| Planned token-efficient R7 query architecture | [`docs/TOKEN_EFFICIENT_QUERY_ARCHITECTURE_R7.md`](docs/TOKEN_EFFICIENT_QUERY_ARCHITECTURE_R7.md) | [`README.json`](README.json) |",
+              "| R7 query, trusted-cache, MCP, and benchmark architecture | [`docs/TOKEN_EFFICIENT_QUERY_ARCHITECTURE_R7.md`](docs/TOKEN_EFFICIENT_QUERY_ARCHITECTURE_R7.md) | [`machine/r7-surface.v1.json`](machine/r7-surface.v1.json) |",
+              count=1,
+          )
+
+          replace(
+              "README.json",
+              '"status": "APPROVED_PLANNED_NOT_IMPLEMENTED"',
+              '"status": "IMPLEMENTED_R7_1_R7_9_PENDING_TRUSTED_PUBLICATION_AND_O7_7_CONFORMANCE"',
+              count=2,
+          )
+          replace(
+              "README.json",
+              '"implementation_order": "AFTER_ORCHESTRA_CODEX_BASELINE_CLOSEOUT_AND_ORCHESTRA_V1_7_0"',
+              '"implementation_order": "IMPLEMENTED_AFTER_STABLE_REGISTRY_R7_ENTRY_GATE_AND_ORCHESTRA_O7_1_O7_6_CANONICAL"',
+              count=1,
+          )
+          replace(
+              "README.json",
+              '"sequence_guard": "DO_NOT_BEGIN_IMPLEMENTATION_UNTIL_ORCHESTRA_CODEX_BASELINE_AND_V1_7_CLOSEOUT_COMPLETE"',
+              '"sequence_guard": "R7_1_R7_9_IMPLEMENTED_TRUSTED_V0_4_0_AND_FINAL_O7_7_REMAIN_SEPARATELY_GATED"',
+              count=1,
+          )
+          replace(
+              "README.json",
+              '"joint_consumer_phase": "ORCHESTRA_O7_AFTER_STABLE_R7_CONTRACT"',
+              '"joint_consumer_phase": "ORCHESTRA_O7_1_O7_6_CANONICAL_O7_7_PENDING_TRUSTED_RELEASE"',
+              count=1,
+          )
+          replace(
+              "README.json",
+              '"token_efficiency_claim": "NOT_CLAIMED_UNTIL_MEASURED"',
+              '"token_efficiency_claim": "TOKEN_EFFICIENCY_NOT_CLAIMED_WITHOUT_HOST_MEASUREMENT"',
+              count=1,
+          )
+          replace(
+              "README.json",
+              '"token_efficiency_claim": "MEASUREMENT_REQUIRED"',
+              '"token_efficiency_claim": "HOST_TOKEN_MEASUREMENT_UNAVAILABLE_BYTE_EVIDENCE_ONLY"',
+              count=1,
+          )
+
+          replace(
+              "docs/TOKEN_EFFICIENT_QUERY_ARCHITECTURE_R7.md",
+              "`IMPLEMENTED_STABLE_DIRECT_SURFACE_R7_1_R7_6`",
+              "`IMPLEMENTED_R7_1_R7_9_PENDING_TRUSTED_PUBLICATION_AND_O7_7_CONFORMANCE`",
+              count=1,
+          )
+          replace(
+              "docs/TOKEN_EFFICIENT_QUERY_ARCHITECTURE_R7.md",
+              "`R7.7_NOT_IMPLEMENTED`",
+              "`IMPLEMENTED_READ_ONLY_TRANSPORT`",
+              count=2,
+          )
+          replace(
+              "docs/TOKEN_EFFICIENT_QUERY_ARCHITECTURE_R7.md",
+              "The read-only MCP adapter, trusted-release cache integration, efficiency benchmark, and `registry-v0.4.0` trusted publication remain downstream work. The presence of the stable direct surface does not claim MCP availability or trusted v0.4.0 publication.",
+              "R7.7 read-only MCP transport, R7.8 trusted-release verification/cache installation, and R7.9 evidence-based efficiency benchmarking are implemented on the candidate surface. Trusted `registry-v0.4.0` publication and final Orchestra O7.7 conformance remain separate governed transitions and are not claimed by source implementation alone.",
+              count=1,
+          )
+          replace(
+              "docs/TOKEN_EFFICIENT_QUERY_ARCHITECTURE_R7.md",
+              "Still not implemented:\n\n- `cap.transport.mcp.v1`",
+              "Additional optional transport capability implemented at contract version `1.0.0`:\n\n- `cap.transport.mcp.v1`",
+              count=1,
+          )
+          replace(
+              "docs/TOKEN_EFFICIENT_QUERY_ARCHITECTURE_R7.md",
+              "### R7.8 — Trusted-release cache integration\n\n`NOT_IMPLEMENTED`",
+              "### R7.8 — Trusted-release cache integration\n\n`IMPLEMENTED_VALIDATED`",
+              count=1,
+          )
+          replace(
+              "docs/TOKEN_EFFICIENT_QUERY_ARCHITECTURE_R7.md",
+              "### R7.9 — Efficiency benchmark\n\n`NOT_IMPLEMENTED`",
+              "### R7.9 — Efficiency benchmark\n\n`IMPLEMENTED_VALIDATED`",
+              count=1,
+          )
+          replace(
+              "docs/TOKEN_EFFICIENT_QUERY_ARCHITECTURE_R7.md",
+              "The stable direct surface satisfies the R7.1-R7.6 subset of this gate. Full R7 remains incomplete until R7.7-R7.9 and joint R7/O7 conformance are complete.",
+              "The source implementation now satisfies the R7.1-R7.9 subset of this gate, including MCP/direct parity and recorded benchmark evidence. Full program completion still requires governed trusted `registry-v0.4.0` publication and final joint R7/O7 conformance against that immutable release.",
+              count=1,
+          )
+
+          architecture = Path("docs/TOKEN_EFFICIENT_QUERY_ARCHITECTURE_R7.md")
+          text = architecture.read_text(encoding="utf-8")
+          marker = "## R7.7-R7.9 implementation evidence"
+          if marker not in text:
+              text += "\n\n## R7.7-R7.9 implementation evidence\n\n- R7.7 MCP adapter: `scripts/r7_mcp_server.py`, read-only stdio transport with the frozen six-tool surface and direct-gateway delegation.\n- R7.8 trusted-release integration: `scripts/r7_trusted_release.py`, which verifies release/bundle/member digests before installation and only then permits deterministic index construction.\n- R7.9 benchmark: `scripts/r7_benchmark.py` and `tests/test_r7_benchmark.py`, covering all seven frozen comparison modes.\n- `TOKEN_EFFICIENCY_NOT_CLAIMED_WITHOUT_HOST_MEASUREMENT`: the benchmark records host-reported tokens as unavailable when they are unavailable and may establish only measured byte savings in that case.\n- `registry-v0.4.0` remains unpublished until separate joint-conformance and publication gates complete.\n"
+              architecture.write_text(text, encoding="utf-8")
+          PY
+      - name: Commit bounded documentation parity result
+        shell: bash
+        run: |
+          git diff --check
+          git status --short
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md README.json docs/TOKEN_EFFICIENT_QUERY_ARCHITECTURE_R7.md
+          git diff --cached --quiet && exit 0
+          git commit -m "docs(r7): synchronize completed source implementation state"
+          git push origin HEAD:feat/r7-complete-mcp-trusted-release-benchmark-20260828
