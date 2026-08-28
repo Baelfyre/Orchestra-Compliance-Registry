@@ -50,6 +50,38 @@
       "required_records": ["capabilities"],
       "optional": false,
       "fallback": "FAIL_CLOSED_ON_MISSING_REQUIRED_CAPABILITY"
+    },
+    {
+      "capability_id": "cap.query.projection.v1",
+      "contract_version": "1.0.0",
+      "status": "SUPPORTED",
+      "required_records": ["sources", "obligations"],
+      "optional": true,
+      "fallback": "FULL_CANONICAL_JSON_QUERY"
+    },
+    {
+      "capability_id": "cap.query.relationships.v1",
+      "contract_version": "1.0.0",
+      "status": "SUPPORTED",
+      "required_records": ["sources", "obligations", "jurisdictions", "providers"],
+      "optional": true,
+      "fallback": "CURRENT_DIRECT_QUERY_NO_RELATION_EXPANSION"
+    },
+    {
+      "capability_id": "cap.query.indexed-read.v1",
+      "contract_version": "1.0.0",
+      "status": "SUPPORTED",
+      "required_records": ["sources", "obligations", "jurisdictions", "providers", "source_status", "review_due"],
+      "optional": true,
+      "fallback": "DIRECT_LOCAL_JSON_QUERY"
+    },
+    {
+      "capability_id": "cap.query.budget.v1",
+      "contract_version": "1.0.0",
+      "status": "SUPPORTED",
+      "required_records": ["sources", "obligations"],
+      "optional": true,
+      "fallback": "CALLER_CONTEXT_BUDGET_WITH_DIRECT_JSON"
     }
   ],
   "authority_boundaries": {
