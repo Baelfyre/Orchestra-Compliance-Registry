@@ -1,1 +1,167 @@
-{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"orchestra.compliance-registry.r7-surface.v1","title":"R7 Stable Direct Query Surface","type":"object","required":["schema_version","canonical_repository","authority","architecture_anchor","implementation","gateway","index","projections","transport","capabilities","orchestra_entry_gate","authority_boundaries","release_boundary"],"properties":{"schema_version":{"const":"orchestra.compliance-registry.r7-surface.v1"},"canonical_repository":{"const":"Baelfyre/Orchestra-Compliance-Registry"},"authority":{"const":"DESCRIPTIVE_NON_AUTHORIZING"},"architecture_anchor":{"type":"object","required":["commit","tree","document","document_blob"],"properties":{"commit":{"type":"string","pattern":"^[0-9a-f]{40}$"},"tree":{"type":"string","pattern":"^[0-9a-f]{40}$"},"document":{"const":"docs/TOKEN_EFFICIENT_QUERY_ARCHITECTURE_R7.md"},"document_blob":{"type":"string","pattern":"^[0-9a-f]{40}$"}},"additionalProperties":false},"implementation":{"type":"object","required":["status","contract_version","phases"],"properties":{"status":{"const":"IMPLEMENTED_STABLE_DIRECT_SURFACE"},"contract_version":{"const":"1.0.0"},"phases":{"type":"object","required":["R7.1","R7.2","R7.3","R7.4","R7.5","R7.6","R7.7","R7.8","R7.9"],"properties":{"R7.1":{"const":"IMPLEMENTED_STABLE"},"R7.2":{"const":"IMPLEMENTED_STABLE"},"R7.3":{"const":"IMPLEMENTED_STABLE"},"R7.4":{"const":"IMPLEMENTED_STABLE"},"R7.5":{"const":"IMPLEMENTED_STABLE"},"R7.6":{"const":"IMPLEMENTED_STABLE"},"R7.7":{"const":"NOT_IMPLEMENTED"},"R7.8":{"const":"NOT_IMPLEMENTED"},"R7.9":{"const":"NOT_IMPLEMENTED"}},"additionalProperties":false}},"additionalProperties":false},"gateway":{"type":"object","required":["path","query_receipt_schema","read_only","shared_selection_semantics"],"properties":{"path":{"const":"scripts/r7_query_gateway.py"},"query_receipt_schema":{"const":"schema/r7-query-receipt.schema.json"},"read_only":{"const":true},"shared_selection_semantics":{"const":true}},"additionalProperties":false},"index":{"type":"object","required":["schema_version","authority","requires_trusted_release_identity","digest_mismatch_disposition"],"properties":{"schema_version":{"const":"orchestra.compliance-registry.r7-index.v1"},"authority":{"const":"DERIVED_DISPOSABLE_READ_CACHE"},"requires_trusted_release_identity":{"const":true},"digest_mismatch_disposition":{"const":"REJECT_INDEX_REBUILD_OR_FALLBACK"}},"additionalProperties":false},"projections":{"type":"array","minItems":4,"maxItems":4,"uniqueItems":true,"items":{"enum":["MINIMAL","SUMMARY","EVIDENCE","FULL"]}},"transport":{"type":"object","required":["precedence","mcp_available","mcp_disposition"],"properties":{"precedence":{"type":"array","minItems":2,"items":{"enum":["DIRECT_LOCAL_INDEXED_GATEWAY","DIRECT_LOCAL_JSON_QUERY"]}},"mcp_available":{"const":false},"mcp_disposition":{"const":"R7.7_NOT_IMPLEMENTED"}},"additionalProperties":false},"capabilities":{"type":"object","required":["supported","not_yet_supported"],"properties":{"supported":{"type":"array","uniqueItems":true,"items":{"enum":["cap.query.projection.v1","cap.query.relationships.v1","cap.query.indexed-read.v1","cap.query.budget.v1"]}},"not_yet_supported":{"type":"array","uniqueItems":true,"items":{"enum":["cap.transport.mcp.v1"]}}},"additionalProperties":false},"orchestra_entry_gate":{"type":"object","required":["token","satisfied","scope"],"properties":{"token":{"const":"IMPLEMENTED_STABLE_REGISTRY_R7_SURFACE_REQUIRED"},"satisfied":{"const":true},"scope":{"const":"O7.1_THROUGH_O7.6_RUNTIME_IMPLEMENTATION"}},"additionalProperties":false},"authority_boundaries":{"type":"object","required":["legal_interpretation","project_applicability","registry_mutation","orchestra_execution","automatic_merge","trusted_release_publication"],"properties":{"legal_interpretation":{"const":false},"project_applicability":{"const":false},"registry_mutation":{"const":false},"orchestra_execution":{"const":false},"automatic_merge":{"const":false},"trusted_release_publication":{"const":false}},"additionalProperties":false},"release_boundary":{"type":"object","required":["planned_tag","published","trusted_publication_separate"],"properties":{"planned_tag":{"const":"registry-v0.4.0"},"published":{"const":false},"trusted_publication_separate":{"const":true}},"additionalProperties":false}},"additionalProperties":false}
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "orchestra.compliance-registry.r7-surface.v1",
+  "title": "R7 Complete Query and Transport Surface",
+  "type": "object",
+  "required": ["schema_version", "canonical_repository", "authority", "architecture_anchor", "implementation", "gateway", "index", "projections", "transport", "capabilities", "trusted_release_integration", "benchmark", "orchestra_entry_gate", "authority_boundaries", "release_boundary"],
+  "properties": {
+    "schema_version": {"const": "orchestra.compliance-registry.r7-surface.v1"},
+    "canonical_repository": {"const": "Baelfyre/Orchestra-Compliance-Registry"},
+    "authority": {"const": "DESCRIPTIVE_NON_AUTHORIZING"},
+    "architecture_anchor": {
+      "type": "object",
+      "required": ["commit", "tree", "document", "document_blob"],
+      "properties": {
+        "commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "tree": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "document": {"const": "docs/TOKEN_EFFICIENT_QUERY_ARCHITECTURE_R7.md"},
+        "document_blob": {"type": "string", "pattern": "^[0-9a-f]{40}$"}
+      },
+      "additionalProperties": false
+    },
+    "implementation": {
+      "type": "object",
+      "required": ["status", "contract_version", "phases"],
+      "properties": {
+        "status": {"const": "IMPLEMENTED_R7_1_R7_9_PENDING_TRUSTED_PUBLICATION_AND_O7_7_CONFORMANCE"},
+        "contract_version": {"const": "1.0.0"},
+        "phases": {
+          "type": "object",
+          "required": ["R7.1", "R7.2", "R7.3", "R7.4", "R7.5", "R7.6", "R7.7", "R7.8", "R7.9"],
+          "properties": {
+            "R7.1": {"const": "IMPLEMENTED_STABLE"},
+            "R7.2": {"const": "IMPLEMENTED_STABLE"},
+            "R7.3": {"const": "IMPLEMENTED_STABLE"},
+            "R7.4": {"const": "IMPLEMENTED_STABLE"},
+            "R7.5": {"const": "IMPLEMENTED_STABLE"},
+            "R7.6": {"const": "IMPLEMENTED_STABLE"},
+            "R7.7": {"const": "IMPLEMENTED_VALIDATED"},
+            "R7.8": {"const": "IMPLEMENTED_VALIDATED"},
+            "R7.9": {"const": "IMPLEMENTED_VALIDATED"}
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "gateway": {
+      "type": "object",
+      "required": ["path", "query_receipt_schema", "read_only", "shared_selection_semantics", "mcp_adapter"],
+      "properties": {
+        "path": {"const": "scripts/r7_query_gateway.py"},
+        "query_receipt_schema": {"const": "schema/r7-query-receipt.schema.json"},
+        "read_only": {"const": true},
+        "shared_selection_semantics": {"const": true},
+        "mcp_adapter": {"const": "scripts/r7_mcp_server.py"}
+      },
+      "additionalProperties": false
+    },
+    "index": {
+      "type": "object",
+      "required": ["schema_version", "authority", "requires_trusted_release_identity", "digest_mismatch_disposition", "trusted_release_installer"],
+      "properties": {
+        "schema_version": {"const": "orchestra.compliance-registry.r7-index.v1"},
+        "authority": {"const": "DERIVED_DISPOSABLE_READ_CACHE"},
+        "requires_trusted_release_identity": {"const": true},
+        "digest_mismatch_disposition": {"const": "REJECT_INDEX_REBUILD_OR_FALLBACK"},
+        "trusted_release_installer": {"const": "scripts/r7_trusted_release.py"}
+      },
+      "additionalProperties": false
+    },
+    "projections": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "uniqueItems": true,
+      "items": {"enum": ["MINIMAL", "SUMMARY", "EVIDENCE", "FULL"]}
+    },
+    "transport": {
+      "type": "object",
+      "required": ["precedence", "mcp_available", "mcp_disposition", "mcp_tools"],
+      "properties": {
+        "precedence": {
+          "const": ["DIRECT_LOCAL_INDEXED_GATEWAY", "DIRECT_LOCAL_JSON_QUERY", "OPTIONAL_MCP_TRANSPORT"]
+        },
+        "mcp_available": {"const": true},
+        "mcp_disposition": {"const": "IMPLEMENTED_READ_ONLY_TRANSPORT"},
+        "mcp_tools": {
+          "const": ["registry_status", "registry_query", "registry_get", "registry_relations", "registry_freshness", "registry_delta"]
+        }
+      },
+      "additionalProperties": false
+    },
+    "capabilities": {
+      "type": "object",
+      "required": ["supported", "not_yet_supported"],
+      "properties": {
+        "supported": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"enum": ["cap.query.projection.v1", "cap.query.relationships.v1", "cap.query.indexed-read.v1", "cap.query.budget.v1", "cap.transport.mcp.v1"]}
+        },
+        "not_yet_supported": {"const": []}
+      },
+      "additionalProperties": false
+    },
+    "trusted_release_integration": {
+      "type": "object",
+      "required": ["path", "verify_before_install", "verify_member_digests", "canonical_json_remains_authority", "index_rebuildable", "replacement_requires_explicit_flag"],
+      "properties": {
+        "path": {"const": "scripts/r7_trusted_release.py"},
+        "verify_before_install": {"const": true},
+        "verify_member_digests": {"const": true},
+        "canonical_json_remains_authority": {"const": true},
+        "index_rebuildable": {"const": true},
+        "replacement_requires_explicit_flag": {"const": true}
+      },
+      "additionalProperties": false
+    },
+    "benchmark": {
+      "type": "object",
+      "required": ["path", "test", "evidence_artifact", "host_tokens_fabricated_when_unavailable", "benefit_claim_requires_measured_evidence"],
+      "properties": {
+        "path": {"const": "scripts/r7_benchmark.py"},
+        "test": {"const": "tests/test_r7_benchmark.py"},
+        "evidence_artifact": {"type": "string", "minLength": 1},
+        "host_tokens_fabricated_when_unavailable": {"const": false},
+        "benefit_claim_requires_measured_evidence": {"const": true}
+      },
+      "additionalProperties": false
+    },
+    "orchestra_entry_gate": {
+      "type": "object",
+      "required": ["token", "satisfied", "scope"],
+      "properties": {
+        "token": {"const": "IMPLEMENTED_STABLE_REGISTRY_R7_SURFACE_REQUIRED"},
+        "satisfied": {"const": true},
+        "scope": {"const": "O7.1_THROUGH_O7.6_RUNTIME_IMPLEMENTATION"}
+      },
+      "additionalProperties": false
+    },
+    "authority_boundaries": {
+      "type": "object",
+      "required": ["legal_interpretation", "project_applicability", "registry_mutation", "orchestra_execution", "automatic_merge", "trusted_release_publication"],
+      "properties": {
+        "legal_interpretation": {"const": false},
+        "project_applicability": {"const": false},
+        "registry_mutation": {"const": false},
+        "orchestra_execution": {"const": false},
+        "automatic_merge": {"const": false},
+        "trusted_release_publication": {"const": false}
+      },
+      "additionalProperties": false
+    },
+    "release_boundary": {
+      "type": "object",
+      "required": ["planned_tag", "published", "trusted_publication_separate", "publication_state"],
+      "properties": {
+        "planned_tag": {"const": "registry-v0.4.0"},
+        "published": {"const": false},
+        "trusted_publication_separate": {"const": true},
+        "publication_state": {"const": "PENDING_JOINT_CONFORMANCE_AND_GOVERNED_RELEASE"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

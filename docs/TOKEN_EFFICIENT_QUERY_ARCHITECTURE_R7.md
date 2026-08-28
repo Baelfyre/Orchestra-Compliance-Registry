@@ -2,13 +2,13 @@
 
 ## Status
 
-`IMPLEMENTED_STABLE_DIRECT_SURFACE_R7_1_R7_6`
+`IMPLEMENTED_R7_1_R7_9_PENDING_TRUSTED_PUBLICATION_AND_O7_7_CONFORMANCE`
 
 R7.1 through R7.6 are implemented as the stable, read-only direct query surface defined by this architecture. Canonical `registry/*.json` records remain the source of truth. The implementation adds deterministic typed entities, derived relationships, a disposable trusted-release SQLite index, bounded projections, context-budget enforcement, and a shared direct query gateway.
 
-`R7.7_NOT_IMPLEMENTED`
+`IMPLEMENTED_READ_ONLY_TRANSPORT`
 
-The read-only MCP adapter, trusted-release cache integration, efficiency benchmark, and `registry-v0.4.0` trusted publication remain downstream work. The presence of the stable direct surface does not claim MCP availability or trusted v0.4.0 publication.
+R7.7 read-only MCP transport, R7.8 trusted-release verification/cache installation, and R7.9 evidence-based efficiency benchmarking are implemented on the candidate surface. Trusted `registry-v0.4.0` publication and final Orchestra O7.7 conformance remain separate governed transitions and are not claimed by source implementation alone.
 
 ## Objective
 
@@ -55,7 +55,7 @@ Stable optional direct-surface capabilities implemented at contract version `1.0
 - `cap.query.indexed-read.v1`
 - `cap.query.budget.v1`
 
-Still not implemented:
+Additional optional transport capability implemented at contract version `1.0.0`:
 
 - `cap.transport.mcp.v1`
 
@@ -160,7 +160,7 @@ Backend precedence for the implemented direct surface is:
 
 ### R7.7 — Read-only MCP adapter
 
-`R7.7_NOT_IMPLEMENTED`
+`IMPLEMENTED_READ_ONLY_TRANSPORT`
 
 Future surface:
 
@@ -175,13 +175,13 @@ The future MCP adapter cannot mutate Registry records, publish releases, infer l
 
 ### R7.8 — Trusted-release cache integration
 
-`NOT_IMPLEMENTED`
+`IMPLEMENTED_VALIDATED`
 
 Normal consumers should verify an immutable trusted Registry release, install the canonical JSON bundle, then build the derived read index locally. The index is rebuildable and is not a replacement for the trusted release.
 
 ### R7.9 — Efficiency benchmark
 
-`NOT_IMPLEMENTED`
+`IMPLEMENTED_VALIDATED`
 
 Compare:
 
@@ -212,7 +212,7 @@ R7 is complete only when:
 - authority expansion remains false;
 - efficiency evidence is recorded.
 
-The stable direct surface satisfies the R7.1-R7.6 subset of this gate. Full R7 remains incomplete until R7.7-R7.9 and joint R7/O7 conformance are complete.
+The source implementation now satisfies the R7.1-R7.9 subset of this gate, including MCP/direct parity and recorded benchmark evidence. Full program completion still requires governed trusted `registry-v0.4.0` publication and final joint R7/O7 conformance against that immutable release.
 
 ## Planned release boundary
 
@@ -223,3 +223,12 @@ The intended feature release is `registry-v0.4.0`, after R7 implementation and j
 Orchestra consumes R7 through the optional O7 phase. The stable direct R7.1-R7.6 surface satisfies Orchestra's frozen runtime entry condition for O7.1 through O7.6. R7 preserves the existing `cap.query.v1` contract so current Orchestra O1-O6 remains compatible when R7 optimization capabilities are absent or unused.
 
 See the Orchestra plan: `docs/architecture/REGISTRY_QUERY_OPTIMIZATION_O7.md` in `Baelfyre/Orchestra`.
+
+
+## R7.7-R7.9 implementation evidence
+
+- R7.7 MCP adapter: `scripts/r7_mcp_server.py`, read-only stdio transport with the frozen six-tool surface and direct-gateway delegation.
+- R7.8 trusted-release integration: `scripts/r7_trusted_release.py`, which verifies release/bundle/member digests before installation and only then permits deterministic index construction.
+- R7.9 benchmark: `scripts/r7_benchmark.py` and `tests/test_r7_benchmark.py`, covering all seven frozen comparison modes.
+- `TOKEN_EFFICIENCY_NOT_CLAIMED_WITHOUT_HOST_MEASUREMENT`: the benchmark records host-reported tokens as unavailable when they are unavailable and may establish only measured byte savings in that case.
+- `registry-v0.4.0` remains unpublished until separate joint-conformance and publication gates complete.

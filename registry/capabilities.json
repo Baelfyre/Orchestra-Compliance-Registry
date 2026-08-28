@@ -82,6 +82,14 @@
       "required_records": ["sources", "obligations"],
       "optional": true,
       "fallback": "CALLER_CONTEXT_BUDGET_WITH_DIRECT_JSON"
+    },
+    {
+      "capability_id": "cap.transport.mcp.v1",
+      "contract_version": "1.0.0",
+      "status": "SUPPORTED",
+      "required_records": ["sources", "obligations", "source_status", "review_due", "capabilities"],
+      "optional": true,
+      "fallback": "DIRECT_LOCAL_JSON_QUERY"
     }
   ],
   "authority_boundaries": {
