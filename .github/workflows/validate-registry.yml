@@ -22,6 +22,8 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Install R7 MCP transport dependency
+        run: python -m pip install -r requirements-mcp.txt
       - name: Validate registry
         run: python scripts/validate_registry.py
       - name: Validate official source provenance
@@ -30,12 +32,14 @@ jobs:
         run: python scripts/validate_schema_contracts.py
       - name: Validate JSON-first machine records
         run: python scripts/validate_machine_records.py
-      - name: Validate R7 stable direct surface
+      - name: Validate complete R7 surface
         run: python scripts/validate_r7_surface.py
       - name: Validate source monitor configuration
         run: python scripts/source_monitor.py validate-config
       - name: Run registry regression tests
         run: python -m unittest discover -s tests -p "test_*.py" -v
+      - name: Record R7 efficiency and conformance evidence
+        run: python scripts/r7_benchmark.py --output artifacts/r7-efficiency-benchmark.json
       - name: Build deterministic validation candidate
         run: |
           rm -rf artifacts/release-candidate
@@ -53,3 +57,10 @@ jobs:
           path: artifacts/release-candidate/
           if-no-files-found: error
           retention-days: 14
+      - name: Preserve R7 efficiency evidence
+        uses: actions/upload-artifact@v7
+        with:
+          name: r7-efficiency-benchmark-${{ github.sha }}
+          path: artifacts/r7-efficiency-benchmark.json
+          if-no-files-found: error
+          retention-days: 90
