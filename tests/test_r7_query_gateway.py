@@ -18,9 +18,14 @@ class R7QueryGatewayTests(unittest.TestCase):
         surface = json.loads((ROOT / "machine" / "r7-surface.v1.json").read_text(encoding="utf-8"))
         schema = json.loads((ROOT / "schema" / "r7-surface.schema.json").read_text(encoding="utf-8"))
         validate_value(surface, schema, "r7_surface")
-        self.assertEqual("IMPLEMENTED_STABLE_DIRECT_SURFACE", surface["implementation"]["status"])
+        self.assertEqual(
+            "IMPLEMENTED_R7_1_R7_9_PENDING_TRUSTED_PUBLICATION_AND_O7_7_CONFORMANCE",
+            surface["implementation"]["status"],
+        )
         self.assertTrue(surface["orchestra_entry_gate"]["satisfied"])
-        self.assertFalse(surface["transport"]["mcp_available"])
+        self.assertTrue(surface["transport"]["mcp_available"])
+        self.assertEqual("IMPLEMENTED_READ_ONLY_TRANSPORT", surface["transport"]["mcp_disposition"])
+        self.assertFalse(surface["release_boundary"]["published"])
 
     def test_typed_registry_and_relationships_are_deterministic(self) -> None:
         registry = r7_query_gateway.load_typed_registry(ROOT)
