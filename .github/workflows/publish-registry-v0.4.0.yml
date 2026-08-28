@@ -1,0 +1,590 @@
+name: Publish Registry v0.4.0
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/publish-registry-v0.4.0.yml"
+      - "machine/release-request-v0.4.0.json"
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+  issues: write
+
+concurrency:
+  group: registry-v0.4.0-publication
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.repository == 'Baelfyre/Orchestra-Compliance-Registry'
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      RELEASE_TITLE: Orchestra Compliance Registry v0.4.0
+      SOURCE_COMMIT: 488c979b37dd84d8645fd8e6c288d297375c4e5b
+      SOURCE_TREE: 0d3bbf34ec7ab7e4833fba225aba96b829de1cec
+      ORCHESTRA_COMMIT: 6428a02b9b4a89a467c3fe7443e9478dbef79989
+      RELEASE_TAG: registry-v0.4.0
+
+    steps:
+      - name: Record publication attempt
+        continue-on-error: true
+        shell: bash
+        run: |
+          echo "START" > "$RUNNER_TEMP/release-stage.txt"
+          cat > "$RUNNER_TEMP/release-attempt.md" <<EOF
+          Trusted Registry v0.4.0 publication attempt started.
+
+          - Workflow run ID: $GITHUB_RUN_ID
+          - Workflow run attempt: $GITHUB_RUN_ATTEMPT
+          - Trigger commit: $GITHUB_SHA
+          - Frozen Registry source: $SOURCE_COMMIT
+          - Frozen Registry tree: $SOURCE_TREE
+          - Frozen Orchestra O7 consumer: $ORCHESTRA_COMMIT
+          - Requested tag: $RELEASE_TAG
+          EOF
+          gh issue create \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "release attempt: registry-v0.4.0 run $GITHUB_RUN_ID" \
+            --body-file "$RUNNER_TEMP/release-attempt.md" || true
+
+      - name: Checkout publication request
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate release request contract
+        run: |
+          echo "VALIDATE_RELEASE_REQUEST_CONTRACT" > "$RUNNER_TEMP/release-stage.txt"
+          python scripts/validate_schema_contracts.py
+
+      - name: Validate frozen release request
+        id: request
+        shell: bash
+        run: |
+          echo "VALIDATE_FROZEN_RELEASE_REQUEST" > "$RUNNER_TEMP/release-stage.txt"
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          import os
+          import subprocess
+          from pathlib import Path
+
+          request = json.loads(Path("machine/release-request-v0.4.0.json").read_text(encoding="utf-8"))
+          expected = {
+              "schema_version": "orchestra.compliance-registry.release-request.v1",
+              "status": "AUTHORIZED_FOR_PUBLICATION",
+              "registry_version": "0.4.0",
+              "release_sequence": 4,
+              "release_tag": "registry-v0.4.0",
+              "source_commit": os.environ["SOURCE_COMMIT"],
+              "source_tree": os.environ["SOURCE_TREE"],
+              "source_registry_version": "0.2.0-dev.1",
+              "source_registry_status": "DRAFT",
+          }
+          for key, value in expected.items():
+              if request.get(key) != value:
+                  raise SystemExit(f"release request mismatch for {key}: {request.get(key)!r} != {value!r}")
+          authorization = request.get("authorization", {})
+          if authorization.get("type") != "EXPLICIT_HUMAN_APPROVAL":
+              raise SystemExit("explicit human authorization missing")
+          required_scope = {
+              "CANONICAL_MERGE",
+              "TRUSTED_RELEASE_PUBLICATION",
+              "O7_7_JOINT_CONFORMANCE",
+              "PADAYON_RECONCILIATION",
+          }
+          if not required_scope.issubset(set(authorization.get("scope", []))):
+              raise SystemExit("release authorization scope incomplete")
+          requirements = request.get("publication_requirements", {})
+          required_true = (
+              "official_source_provenance_validation",
+              "exact_source_validation",
+              "deterministic_double_build",
+              "non_draft_release",
+              "non_prerelease_release",
+              "immutable_release",
+              "post_publication_reverification",
+              "padayon_update_required",
+          )
+          if any(requirements.get(key) is not True for key in required_true):
+              raise SystemExit("publication requirements are incomplete")
+          required_assets = {
+              "orchestra-compliance-registry.zip",
+              "orchestra-compliance-registry.zip.sha256",
+              "release-manifest.json",
+              "release-manifest.sha256",
+          }
+          if set(requirements.get("release_assets_required", [])) != required_assets:
+              raise SystemExit("release asset requirement mismatch")
+          source = request["source_commit"]
+          manifest = json.loads(subprocess.check_output(["git", "show", f"{source}:registry/manifest.json"], text=True))
+          if manifest.get("registry_version") != request["source_registry_version"]:
+              raise SystemExit("source registry version drift")
+          if manifest.get("status") != "DRAFT" or manifest.get("release_sequence") != 0:
+              raise SystemExit("source registry must remain DRAFT with sequence 0")
+          print(f"registry_version={request['registry_version']}")
+          print(f"release_sequence={request['release_sequence']}")
+          print(f"release_tag={request['release_tag']}")
+          print(f"source_commit={source}")
+          print(f"source_tree={request['source_tree']}")
+          PY
+
+      - name: Verify frozen source identity and no Registry drift
+        shell: bash
+        run: |
+          echo "VERIFY_FROZEN_SOURCE" > "$RUNNER_TEMP/release-stage.txt"
+          git merge-base --is-ancestor "$SOURCE_COMMIT" "$GITHUB_SHA"
+          test "$(git rev-parse "$SOURCE_COMMIT^{tree}")" = "$SOURCE_TREE"
+          git diff --quiet "$SOURCE_COMMIT" "$GITHUB_SHA" -- registry/
+
+      - name: Checkout exact canonical Orchestra O7 consumer
+        uses: actions/checkout@v4
+        with:
+          repository: Baelfyre/Orchestra
+          ref: 6428a02b9b4a89a467c3fe7443e9478dbef79989
+          path: _orchestra
+          fetch-depth: 1
+
+      - name: Validate pre-publication R7 O7 candidate conformance
+        shell: bash
+        run: |
+          echo "VALIDATE_R7_O7_CANDIDATE_CONFORMANCE" > "$RUNNER_TEMP/release-stage.txt"
+          python - <<'PY'
+          import json
+          import os
+          import subprocess
+          from pathlib import Path
+
+          registry_source = os.environ["SOURCE_COMMIT"]
+          registry_tree = os.environ["SOURCE_TREE"]
+          orchestra_source = os.environ["ORCHESTRA_COMMIT"]
+          if subprocess.check_output(["git", "rev-parse", f"{registry_source}^{{tree}}"], text=True).strip() != registry_tree:
+              raise SystemExit("Registry frozen source tree mismatch")
+          surface = json.loads(subprocess.check_output(["git", "show", f"{registry_source}:machine/r7-surface.v1.json"], text=True))
+          capabilities = json.loads(subprocess.check_output(["git", "show", f"{registry_source}:registry/capabilities.json"], text=True))
+          orchestra_root = Path("_orchestra")
+          state = json.loads((orchestra_root / "docs/architecture/contracts/registry-o7-runtime-state.v1.json").read_text(encoding="utf-8"))
+          runtime = (orchestra_root / "orchestra_runtime/registry_o7.py").read_text(encoding="utf-8")
+          if surface["implementation"]["status"] != "IMPLEMENTED_R7_1_R7_9_PENDING_TRUSTED_PUBLICATION_AND_O7_7_CONFORMANCE":
+              raise SystemExit("Registry full R7 source status mismatch")
+          if surface["transport"].get("mcp_available") is not True:
+              raise SystemExit("Registry R7.7 MCP surface unavailable")
+          if surface["transport"].get("mcp_disposition") != "IMPLEMENTED_READ_ONLY_TRANSPORT":
+              raise SystemExit("Registry R7.7 MCP disposition mismatch")
+          cap_rows = {row["capability_id"]: row for row in capabilities["capabilities"]}
+          mcp = cap_rows.get("cap.transport.mcp.v1")
+          if not mcp or mcp.get("status") != "SUPPORTED" or mcp.get("contract_version") != "1.0.0" or mcp.get("optional") is not True:
+              raise SystemExit("Registry MCP capability contract mismatch")
+          optional = set(state["compatibility"]["r7_optional_capabilities"])
+          if "cap.transport.mcp.v1>=1.0.0" not in optional:
+              raise SystemExit("Orchestra O7 consumer does not negotiate MCP capability")
+          if state["implementation"]["phases"].get("O7.7") != "BLOCKED_PENDING_R7_7_AND_TRUSTED_RELEASE_INTEGRATION":
+              raise SystemExit("Orchestra O7.7 pre-publication boundary drift")
+          if state["authority_expansion"] is not False:
+              raise SystemExit("Orchestra O7 authority boundary drift")
+          for token in ('"cap.transport.mcp.v1": "1.0.0"', 'OPTIONAL_MCP_TRANSPORT', 'EXPLICIT_MCP_SELECTED'):
+              if token not in runtime:
+                  raise SystemExit(f"Orchestra O7 MCP consumer token missing: {token}")
+          evidence = {
+              "schema_version": "orchestra.registry-r7-o7-candidate-conformance.v1",
+              "authority": "EVIDENCE_ONLY_NON_AUTHORIZING",
+              "registry": {
+                  "repository": "Baelfyre/Orchestra-Compliance-Registry",
+                  "commit": registry_source,
+                  "tree": registry_tree,
+                  "release_target": "registry-v0.4.0",
+              },
+              "orchestra": {
+                  "repository": "Baelfyre/Orchestra",
+                  "commit": orchestra_source,
+                  "o7_1_o7_6": "CANONICAL",
+                  "o7_7": "PENDING_TRUSTED_RELEASE",
+              },
+              "mcp_capability": "cap.transport.mcp.v1>=1.0.0",
+              "mcp_registry_status": "IMPLEMENTED_READ_ONLY_TRANSPORT",
+              "candidate_conformance": "PASS",
+              "trusted_release_published": False,
+              "final_o7_7_conformance_complete": False,
+              "authority_expansion": False,
+          }
+          out = Path("artifacts/r7-o7-candidate-conformance.json")
+          out.parent.mkdir(parents=True, exist_ok=True)
+          out.write_text(json.dumps(evidence, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+          print(json.dumps(evidence, sort_keys=True))
+          PY
+
+      - name: Preserve pre-publication R7 O7 candidate conformance
+        uses: actions/upload-artifact@v7
+        with:
+          name: r7-o7-candidate-conformance-${{ github.sha }}
+          path: artifacts/r7-o7-candidate-conformance.json
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Checkout exact canonical Registry source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.request.outputs.source_commit }}
+          fetch-depth: 0
+
+      - name: Install exact-source R7 MCP dependency
+        run: python -m pip install -r requirements-mcp.txt
+
+      - name: Validate exact canonical source
+        run: |
+          echo "VALIDATE_EXACT_SOURCE" > "$RUNNER_TEMP/release-stage.txt"
+          python scripts/validate_registry.py
+          python scripts/validate_source_provenance.py
+          python scripts/validate_schema_contracts.py
+          python scripts/validate_machine_records.py
+          python scripts/validate_r7_surface.py
+          python -m unittest discover -s tests -p "test_*.py" -v
+          python scripts/r7_benchmark.py --output artifacts/r7-efficiency-benchmark-publication.json
+
+      - name: Build deterministic release twice
+        id: candidate
+        shell: bash
+        run: |
+          echo "BUILD_DETERMINISTIC_CANDIDATE" > "$RUNNER_TEMP/release-stage.txt"
+          rm -rf artifacts/release-a artifacts/release-b
+          python scripts/build_release.py \
+            --output-dir artifacts/release-a \
+            --registry-version "${{ steps.request.outputs.registry_version }}" \
+            --release-sequence "${{ steps.request.outputs.release_sequence }}" \
+            --release-tag "${{ steps.request.outputs.release_tag }}"
+          python scripts/build_release.py \
+            --output-dir artifacts/release-b \
+            --registry-version "${{ steps.request.outputs.registry_version }}" \
+            --release-sequence "${{ steps.request.outputs.release_sequence }}" \
+            --release-tag "${{ steps.request.outputs.release_tag }}"
+          for file in \
+            orchestra-compliance-registry.zip \
+            orchestra-compliance-registry.zip.sha256 \
+            release-manifest.json \
+            release-manifest.sha256; do
+            cmp "artifacts/release-a/$file" "artifacts/release-b/$file"
+          done
+          MANIFEST_SHA="$(awk '{print $1}' artifacts/release-a/release-manifest.sha256)"
+          BUNDLE_SHA="$(awk '{print $1}' artifacts/release-a/orchestra-compliance-registry.zip.sha256)"
+          test "$MANIFEST_SHA" = "$(sha256sum artifacts/release-a/release-manifest.json | awk '{print $1}')"
+          test "$BUNDLE_SHA" = "$(sha256sum artifacts/release-a/orchestra-compliance-registry.zip | awk '{print $1}')"
+          echo "manifest_sha=$MANIFEST_SHA" >> "$GITHUB_OUTPUT"
+          echo "bundle_sha=$BUNDLE_SHA" >> "$GITHUB_OUTPUT"
+
+      - name: Cleanup stale mutable draft from prior attempt
+        shell: bash
+        run: |
+          echo "CLEANUP_STALE_DRAFT" > "$RUNNER_TEMP/release-stage.txt"
+          gh api "repos/$GITHUB_REPOSITORY/releases?per_page=100" > "$RUNNER_TEMP/releases-before.json"
+          python - <<'PY' > "$RUNNER_TEMP/stale-draft-ids.txt"
+          import json
+          import os
+          from pathlib import Path
+          releases = json.loads(Path(os.environ["RUNNER_TEMP"], "releases-before.json").read_text(encoding="utf-8"))
+          title = os.environ["RELEASE_TITLE"]
+          for release in releases:
+              if release.get("draft") is True and release.get("name") == title:
+                  print(release["id"])
+          PY
+          while IFS= read -r release_id; do
+            [ -n "$release_id" ] || continue
+            gh api --method DELETE "repos/$GITHUB_REPOSITORY/releases/$release_id"
+          done < "$RUNNER_TEMP/stale-draft-ids.txt"
+          gh api --method DELETE "repos/$GITHUB_REPOSITORY/git/refs/tags/$RELEASE_TAG" >/dev/null 2>&1 || true
+
+      - name: Verify release namespace is unused
+        shell: bash
+        run: |
+          echo "VERIFY_RELEASE_NAMESPACE" > "$RUNNER_TEMP/release-stage.txt"
+          if git ls-remote --exit-code --tags origin "refs/tags/$RELEASE_TAG" >/dev/null 2>&1; then
+            echo "Tag already exists: $RELEASE_TAG" >&2
+            exit 1
+          fi
+          if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Published or addressable release already exists: $RELEASE_TAG" >&2
+            exit 1
+          fi
+
+      - name: Create exact release tag
+        shell: bash
+        run: |
+          echo "CREATE_EXACT_TAG" > "$RUNNER_TEMP/release-stage.txt"
+          gh api --method POST "repos/$GITHUB_REPOSITORY/git/refs" \
+            -f ref="refs/tags/$RELEASE_TAG" \
+            -f sha="$SOURCE_COMMIT" >/dev/null
+          TAG_SHA="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$RELEASE_TAG" --jq '.object.sha')"
+          test "$TAG_SHA" = "$SOURCE_COMMIT"
+
+      - name: Prepare release notes
+        shell: bash
+        run: |
+          echo "PREPARE_RELEASE_NOTES" > "$RUNNER_TEMP/release-stage.txt"
+          cat > release-notes.md <<EOF
+          # Orchestra Compliance Registry v0.4.0
+
+          Trusted R7 query and transport release built from the exact canonical Registry R7.1-R7.9 source after pre-publication Registry-Orchestra O7 compatibility validation.
+
+          ## R7.7-R7.9 completion
+          - Read-only MCP v1 transport over the shared deterministic R7 query gateway.
+          - Digest-verified trusted-release installation and rebuildable indexed cache integration.
+          - Seven-mode R7.9 benchmark evidence with MCP/direct semantic parity, exact identity preservation, and governance/freshness checks.
+          - Measured byte benefit was not established in the canonical privacy/EVIDENCE benchmark; token efficiency is not claimed without host token telemetry.
+          - Pre-publication compatibility with canonical Orchestra O7.1-O7.6 and its frozen optional MCP consumer contract.
+
+          ## Source identity
+          - Canonical source commit: $SOURCE_COMMIT
+          - Canonical source tree: $SOURCE_TREE
+          - Release sequence: ${{ steps.request.outputs.release_sequence }}
+
+          ## Integrity
+          - Release manifest SHA-256: ${{ steps.candidate.outputs.manifest_sha }}
+          - Registry bundle SHA-256: ${{ steps.candidate.outputs.bundle_sha }}
+
+          This release provides sourced compliance intelligence and deterministic read/query transport. It does not provide legal advice, automatic project applicability, downstream execution authority, or evidence of token-efficiency benefit where host token telemetry was unavailable.
+          EOF
+
+      - name: Create draft release with complete assets
+        shell: bash
+        run: |
+          echo "CREATE_DRAFT_RELEASE" > "$RUNNER_TEMP/release-stage.txt"
+          gh release create "$RELEASE_TAG" \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "$RELEASE_TITLE" \
+            --notes-file release-notes.md \
+            --draft \
+            artifacts/release-a/orchestra-compliance-registry.zip \
+            artifacts/release-a/orchestra-compliance-registry.zip.sha256 \
+            artifacts/release-a/release-manifest.json \
+            artifacts/release-a/release-manifest.sha256
+
+      - name: Verify draft release by release ID
+        id: draft
+        shell: bash
+        run: |
+          echo "VERIFY_DRAFT_RELEASE" > "$RUNNER_TEMP/release-stage.txt"
+          RELEASE_ID=""
+          for attempt in 1 2 3 4 5 6 7 8 9 10; do
+            gh api "repos/$GITHUB_REPOSITORY/releases?per_page=100" > "$RUNNER_TEMP/releases-draft.json"
+            RELEASE_ID="$(python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          releases = json.loads(Path(os.environ["RUNNER_TEMP"], "releases-draft.json").read_text(encoding="utf-8"))
+          title = os.environ["RELEASE_TITLE"]
+          matches = [release for release in releases if release.get("draft") is True and release.get("name") == title]
+          if len(matches) == 1:
+              print(matches[0]["id"])
+          PY
+          )"
+            [ -n "$RELEASE_ID" ] && break
+            sleep 1
+          done
+          test -n "$RELEASE_ID"
+          gh api "repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID" > "$RUNNER_TEMP/draft-release.json"
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          release = json.loads(Path(os.environ["RUNNER_TEMP"], "draft-release.json").read_text(encoding="utf-8"))
+          if release.get("draft") is not True or release.get("prerelease") is not False:
+              raise SystemExit("release must be draft and non-prerelease before publication")
+          if release.get("name") != os.environ["RELEASE_TITLE"]:
+              raise SystemExit("draft release title mismatch")
+          required = {
+              "orchestra-compliance-registry.zip",
+              "orchestra-compliance-registry.zip.sha256",
+              "release-manifest.json",
+              "release-manifest.sha256",
+          }
+          assets = {item.get("name") for item in release.get("assets", [])}
+          if assets != required:
+              raise SystemExit(f"release asset mismatch: {sorted(assets)}")
+          PY
+          TAG_SHA="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$RELEASE_TAG" --jq '.object.sha')"
+          test "$TAG_SHA" = "$SOURCE_COMMIT"
+          echo "release_id=$RELEASE_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Publish trusted release by release ID
+        shell: bash
+        run: |
+          echo "PUBLISH_RELEASE" > "$RUNNER_TEMP/release-stage.txt"
+          gh api --method PATCH \
+            "repos/$GITHUB_REPOSITORY/releases/${{ steps.draft.outputs.release_id }}" \
+            -f tag_name="$RELEASE_TAG" \
+            -F draft=false \
+            -F prerelease=false \
+            -f make_latest=true > "$RUNNER_TEMP/publish-response.json"
+
+      - name: Verify published immutable release
+        id: published
+        shell: bash
+        run: |
+          echo "VERIFY_IMMUTABLE_RELEASE" > "$RUNNER_TEMP/release-stage.txt"
+          RELEASE_ID="${{ steps.draft.outputs.release_id }}"
+          for attempt in 1 2 3 4 5 6 7 8 9 10; do
+            gh api "repos/$GITHUB_REPOSITORY/releases/$RELEASE_ID" > published-release.json
+            IMMUTABLE="$(python - <<'PY'
+          import json
+          from pathlib import Path
+          release = json.loads(Path("published-release.json").read_text(encoding="utf-8"))
+          print("true" if release.get("immutable") is True else "false")
+          PY
+          )"
+            [ "$IMMUTABLE" = "true" ] && break
+            sleep 1
+          done
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          import os
+          from pathlib import Path
+          release = json.loads(Path("published-release.json").read_text(encoding="utf-8"))
+          if release.get("tag_name") != os.environ["RELEASE_TAG"]:
+              raise SystemExit("published tag mismatch")
+          if release.get("draft") is not False:
+              raise SystemExit("published release remained draft")
+          if release.get("prerelease") is not False:
+              raise SystemExit("published release became prerelease")
+          if release.get("immutable") is not True:
+              raise SystemExit("published release is not immutable")
+          required = {
+              "orchestra-compliance-registry.zip",
+              "orchestra-compliance-registry.zip.sha256",
+              "release-manifest.json",
+              "release-manifest.sha256",
+          }
+          assets = {item.get("name") for item in release.get("assets", [])}
+          if assets != required:
+              raise SystemExit("published release asset mismatch")
+          print(f"release_id={release['id']}")
+          print(f"release_url={release['html_url']}")
+          print(f"published_at={release['published_at']}")
+          PY
+          TAG_SHA="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$RELEASE_TAG" --jq '.object.sha')"
+          test "$TAG_SHA" = "$SOURCE_COMMIT"
+
+      - name: Record trusted release evidence
+        shell: bash
+        run: |
+          echo "RECORD_TRUSTED_EVIDENCE" > "$RUNNER_TEMP/release-stage.txt"
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          release = json.loads(Path("published-release.json").read_text(encoding="utf-8"))
+          evidence = {
+              "schema_version": "orchestra.compliance-registry.release-evidence.v1",
+              "trust_state": "PUBLISHED_IMMUTABLE_VERIFIED",
+              "release_tag": os.environ["RELEASE_TAG"],
+              "registry_version": "0.4.0",
+              "release_sequence": 4,
+              "source_commit": os.environ["SOURCE_COMMIT"],
+              "source_tree": os.environ["SOURCE_TREE"],
+              "orchestra_prepublication_consumer_commit": os.environ["ORCHESTRA_COMMIT"],
+              "release_id": release["id"],
+              "release_url": release["html_url"],
+              "published_at": release["published_at"],
+              "immutable": release["immutable"],
+              "draft": release["draft"],
+              "prerelease": release["prerelease"],
+              "release_manifest_sha256": "${{ steps.candidate.outputs.manifest_sha }}",
+              "bundle_sha256": "${{ steps.candidate.outputs.bundle_sha }}",
+              "assets": sorted(item["name"] for item in release.get("assets", [])),
+              "workflow_run_id": "${{ github.run_id }}",
+              "workflow_run_attempt": "${{ github.run_attempt }}",
+              "workflow_commit": "${{ github.sha }}",
+              "o7_7_joint_conformance_required": True,
+              "padayon_reconciliation_required": True,
+          }
+          Path("trusted-release-evidence.json").write_text(json.dumps(evidence, indent=2) + "\n", encoding="utf-8")
+          PY
+          cat > trusted-release-evidence.md <<EOF
+          # Release evidence: registry-v0.4.0
+
+          - State: PUBLISHED_IMMUTABLE_VERIFIED
+          - Release ID: ${{ steps.published.outputs.release_id }}
+          - Release URL: ${{ steps.published.outputs.release_url }}
+          - Published at: ${{ steps.published.outputs.published_at }}
+          - Source commit: $SOURCE_COMMIT
+          - Source tree: $SOURCE_TREE
+          - Release manifest SHA-256: ${{ steps.candidate.outputs.manifest_sha }}
+          - Bundle SHA-256: ${{ steps.candidate.outputs.bundle_sha }}
+          - Pre-publication Orchestra O7 consumer: $ORCHESTRA_COMMIT
+          - Workflow run: ${{ github.run_id }} attempt ${{ github.run_attempt }}
+          - O7.7 joint conformance: required next
+          - Padayon reconciliation: required
+          EOF
+
+      - name: Preserve trusted release evidence
+        uses: actions/upload-artifact@v7
+        with:
+          name: registry-v0.4.0-trusted-release-evidence
+          path: |
+            trusted-release-evidence.json
+            trusted-release-evidence.md
+            artifacts/r7-efficiency-benchmark-publication.json
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Open release evidence issue
+        continue-on-error: true
+        shell: bash
+        run: |
+          echo "OPEN_RELEASE_EVIDENCE_ISSUE" > "$RUNNER_TEMP/release-stage.txt"
+          gh issue create \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "release evidence: registry-v0.4.0" \
+            --body-file trusted-release-evidence.md
+
+      - name: Cleanup failed mutable publication
+        if: failure()
+        shell: bash
+        run: |
+          gh api "repos/$GITHUB_REPOSITORY/releases?per_page=100" > "$RUNNER_TEMP/releases-cleanup.json" || true
+          python - <<'PY' > "$RUNNER_TEMP/cleanup-release-ids.txt"
+          import json
+          import os
+          from pathlib import Path
+          path = Path(os.environ["RUNNER_TEMP"], "releases-cleanup.json")
+          if path.exists():
+              releases = json.loads(path.read_text(encoding="utf-8"))
+              title = os.environ["RELEASE_TITLE"]
+              for release in releases:
+                  if release.get("draft") is True and release.get("name") == title:
+                      print(release["id"])
+          PY
+          while IFS= read -r release_id; do
+            [ -n "$release_id" ] || continue
+            gh api --method DELETE "repos/$GITHUB_REPOSITORY/releases/$release_id" >/dev/null 2>&1 || true
+          done < "$RUNNER_TEMP/cleanup-release-ids.txt"
+          if ! gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json isImmutable --jq '.isImmutable' 2>/dev/null | grep -qx true; then
+            gh api --method DELETE "repos/$GITHUB_REPOSITORY/git/refs/tags/$RELEASE_TAG" >/dev/null 2>&1 || true
+          fi
+
+      - name: Record publication failure
+        if: failure()
+        continue-on-error: true
+        shell: bash
+        run: |
+          STAGE="$(cat "$RUNNER_TEMP/release-stage.txt" 2>/dev/null || echo UNKNOWN)"
+          cat > "$RUNNER_TEMP/release-failure.md" <<EOF
+          Registry v0.4.0 publication attempt failed closed.
+
+          - Workflow run ID: $GITHUB_RUN_ID
+          - Workflow run attempt: $GITHUB_RUN_ATTEMPT
+          - Trigger commit: $GITHUB_SHA
+          - Last recorded stage: $STAGE
+          - Trusted tag/release must be independently reverified before any retry.
+          EOF
+          gh issue create \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "release failure: registry-v0.4.0 run $GITHUB_RUN_ID" \
+            --body-file "$RUNNER_TEMP/release-failure.md" || true
