@@ -385,6 +385,31 @@ def _encode(value: dict[str, Any], requested: str) -> tuple[str, bytes]:
     return ("TOON", toon) if len(toon) < len(raw) else ("JSON", raw)
 
 
+def verify_release_root_identity(root: Path, identity: ReleaseIdentity) -> None:
+    root = root.resolve()
+    release_manifest_path = root / "release-manifest.json"
+    registry_manifest_path = root / "registry" / "manifest.json"
+    if not release_manifest_path.is_file() or not registry_manifest_path.is_file():
+        raise R7Error("trusted Registry root is missing release identity files")
+    release_manifest_raw = release_manifest_path.read_bytes()
+    if digest(release_manifest_raw) != identity.release_manifest_sha256:
+        raise R7Error("trusted Registry release manifest digest mismatch")
+    release_manifest = load_json(release_manifest_path)
+    registry_manifest = load_json(registry_manifest_path)
+    expected = {
+        "canonical_repository": REPOSITORY,
+        "registry_version": identity.registry_version,
+        "release_sequence": identity.release_sequence,
+        "release_tag": identity.release_tag,
+    }
+    for name, manifest in (("release", release_manifest), ("registry", registry_manifest)):
+        if manifest.get("status") != "TRUSTED_RELEASE":
+            raise R7Error(f"trusted {name} manifest is not TRUSTED_RELEASE")
+        for key, value in expected.items():
+            if manifest.get(key) != value:
+                raise R7Error(f"trusted {name} manifest identity mismatch for {key}")
+
+
 class RegistryQueryGateway:
     def __init__(
         self,
@@ -393,15 +418,17 @@ class RegistryQueryGateway:
         release_identity: ReleaseIdentity | None = None,
         contract_root: Path | None = None,
     ):
-        if (index_path is None) != (release_identity is None):
-            raise R7Error("index_path and release_identity must be supplied together")
+        if index_path is not None and release_identity is None:
+            raise R7Error("indexed gateway requires verified release_identity")
         self.root = root.resolve()
         self.contract_root = (contract_root or ROOT).resolve()
         self.registry = load_typed_registry(self.root)
         self.relationships = build_relationships(self.registry)
         self.index_path = index_path
         self.release_identity = release_identity
-        if index_path is not None and release_identity is not None:
+        if release_identity is not None:
+            verify_release_root_identity(self.root, release_identity)
+        if index_path is not None:
             verify_index(index_path, release_identity, self.root)
             self.backend = "DIRECT_LOCAL_INDEXED_GATEWAY"
         else:

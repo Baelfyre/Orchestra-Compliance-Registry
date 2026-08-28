@@ -44,6 +44,41 @@ class R7TrustedReleaseTests(unittest.TestCase):
             self.assertEqual("TRUSTED_RELEASE_IDENTITY_VERIFIED", result["receipt"]["publication_trust"])
             self.assertFalse(result["receipt"]["authority_expansion"])
 
+    def test_trusted_direct_json_query_binds_verified_release_identity(self) -> None:
+        with tempfile.TemporaryDirectory() as name:
+            temp = Path(name)
+            assets = self._build(temp)
+            installed = temp / "installed"
+            verified, root = r7_trusted_release.install_release(assets, installed)
+            gateway = r7_query_gateway.RegistryQueryGateway(root, release_identity=verified.identity)
+            result = gateway.query(
+                r7_query_gateway.QuerySpec("obligations", domain="privacy", projection="EVIDENCE")
+            )
+            self.assertEqual("DIRECT_LOCAL_JSON_QUERY", result["backend"])
+            receipt = result["receipt"]
+            self.assertEqual("TRUSTED_RELEASE_IDENTITY_VERIFIED", receipt["publication_trust"])
+            self.assertEqual("TRUSTED_RELEASE_READ_MODEL", receipt["registry_authority_realm"])
+            self.assertEqual(verified.registry_version, receipt["registry_version"])
+            self.assertEqual(verified.release_sequence, receipt["release_sequence"])
+            self.assertEqual(verified.release_tag, receipt["release_tag"])
+            self.assertEqual(verified.release_manifest_sha256, receipt["release_manifest_sha256"])
+            self.assertFalse(receipt["authority_expansion"])
+
+    def test_trusted_direct_json_identity_mismatch_fails_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as name:
+            temp = Path(name)
+            assets = self._build(temp)
+            installed = temp / "installed"
+            verified, root = r7_trusted_release.install_release(assets, installed)
+            bad_identity = r7_query_gateway.ReleaseIdentity(
+                verified.registry_version,
+                verified.release_tag,
+                verified.release_sequence,
+                "0" * 64,
+            )
+            with self.assertRaises(r7_query_gateway.R7Error):
+                r7_query_gateway.RegistryQueryGateway(root, release_identity=bad_identity)
+
     def test_tampered_checksum_fails_closed(self) -> None:
         with tempfile.TemporaryDirectory() as name:
             temp = Path(name)
