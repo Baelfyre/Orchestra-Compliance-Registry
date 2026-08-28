@@ -30,6 +30,8 @@ jobs:
         run: python scripts/validate_schema_contracts.py
       - name: Validate JSON-first machine records
         run: python scripts/validate_machine_records.py
+      - name: Validate R7 stable direct surface
+        run: python scripts/validate_r7_surface.py
       - name: Validate source monitor configuration
         run: python scripts/source_monitor.py validate-config
       - name: Run registry regression tests
