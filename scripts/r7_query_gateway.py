@@ -386,16 +386,23 @@ def _encode(value: dict[str, Any], requested: str) -> tuple[str, bytes]:
 
 
 class RegistryQueryGateway:
-    def __init__(self, root: Path = ROOT, index_path: Path | None = None, release_identity: ReleaseIdentity | None = None):
+    def __init__(
+        self,
+        root: Path = ROOT,
+        index_path: Path | None = None,
+        release_identity: ReleaseIdentity | None = None,
+        contract_root: Path | None = None,
+    ):
         if (index_path is None) != (release_identity is None):
             raise R7Error("index_path and release_identity must be supplied together")
-        self.root = root
-        self.registry = load_typed_registry(root)
+        self.root = root.resolve()
+        self.contract_root = (contract_root or ROOT).resolve()
+        self.registry = load_typed_registry(self.root)
         self.relationships = build_relationships(self.registry)
         self.index_path = index_path
         self.release_identity = release_identity
         if index_path is not None and release_identity is not None:
-            verify_index(index_path, release_identity, root)
+            verify_index(index_path, release_identity, self.root)
             self.backend = "DIRECT_LOCAL_INDEXED_GATEWAY"
         else:
             self.backend = "DIRECT_LOCAL_JSON_QUERY"
@@ -504,7 +511,7 @@ class RegistryQueryGateway:
             response["receipt"]["representation"] = representation
             representation, encoded = _encode(response, spec.representation)
             if spec.maximum_context_bytes is None or len(encoded) <= spec.maximum_context_bytes:
-                validate_r7_receipt(response["receipt"], self.root)
+                validate_r7_receipt(response["receipt"], self.contract_root)
                 response["encoded_bytes"] = len(encoded)
                 return response
             if len(page) <= 1:
