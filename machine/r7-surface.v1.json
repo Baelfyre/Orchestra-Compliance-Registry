@@ -1,0 +1,66 @@
+{
+  "schema_version": "orchestra.compliance-registry.r7-surface.v1",
+  "canonical_repository": "Baelfyre/Orchestra-Compliance-Registry",
+  "authority": "DESCRIPTIVE_NON_AUTHORIZING",
+  "architecture_anchor": {
+    "commit": "c1910806ed3ea9147af96b1c49a9f72aef75e0f6",
+    "tree": "0c37d7bf47fc20b49b26fea156c8e180db57b4a3",
+    "document": "docs/TOKEN_EFFICIENT_QUERY_ARCHITECTURE_R7.md",
+    "document_blob": "9f24a10f455a77509ec5246e6981ca2672624ca1"
+  },
+  "implementation": {
+    "status": "IMPLEMENTED_STABLE_DIRECT_SURFACE",
+    "contract_version": "1.0.0",
+    "phases": {
+      "R7.1": "IMPLEMENTED_STABLE",
+      "R7.2": "IMPLEMENTED_STABLE",
+      "R7.3": "IMPLEMENTED_STABLE",
+      "R7.4": "IMPLEMENTED_STABLE",
+      "R7.5": "IMPLEMENTED_STABLE",
+      "R7.6": "IMPLEMENTED_STABLE",
+      "R7.7": "NOT_IMPLEMENTED",
+      "R7.8": "NOT_IMPLEMENTED",
+      "R7.9": "NOT_IMPLEMENTED"
+    }
+  },
+  "gateway": {
+    "path": "scripts/r7_query_gateway.py",
+    "query_receipt_schema": "schema/r7-query-receipt.schema.json",
+    "read_only": true,
+    "shared_selection_semantics": true
+  },
+  "index": {
+    "schema_version": "orchestra.compliance-registry.r7-index.v1",
+    "authority": "DERIVED_DISPOSABLE_READ_CACHE",
+    "requires_trusted_release_identity": true,
+    "digest_mismatch_disposition": "REJECT_INDEX_REBUILD_OR_FALLBACK"
+  },
+  "projections": ["MINIMAL", "SUMMARY", "EVIDENCE", "FULL"],
+  "transport": {
+    "precedence": ["DIRECT_LOCAL_INDEXED_GATEWAY", "DIRECT_LOCAL_JSON_QUERY"],
+    "mcp_available": false,
+    "mcp_disposition": "R7.7_NOT_IMPLEMENTED"
+  },
+  "capabilities": {
+    "supported": ["cap.query.projection.v1", "cap.query.relationships.v1", "cap.query.indexed-read.v1", "cap.query.budget.v1"],
+    "not_yet_supported": ["cap.transport.mcp.v1"]
+  },
+  "orchestra_entry_gate": {
+    "token": "IMPLEMENTED_STABLE_REGISTRY_R7_SURFACE_REQUIRED",
+    "satisfied": true,
+    "scope": "O7.1_THROUGH_O7.6_RUNTIME_IMPLEMENTATION"
+  },
+  "authority_boundaries": {
+    "legal_interpretation": false,
+    "project_applicability": false,
+    "registry_mutation": false,
+    "orchestra_execution": false,
+    "automatic_merge": false,
+    "trusted_release_publication": false
+  },
+  "release_boundary": {
+    "planned_tag": "registry-v0.4.0",
+    "published": false,
+    "trusted_publication_separate": true
+  }
+}
