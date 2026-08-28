@@ -89,14 +89,36 @@ class R7QueryGatewayTests(unittest.TestCase):
             shutil.copytree(ROOT / "schema", fixture / "schema")
             manifest_path = fixture / "registry" / "manifest.json"
             manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-            manifest.update({"registry_version": "0.4.0-test", "release_sequence": 4, "status": "TRUSTED_RELEASE"})
+            manifest.update(
+                {
+                    "registry_version": "0.4.0-test",
+                    "release_sequence": 4,
+                    "release_tag": "registry-v0.4.0-test",
+                    "status": "TRUSTED_RELEASE",
+                }
+            )
             manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
 
+            release_manifest_path = fixture / "release-manifest.json"
+            release_manifest_path.write_text(
+                json.dumps(
+                    {
+                        "canonical_repository": r7_query_gateway.REPOSITORY,
+                        "status": "TRUSTED_RELEASE",
+                        "registry_version": "0.4.0-test",
+                        "release_sequence": 4,
+                        "release_tag": "registry-v0.4.0-test",
+                    },
+                    indent=2,
+                )
+                + "\n",
+                encoding="utf-8",
+            )
             identity = r7_query_gateway.ReleaseIdentity(
                 registry_version="0.4.0-test",
                 release_tag="registry-v0.4.0-test",
                 release_sequence=4,
-                release_manifest_sha256="b" * 64,
+                release_manifest_sha256=r7_query_gateway.digest(release_manifest_path.read_bytes()),
             )
             index_path = fixture / "r7.sqlite"
             r7_query_gateway.build_index(index_path, identity, root=fixture)
