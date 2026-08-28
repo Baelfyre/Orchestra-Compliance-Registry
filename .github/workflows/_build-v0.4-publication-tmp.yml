@@ -26,29 +26,21 @@ jobs:
           source = Path('.github/workflows/publish-registry-v0.3.0.yml')
           target = Path('.github/workflows/publish-registry-v0.4.0.yml')
           text = source.read_text(encoding='utf-8')
-          text = text.replace('v0.3.0', 'v0.4.0')
-          text = text.replace('registry-v0.3.0', 'registry-v0.4.0')
-          text = text.replace('"registry_version": "0.3.0"', '"registry_version": "0.4.0"')
-          text = text.replace('"release_sequence": 3', '"release_sequence": 4')
-          text = text.replace('20eb859db153f17e24c052a13765e982d51cedbf', '488c979b37dd84d8645fd8e6c288d297375c4e5b')
-          text = text.replace('763be9062a0c23031c794403dc4592f5db4389b0', '0d3bbf34ec7ab7e4833fba225aba96b829de1cec')
-          text = text.replace(
-              'required_scope = {"CANONICAL_MERGE", "TRUSTED_RELEASE_PUBLICATION", "PADAYON_RECONCILIATION"}',
-              'required_scope = {"CANONICAL_MERGE", "TRUSTED_RELEASE_PUBLICATION", "O7_7_JOINT_CONFORMANCE", "PADAYON_RECONCILIATION"}',
-          )
 
-          setup = '''      - name: Set up Python\n        uses: actions/setup-python@v5\n        with:\n          python-version: "3.12"\n'''
-          candidate_gate = '''\n      - name: Checkout exact canonical Orchestra O7 consumer\n        uses: actions/checkout@v4\n        with:\n          repository: Baelfyre/Orchestra\n          ref: 6428a02b9b4a89a467c3fe7443e9478dbef79989\n          path: _orchestra\n          fetch-depth: 0\n\n      - name: Validate pre-publication R7 O7 candidate conformance\n        shell: bash\n        run: |\n          echo "VALIDATE_R7_O7_CANDIDATE_CONFORMANCE" > "$RUNNER_TEMP/release-stage.txt"\n          python - <<'PY'\n          import json\n          import subprocess\n          from pathlib import Path\n\n          registry_source = "488c979b37dd84d8645fd8e6c288d297375c4e5b"\n          registry_tree = "0d3bbf34ec7ab7e4833fba225aba96b829de1cec"\n          orchestra_source = "6428a02b9b4a89a467c3fe7443e9478dbef79989"\n\n          if subprocess.check_output(["git", "rev-parse", f"{registry_source}^{{tree}}"], text=True).strip() != registry_tree:\n              raise SystemExit("Registry frozen source tree mismatch")\n          surface = json.loads(subprocess.check_output(["git", "show", f"{registry_source}:machine/r7-surface.v1.json"], text=True))\n          capabilities = json.loads(subprocess.check_output(["git", "show", f"{registry_source}:registry/capabilities.json"], text=True))\n          orchestra_root = Path("_orchestra")\n          state = json.loads((orchestra_root / "docs/architecture/contracts/registry-o7-runtime-state.v1.json").read_text(encoding="utf-8"))\n          runtime = (orchestra_root / "orchestra_runtime/registry_o7.py").read_text(encoding="utf-8")\n\n          if surface["implementation"]["status"] != "IMPLEMENTED_R7_1_R7_9_PENDING_TRUSTED_PUBLICATION_AND_O7_7_CONFORMANCE":\n              raise SystemExit("Registry full R7 source status mismatch")\n          if surface["transport"].get("mcp_available") is not True or surface["transport"].get("mcp_disposition") != "IMPLEMENTED_READ_ONLY_TRANSPORT":\n              raise SystemExit("Registry R7.7 MCP source surface is not implemented")\n          cap_rows = {row["capability_id"]: row for row in capabilities["capabilities"]}\n          mcp = cap_rows.get("cap.transport.mcp.v1")\n          if not mcp or mcp.get("status") != "SUPPORTED" or mcp.get("contract_version") != "1.0.0" or mcp.get("optional") is not True:\n              raise SystemExit("Registry MCP capability contract mismatch")\n          optional = set(state["compatibility"]["r7_optional_capabilities"])
-          if "cap.transport.mcp.v1>=1.0.0" not in optional:\n              raise SystemExit("Orchestra frozen O7 consumer does not negotiate MCP capability")\n          if state["implementation"]["phases"].get("O7.7") != "BLOCKED_PENDING_R7_7_AND_TRUSTED_RELEASE_INTEGRATION":\n              raise SystemExit("Orchestra O7.7 pre-publication boundary drift")\n          for token in ('"cap.transport.mcp.v1": "1.0.0"', 'OPTIONAL_MCP_TRANSPORT', 'EXPLICIT_MCP_SELECTED'):\n              if token not in runtime:\n                  raise SystemExit(f"Orchestra O7 MCP consumer token missing: {token}")\n\n          evidence = {\n              "schema_version": "orchestra.registry-r7-o7-candidate-conformance.v1",\n              "authority": "EVIDENCE_ONLY_NON_AUTHORIZING",\n              "registry": {"repository": "Baelfyre/Orchestra-Compliance-Registry", "commit": registry_source, "tree": registry_tree, "release_target": "registry-v0.4.0"},\n              "orchestra": {"repository": "Baelfyre/Orchestra", "commit": orchestra_source, "o7_1_o7_6": "CANONICAL", "o7_7": "PENDING_TRUSTED_RELEASE"},\n              "required_capability": state["compatibility"]["required_capability"],\n              "mcp_capability": "cap.transport.mcp.v1>=1.0.0",\n              "mcp_registry_status": "IMPLEMENTED_READ_ONLY_TRANSPORT",\n              "mcp_consumer_contract_present": True,\n              "candidate_conformance": "PASS",\n              "trusted_release_published": False,\n              "final_o7_7_conformance_complete": False,\n              "authority_expansion": False,\n          }\n          out = Path("artifacts/r7-o7-candidate-conformance.json")\n          out.parent.mkdir(parents=True, exist_ok=True)\n          out.write_text(json.dumps(evidence, indent=2, sort_keys=True) + "\\n", encoding="utf-8")\n          print(json.dumps(evidence, sort_keys=True))\n          PY\n\n      - name: Preserve pre-publication R7 O7 candidate conformance\n        uses: actions/upload-artifact@v7\n        with:\n          name: r7-o7-candidate-conformance-${{ github.sha }}\n          path: artifacts/r7-o7-candidate-conformance.json\n          if-no-files-found: error\n          retention-days: 90\n'''
-          if text.count(setup) != 1:
-              raise SystemExit('expected one Python setup block in publication workflow')
-          text = text.replace(setup, setup + candidate_gate)
-
-          checkout_exact = '''      - name: Checkout exact canonical source\n        uses: actions/checkout@v4\n        with:\n          ref: ${{ steps.request.outputs.source_commit }}\n          fetch-depth: 0\n'''
-          install = '''\n      - name: Install exact-source R7 MCP dependency\n        run: python -m pip install -r requirements-mcp.txt\n'''
-          if text.count(checkout_exact) != 1:
-              raise SystemExit('expected one exact source checkout block')
-          text = text.replace(checkout_exact, checkout_exact + install)
+          replacements = [
+              ('v0.3.0', 'v0.4.0'),
+              ('"release_sequence": 3', '"release_sequence": 4'),
+              ('20eb859db153f17e24c052a13765e982d51cedbf', '488c979b37dd84d8645fd8e6c288d297375c4e5b'),
+              ('763be9062a0c23031c794403dc4592f5db4389b0', '0d3bbf34ec7ab7e4833fba225aba96b829de1cec'),
+              (
+                  'required_scope = {"CANONICAL_MERGE", "TRUSTED_RELEASE_PUBLICATION", "PADAYON_RECONCILIATION"}',
+                  'required_scope = {"CANONICAL_MERGE", "TRUSTED_RELEASE_PUBLICATION", "O7_7_JOINT_CONFORMANCE", "PADAYON_RECONCILIATION"}',
+              ),
+          ]
+          for old, new in replacements:
+              if old not in text:
+                  raise SystemExit(f'missing asserted publication token: {old}')
+              text = text.replace(old, new)
 
           validation_old = '''          python scripts/validate_machine_records.py\n          python -m unittest discover -s tests -p "test_*.py" -v\n'''
           validation_new = '''          python scripts/validate_machine_records.py\n          python scripts/validate_r7_surface.py\n          python -m unittest discover -s tests -p "test_*.py" -v\n          python scripts/r7_benchmark.py --output artifacts/r7-efficiency-benchmark-publication.json\n'''
@@ -60,14 +52,13 @@ jobs:
               'Trusted adaptive monitoring and consumption-contract release built from the exact canonical Registry R1-R6 source after joint Registry-Orchestra reconciliation.',
               'Trusted R7 query and transport release built from the exact canonical Registry R7.1-R7.9 source after pre-publication Registry-Orchestra O7 compatibility validation.',
           )
-          text = text.replace(
-              '## Added since v0.2.0',
-              '## R7.7-R7.9 completion',
-          )
-          text = text.replace(
-              '- Bounded six-hour official-source monitoring with reviewed fingerprints and fail-closed source-drift evidence.\n          - Candidate-only automation for detected official-source changes; no automatic legal interpretation, obligation rewrite, merge, or trusted release.\n          - R5 JSON-first capability manifest for deterministic consumer negotiation.\n          - R6 deterministic release-delta contract for scoped downstream revalidation.\n          - Cross-repository contract compatibility with canonical Orchestra O1-O6 adaptive Registry consumption.',
-              '- Read-only MCP v1 transport over the shared deterministic R7 query gateway.\n          - Digest-verified trusted-release installation and rebuildable indexed cache integration.\n          - Seven-mode R7.9 benchmark evidence with MCP/direct semantic parity, exact identity preservation, and governance/freshness checks.\n          - Measured byte benefit was not established in the canonical privacy/EVIDENCE benchmark; token efficiency is not claimed without host token telemetry.\n          - Pre-publication compatibility with canonical Orchestra O7.1-O7.6 and its frozen optional MCP consumer contract.',
-          )
+          text = text.replace('## Added since v0.2.0', '## R7.7-R7.9 completion')
+          old_bullets = '''- Bounded six-hour official-source monitoring with reviewed fingerprints and fail-closed source-drift evidence.\n          - Candidate-only automation for detected official-source changes; no automatic legal interpretation, obligation rewrite, merge, or trusted release.\n          - R5 JSON-first capability manifest for deterministic consumer negotiation.\n          - R6 deterministic release-delta contract for scoped downstream revalidation.\n          - Cross-repository contract compatibility with canonical Orchestra O1-O6 adaptive Registry consumption.'''
+          new_bullets = '''- Read-only MCP v1 transport over the shared deterministic R7 query gateway.\n          - Digest-verified trusted-release installation and rebuildable indexed cache integration.\n          - Seven-mode R7.9 benchmark evidence with MCP/direct semantic parity, exact identity preservation, and governance/freshness checks.\n          - Measured byte benefit was not established in the canonical privacy/EVIDENCE benchmark; token efficiency is not claimed without host token telemetry.\n          - Pre-publication compatibility with canonical Orchestra O7.1-O7.6 and its frozen optional MCP consumer contract.'''
+          if old_bullets not in text:
+              raise SystemExit('missing asserted v0.3 release note bullets')
+          text = text.replace(old_bullets, new_bullets)
+
           target.write_text(text, encoding='utf-8')
           PY
           git diff --check
