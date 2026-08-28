@@ -206,9 +206,9 @@
     "release_delta_producer": "scripts/release_delta.py",
     "release_delta_authority": "EVIDENCE_ONLY_NON_AUTHORIZING",
     "r7_token_efficient_query_architecture": {
-      "status": "APPROVED_PLANNED_NOT_IMPLEMENTED",
+      "status": "IMPLEMENTED_R7_1_R7_9_PENDING_TRUSTED_PUBLICATION_AND_O7_7_CONFORMANCE",
       "human_reference": "docs/TOKEN_EFFICIENT_QUERY_ARCHITECTURE_R7.md",
-      "implementation_order": "AFTER_ORCHESTRA_CODEX_BASELINE_CLOSEOUT_AND_ORCHESTRA_V1_7_0",
+      "implementation_order": "IMPLEMENTED_AFTER_STABLE_REGISTRY_R7_ENTRY_GATE_AND_ORCHESTRA_O7_1_O7_6_CANONICAL",
       "authority_model": {
         "canonical_json": "REGISTRY_AUTHORITY",
         "typed_entities": "DERIVED_NON_AUTHORITATIVE",
@@ -238,7 +238,7 @@
       "efficiency_metrics": ["input_bytes", "host_reported_input_tokens_when_available", "tool_calls", "files_scanned", "records_scanned", "records_returned", "latency", "cache_state", "source_coverage", "obligation_coverage", "receipt_correctness", "freshness_correctness", "governance_correctness"],
       "completion_gates": ["CANONICAL_JSON_AUTHORITY_UNCHANGED", "EXISTING_VALIDATION_PASS", "V0_3_COMPATIBILITY_PASS", "DETERMINISTIC_INDEX_REBUILD", "INDEX_JSON_SEMANTIC_PARITY", "PROJECTION_PARITY", "QUERY_RECEIPT_PARITY", "MCP_DIRECT_QUERY_PARITY", "AUTHORITY_EXPANSION_FALSE", "EFFICIENCY_EVIDENCE_RECORDED"],
       "planned_release_target": "registry-v0.4.0_AFTER_R7_AND_JOINT_R7_O7_CONFORMANCE",
-      "token_efficiency_claim": "NOT_CLAIMED_UNTIL_MEASURED"
+      "token_efficiency_claim": "TOKEN_EFFICIENCY_NOT_CLAIMED_WITHOUT_HOST_MEASUREMENT"
     }
   },
   "documentation": {
@@ -288,12 +288,12 @@
     },
     "next": {
       "program": "R7_TOKEN_EFFICIENT_REGISTRY_READ_ARCHITECTURE",
-      "status": "APPROVED_PLANNED_NOT_IMPLEMENTED",
+      "status": "IMPLEMENTED_R7_1_R7_9_PENDING_TRUSTED_PUBLICATION_AND_O7_7_CONFORMANCE",
       "human_reference": "docs/TOKEN_EFFICIENT_QUERY_ARCHITECTURE_R7.md",
-      "sequence_guard": "DO_NOT_BEGIN_IMPLEMENTATION_UNTIL_ORCHESTRA_CODEX_BASELINE_AND_V1_7_CLOSEOUT_COMPLETE",
+      "sequence_guard": "R7_1_R7_9_IMPLEMENTED_TRUSTED_V0_4_0_AND_FINAL_O7_7_REMAIN_SEPARATELY_GATED",
       "planned_release_target": "registry-v0.4.0",
-      "joint_consumer_phase": "ORCHESTRA_O7_AFTER_STABLE_R7_CONTRACT",
-      "token_efficiency_claim": "MEASUREMENT_REQUIRED"
+      "joint_consumer_phase": "ORCHESTRA_O7_1_O7_6_CANONICAL_O7_7_PENDING_TRUSTED_RELEASE",
+      "token_efficiency_claim": "HOST_TOKEN_MEASUREMENT_UNAVAILABLE_BYTE_EVIDENCE_ONLY"
     },
     "later": {
       "program": "CROSS_DOMAIN_AND_PROVIDER_COMPLIANCE_EXPANSION",
