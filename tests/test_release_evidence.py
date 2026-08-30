@@ -16,7 +16,7 @@ def load(relative: str) -> dict:
 class ReleaseEvidenceTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls.evidence = load("machine/release-evidence-v0.3.0.json")
+        cls.evidence = load("machine/release-evidence-v0.4.0.json")
         cls.schema = load("schema/release-evidence.schema.json")
         cls.history = load("machine/trusted-release-history.json")
         cls.history_schema = load("schema/trusted-release-history.schema.json")
@@ -27,7 +27,7 @@ class ReleaseEvidenceTests(unittest.TestCase):
         validate_schema_contracts.validate_value(
             self.evidence,
             self.schema,
-            "machine/release-evidence-v0.3.0.json",
+            "machine/release-evidence-v0.4.0.json",
         )
 
     def test_trusted_release_history_matches_schema(self) -> None:
@@ -68,7 +68,7 @@ class ReleaseEvidenceTests(unittest.TestCase):
         self.assertEqual(self.evidence["immutable"], trusted["immutable"])
         self.assertEqual(self.evidence["release_manifest_sha256"], trusted["release_manifest_sha256"])
         self.assertEqual(self.evidence["bundle_sha256"], trusted["bundle_sha256"])
-        self.assertEqual("machine/release-evidence-v0.3.0.json", trusted["release_evidence"])
+        self.assertEqual("machine/release-evidence-v0.4.0.json", trusted["release_evidence"])
 
     def test_history_current_pointer_matches_publication_state(self) -> None:
         trusted = self.publication["trusted_release"]
@@ -92,8 +92,10 @@ class ReleaseEvidenceTests(unittest.TestCase):
             self.assertEqual(trusted[key], historical[key], key)
 
     def test_release_source_is_frozen_and_external_reverification_remains_required(self) -> None:
-        self.assertEqual("20eb859db153f17e24c052a13765e982d51cedbf", self.evidence["source_commit"])
-        self.assertEqual("763be9062a0c23031c794403dc4592f5db4389b0", self.evidence["source_tree"])
+        self.assertEqual("488c979b37dd84d8645fd8e6c288d297375c4e5b", self.evidence["source_commit"])
+        self.assertEqual("0d3bbf34ec7ab7e4833fba225aba96b829de1cec", self.evidence["source_tree"])
+        self.assertEqual(33147297345, self.evidence["workflow_run_id"])
+        self.assertEqual(36, self.evidence["release_evidence_issue"])
         self.assertTrue(self.evidence["external_reverification_required_before_trust_or_mutation"])
         self.assertTrue(self.history["external_reverification_required_before_trust_or_mutation"])
 

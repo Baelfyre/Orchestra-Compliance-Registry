@@ -9,7 +9,7 @@
     "document_blob": "9f24a10f455a77509ec5246e6981ca2672624ca1"
   },
   "implementation": {
-    "status": "IMPLEMENTED_R7_1_R7_9_PENDING_TRUSTED_PUBLICATION_AND_O7_7_CONFORMANCE",
+    "status": "IMPLEMENTED_R7_1_R7_9_TRUSTED_V0_4_0_PUBLISHED_O7_7_CONFORMANCE_COMPLETE",
     "contract_version": "1.0.0",
     "phases": {
       "R7.1": "IMPLEMENTED_STABLE",
@@ -78,8 +78,8 @@
   },
   "release_boundary": {
     "planned_tag": "registry-v0.4.0",
-    "published": false,
+    "published": true,
     "trusted_publication_separate": true,
-    "publication_state": "PENDING_JOINT_CONFORMANCE_AND_GOVERNED_RELEASE"
+    "publication_state": "PUBLISHED_IMMUTABLE_VERIFIED_AND_O7_7_CONFORMANCE_COMPLETE"
   }
 }

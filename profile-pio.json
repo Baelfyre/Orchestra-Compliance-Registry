@@ -3,7 +3,7 @@
   "project": "Orchestra Compliance Registry",
   "featured": true,
   "summary": "Turns official compliance sources into versioned, machine-readable evidence with provenance, monitoring, and explicit human and legal authority boundaries.",
-  "status": "Trusted release registry-v0.3.0; R7.1-R7.9 implemented on the current candidate surface",
-  "next": "Publish trusted registry-v0.4.0 and complete final Orchestra O7.7 conformance",
+  "status": "Trusted release registry-v0.4.0; R7.1-R7.9 implemented and Orchestra O7.7 joint conformance complete",
+  "next": "Expand source-backed coverage across software development, cybersecurity, data governance, AI, accessibility, and provider/platform requirements",
   "url": "https://github.com/Baelfyre/Orchestra-Compliance-Registry"
 }
