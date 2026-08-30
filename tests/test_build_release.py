@@ -20,6 +20,8 @@ PUBLISHED_V0_2_MANIFEST_SHA256 = "cb98e4496da8952cff1432207d57f04379364bac2e95cc
 PUBLISHED_V0_2_ASSET_SHA256 = "71414aaead10634c2a4b79ec519b4fc76fb32af71cd831ef48f2133bcc211388"
 PUBLISHED_V0_3_MANIFEST_SHA256 = "2674c7625188e20047274f3f3e7a25836299c640913bfc2eb20de2d4349808a9"
 PUBLISHED_V0_3_ASSET_SHA256 = "dc74b59f3c11dd7c740a91a4c6667064b84c3505d8bfc62382cd2ce0f4f0bfea"
+PUBLISHED_V0_4_MANIFEST_SHA256 = "040d6576cf10e9f7e3a9a051792869541c1d33b7af3c665fad8eecb939c7baaa"
+PUBLISHED_V0_4_ASSET_SHA256 = "e0457a75837d169d7bb8a7da14d8f4141d35a691952ff8f8978ef793e3cf92d3"
 
 
 def sha256(path: Path) -> str:
@@ -124,19 +126,34 @@ class ReleaseBuilderTests(unittest.TestCase):
         self.assertFalse(trusted["draft"])
         self.assertFalse(trusted["prerelease"])
 
-    def test_current_trusted_release_is_v0_3_and_matches_history(self) -> None:
+    def test_published_v0_3_identity_remains_frozen_in_history(self) -> None:
+        history = json.loads((ROOT / "machine" / "trusted-release-history.json").read_text(encoding="utf-8"))
+        matches = [item for item in history["releases"] if item["tag"] == "registry-v0.3.0"]
+        self.assertEqual(1, len(matches))
+        trusted = matches[0]
+        self.assertEqual("0.3.0", trusted["registry_version"])
+        self.assertEqual(3, trusted["release_sequence"])
+        self.assertEqual("20eb859db153f17e24c052a13765e982d51cedbf", trusted["target_commit"])
+        self.assertEqual(PUBLISHED_V0_3_MANIFEST_SHA256, trusted["release_manifest_sha256"])
+        self.assertEqual(PUBLISHED_V0_3_ASSET_SHA256, trusted["bundle_sha256"])
+        self.assertTrue(trusted["immutable"])
+        self.assertFalse(trusted["draft"])
+        self.assertFalse(trusted["prerelease"])
+
+    def test_current_trusted_release_is_v0_4_and_matches_history(self) -> None:
         publication = json.loads((ROOT / "machine" / "publication-state.json").read_text(encoding="utf-8"))
         history = json.loads((ROOT / "machine" / "trusted-release-history.json").read_text(encoding="utf-8"))
         trusted = publication["trusted_release"]
-        self.assertEqual("registry-v0.3.0", trusted["tag"])
-        self.assertEqual("registry-v0.3.0", history["current_trusted_release"])
+        self.assertEqual("registry-v0.4.0", trusted["tag"])
+        self.assertEqual("registry-v0.4.0", history["current_trusted_release"])
         matches = [item for item in history["releases"] if item["tag"] == trusted["tag"]]
         self.assertEqual(1, len(matches))
         historical = matches[0]
-        self.assertEqual("0.3.0", trusted["registry_version"])
-        self.assertEqual(3, trusted["release_sequence"])
-        self.assertEqual(PUBLISHED_V0_3_MANIFEST_SHA256, trusted["release_manifest_sha256"])
-        self.assertEqual(PUBLISHED_V0_3_ASSET_SHA256, trusted["bundle_sha256"])
+        self.assertEqual("0.4.0", trusted["registry_version"])
+        self.assertEqual(4, trusted["release_sequence"])
+        self.assertEqual("488c979b37dd84d8645fd8e6c288d297375c4e5b", trusted["target_commit"])
+        self.assertEqual(PUBLISHED_V0_4_MANIFEST_SHA256, trusted["release_manifest_sha256"])
+        self.assertEqual(PUBLISHED_V0_4_ASSET_SHA256, trusted["bundle_sha256"])
         for key in (
             "release_id",
             "registry_version",
