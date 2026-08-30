@@ -2,13 +2,13 @@
 
 ## Status
 
-`IMPLEMENTED_R7_1_R7_9_PENDING_TRUSTED_PUBLICATION_AND_O7_7_CONFORMANCE`
+`IMPLEMENTED_R7_1_R7_9_TRUSTED_V0_4_0_PUBLISHED_O7_7_CONFORMANCE_COMPLETE`
 
-R7.1 through R7.6 are implemented as the stable, read-only direct query surface defined by this architecture. Canonical `registry/*.json` records remain the source of truth. The implementation adds deterministic typed entities, derived relationships, a disposable trusted-release SQLite index, bounded projections, context-budget enforcement, and a shared direct query gateway.
+R7.1 through R7.9 are implemented and validated. Canonical `registry/*.json` records remain the source of truth. The implementation provides deterministic typed entities, derived relationships, a disposable trusted-release SQLite index, bounded projections, context-budget enforcement, a shared direct query gateway, read-only MCP transport, trusted-release verification/cache installation, and evidence-based efficiency benchmarking.
 
 `IMPLEMENTED_READ_ONLY_TRANSPORT`
 
-R7.7 read-only MCP transport, R7.8 trusted-release verification/cache installation, and R7.9 evidence-based efficiency benchmarking are implemented on the candidate surface. Trusted `registry-v0.4.0` publication and final Orchestra O7.7 conformance remain separate governed transitions and are not claimed by source implementation alone.
+Trusted `registry-v0.4.0` is published as a non-draft, non-prerelease, immutable release, and canonical Orchestra records O7.7 as `CANONICAL_MERGED_VERIFIED` with latest joint-conformance evidence `PASS`. Registry R7 is therefore terminal for the R7/O7 boundary. This state does not authorize Registry mutation, release publication, Orchestra execution, automatic merge, legal interpretation, or project applicability decisions.
 
 ## Objective
 
@@ -75,7 +75,7 @@ The stable direct surface is implemented in `scripts/r7_query_gateway.py` and pr
 - direct JSON fallback when no verified index is supplied;
 - evidence-only R7 receipts preserving exact source and obligation identities, freshness evidence, capability evidence, domain-routing evidence, semantic digests, and authority boundaries.
 
-The Orchestra O7 entry token `IMPLEMENTED_STABLE_REGISTRY_R7_SURFACE_REQUIRED` is satisfied for O7.1 through O7.6 runtime implementation only. It does not satisfy the future trusted-release integration boundary and does not authorize or imply MCP transport.
+The frozen Orchestra O7 entry token `IMPLEMENTED_STABLE_REGISTRY_R7_SURFACE_REQUIRED` was originally scoped to O7.1 through O7.6 runtime implementation. O7.7 remained a separate governed joint-conformance transition. That separate transition has since completed and is recorded in canonical Orchestra; the original token semantics are preserved rather than retroactively expanded.
 
 ## Phase plan
 
@@ -151,7 +151,7 @@ The planner projects before representation selection. TOON remains derived and i
 
 `IMPLEMENTED_STABLE`
 
-One deterministic query core serves direct local calls and the CLI surface and defines the selection semantics that future transports must reuse. This prevents consumer-side query drift.
+One deterministic query core serves direct local calls and the CLI surface and defines the selection semantics that all transports reuse. This prevents consumer-side query drift.
 
 Backend precedence for the implemented direct surface is:
 
@@ -162,7 +162,7 @@ Backend precedence for the implemented direct surface is:
 
 `IMPLEMENTED_READ_ONLY_TRANSPORT`
 
-Future surface:
+Implemented surface:
 
 - `registry_status`
 - `registry_query`
@@ -171,13 +171,13 @@ Future surface:
 - `registry_freshness`
 - `registry_delta`
 
-The future MCP adapter cannot mutate Registry records, publish releases, infer legal applicability, or expand authority. `cap.transport.mcp.v1` must not be published before this phase is implemented and validated.
+The MCP adapter cannot mutate Registry records, publish releases, infer legal applicability, or expand authority. `cap.transport.mcp.v1` is descriptive and optional.
 
 ### R7.8 — Trusted-release cache integration
 
 `IMPLEMENTED_VALIDATED`
 
-Normal consumers should verify an immutable trusted Registry release, install the canonical JSON bundle, then build the derived read index locally. The index is rebuildable and is not a replacement for the trusted release.
+Normal consumers verify an immutable trusted Registry release, install the canonical JSON bundle, then build the derived read index locally. The index is rebuildable and is not a replacement for the trusted release.
 
 ### R7.9 — Efficiency benchmark
 
@@ -195,40 +195,64 @@ Compare:
 
 Measure input bytes, host-reported input tokens where available, tool calls, files/records scanned, records returned, latency, cache state, source/obligation coverage, receipt correctness, freshness correctness, and governance correctness.
 
-Token-efficiency benefit must be evidence-derived; it must not be claimed from design intent alone.
+`TOKEN_EFFICIENCY_NOT_CLAIMED_WITHOUT_HOST_MEASUREMENT`
+
+Token-efficiency benefit must remain evidence-derived; it must not be claimed from design intent alone. Host-reported input-token measurements were unavailable in the recorded benchmark boundary, so token-efficiency benefit is not established by R7 completion itself.
 
 ## Completion gate
 
-R7 is complete only when:
+R7 requires:
 
-- canonical JSON authority is unchanged;
-- all existing Registry validations remain green;
-- v0.3 compatibility remains green;
-- index rebuild is deterministic;
-- index-to-JSON semantic parity passes;
-- projection parity passes;
-- query receipt parity passes;
-- MCP-to-direct-query parity passes;
-- authority expansion remains false;
-- efficiency evidence is recorded.
+- canonical JSON authority unchanged;
+- all existing Registry validations green;
+- v0.3 compatibility preserved;
+- deterministic index rebuild;
+- index-to-JSON semantic parity;
+- projection parity;
+- query receipt parity;
+- MCP-to-direct-query parity;
+- authority expansion false;
+- efficiency evidence recorded;
+- trusted `registry-v0.4.0` publication verified;
+- final joint R7/O7 conformance completed against that immutable release.
 
-The source implementation now satisfies the R7.1-R7.9 subset of this gate, including MCP/direct parity and recorded benchmark evidence. Full program completion still requires governed trusted `registry-v0.4.0` publication and final joint R7/O7 conformance against that immutable release.
+The source implementation satisfies the R7.1-R7.9 gate. Trusted `registry-v0.4.0` is published and immutable-verified, and canonical Orchestra records final O7.7 joint conformance as complete. R7 is therefore complete for this governed program boundary. This completion does not establish token-efficiency benefit where host token measurements are unavailable and does not expand authority.
 
-## Planned release boundary
+## Published release boundary
 
-The intended feature release is `registry-v0.4.0`, after R7 implementation and joint R7/O7 conformance validation. Release publication remains a separate governed transition. No trusted `registry-v0.4.0` publication is claimed by the stable direct-surface implementation.
+The R7 feature release is `registry-v0.4.0`.
+
+Publication identity:
+
+- release sequence: `4`;
+- source commit: `488c979b37dd84d8645fd8e6c288d297375c4e5b`;
+- source tree: `0d3bbf34ec7ab7e4833fba225aba96b829de1cec`;
+- release manifest SHA-256: `040d6576cf10e9f7e3a9a051792869541c1d33b7af3c665fad8eecb939c7baaa`;
+- bundle SHA-256: `e0457a75837d169d7bb8a7da14d8f4141d35a691952ff8f8978ef793e3cf92d3`;
+- state: `PUBLISHED_IMMUTABLE_VERIFIED`.
+
+Publication remains a separate governed transition from ordinary canonical source merges. The completed release does not grant future publication authority.
 
 ## Cross-repository dependency
 
-Orchestra consumes R7 through the optional O7 phase. The stable direct R7.1-R7.6 surface satisfies Orchestra's frozen runtime entry condition for O7.1 through O7.6. R7 preserves the existing `cap.query.v1` contract so current Orchestra O1-O6 remains compatible when R7 optimization capabilities are absent or unused.
+Orchestra consumes R7 through the optional O7 phase. R7 preserves the existing `cap.query.v1` contract so current Orchestra O1-O6 compatibility remains available when R7 optimization capabilities are absent or unused.
 
-See the Orchestra plan: `docs/architecture/REGISTRY_QUERY_OPTIMIZATION_O7.md` in `Baelfyre/Orchestra`.
+Canonical Orchestra now records:
 
+- trusted `registry-v0.4.0` as the Registry dependency;
+- R7 direct JSON, indexed, and optional MCP transports as available;
+- O7.1 through O7.7 as `CANONICAL_MERGED_VERIFIED`;
+- latest joint-conformance evidence as `PASS`;
+- `joint_r7_o7_conformance_complete = true`;
+- no authority expansion and no release-integration authority from that state.
 
-## R7.7-R7.9 implementation evidence
+See the Orchestra plan and runtime-state contract under `docs/architecture/REGISTRY_QUERY_OPTIMIZATION_O7.md` and `docs/architecture/contracts/registry-o7-runtime-state.v1.json` in `Baelfyre/Orchestra`.
+
+## R7.7-R7.9 and terminal evidence
 
 - R7.7 MCP adapter: `scripts/r7_mcp_server.py`, read-only stdio transport with the frozen six-tool surface and direct-gateway delegation.
 - R7.8 trusted-release integration: `scripts/r7_trusted_release.py`, which verifies release/bundle/member digests before installation and only then permits deterministic index construction.
 - R7.9 benchmark: `scripts/r7_benchmark.py` and `tests/test_r7_benchmark.py`, covering all seven frozen comparison modes.
-- `TOKEN_EFFICIENCY_NOT_CLAIMED_WITHOUT_HOST_MEASUREMENT`: the benchmark records host-reported tokens as unavailable when they are unavailable and may establish only measured byte savings in that case.
-- `registry-v0.4.0` remains unpublished until separate joint-conformance and publication gates complete.
+- `TOKEN_EFFICIENCY_NOT_CLAIMED_WITHOUT_HOST_MEASUREMENT`: the benchmark records host-reported tokens as unavailable when they are unavailable and may establish only measured evidence that is actually observed.
+- Trusted `registry-v0.4.0` is published and immutable-verified; machine release evidence is `machine/release-evidence-v0.4.0.json`.
+- Final Orchestra O7.7 joint conformance is complete and canonical.

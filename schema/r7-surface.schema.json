@@ -23,7 +23,7 @@
       "type": "object",
       "required": ["status", "contract_version", "phases"],
       "properties": {
-        "status": {"const": "IMPLEMENTED_R7_1_R7_9_PENDING_TRUSTED_PUBLICATION_AND_O7_7_CONFORMANCE"},
+        "status": {"const": "IMPLEMENTED_R7_1_R7_9_TRUSTED_V0_4_0_PUBLISHED_O7_7_CONFORMANCE_COMPLETE"},
         "contract_version": {"const": "1.0.0"},
         "phases": {
           "type": "object",
@@ -79,14 +79,10 @@
       "type": "object",
       "required": ["precedence", "mcp_available", "mcp_disposition", "mcp_tools"],
       "properties": {
-        "precedence": {
-          "const": ["DIRECT_LOCAL_INDEXED_GATEWAY", "DIRECT_LOCAL_JSON_QUERY", "OPTIONAL_MCP_TRANSPORT"]
-        },
+        "precedence": {"const": ["DIRECT_LOCAL_INDEXED_GATEWAY", "DIRECT_LOCAL_JSON_QUERY", "OPTIONAL_MCP_TRANSPORT"]},
         "mcp_available": {"const": true},
         "mcp_disposition": {"const": "IMPLEMENTED_READ_ONLY_TRANSPORT"},
-        "mcp_tools": {
-          "const": ["registry_status", "registry_query", "registry_get", "registry_relations", "registry_freshness", "registry_delta"]
-        }
+        "mcp_tools": {"const": ["registry_status", "registry_query", "registry_get", "registry_relations", "registry_freshness", "registry_delta"]}
       },
       "additionalProperties": false
     },
@@ -156,9 +152,9 @@
       "required": ["planned_tag", "published", "trusted_publication_separate", "publication_state"],
       "properties": {
         "planned_tag": {"const": "registry-v0.4.0"},
-        "published": {"const": false},
+        "published": {"const": true},
         "trusted_publication_separate": {"const": true},
-        "publication_state": {"const": "PENDING_JOINT_CONFORMANCE_AND_GOVERNED_RELEASE"}
+        "publication_state": {"const": "PUBLISHED_IMMUTABLE_VERIFIED_AND_O7_7_CONFORMANCE_COMPLETE"}
       },
       "additionalProperties": false
     }

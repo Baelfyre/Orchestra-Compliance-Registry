@@ -1,10 +1,10 @@
 {
   "schema_version": "orchestra.compliance-registry.publication-state.v1",
   "canonical_repository": "Baelfyre/Orchestra-Compliance-Registry",
-  "recorded_at": "2026-08-20T08:11:24+08:00",
+  "recorded_at": "2026-08-30T14:30:00+08:00",
   "repository_source_boundary": {
     "canonical_branch": "main",
-    "observed_sha": "906f75c403fa643368aa2a8724748690577d83ec",
+    "observed_sha": "456f3dd4a91084b6dcc43d2fb8137c29ea882eb4",
     "state_class": "VERIFIED_REPOSITORY_CHECKPOINT",
     "semantics": "LAST_EXPLICITLY_VERIFIED_REPOSITORY_BOUNDARY_NOT_CURRENT_HEAD_CLAIM",
     "live_head_reverification_required": true
@@ -17,17 +17,17 @@
   },
   "trusted_release": {
     "state": "PUBLISHED_IMMUTABLE_VERIFIED",
-    "tag": "registry-v0.3.0",
-    "release_id": 373417769,
-    "registry_version": "0.3.0",
-    "release_sequence": 3,
-    "target_commit": "20eb859db153f17e24c052a13765e982d51cedbf",
+    "tag": "registry-v0.4.0",
+    "release_id": 378292109,
+    "registry_version": "0.4.0",
+    "release_sequence": 4,
+    "target_commit": "488c979b37dd84d8645fd8e6c288d297375c4e5b",
     "draft": false,
     "prerelease": false,
     "immutable": true,
-    "published_at": "2026-08-20T00:11:24Z",
-    "release_manifest_sha256": "2674c7625188e20047274f3f3e7a25836299c640913bfc2eb20de2d4349808a9",
-    "bundle_sha256": "dc74b59f3c11dd7c740a91a4c6667064b84c3505d8bfc62382cd2ce0f4f0bfea",
+    "published_at": "2026-08-28T06:15:24Z",
+    "release_manifest_sha256": "040d6576cf10e9f7e3a9a051792869541c1d33b7af3c665fad8eecb939c7baaa",
+    "bundle_sha256": "e0457a75837d169d7bb8a7da14d8f4141d35a691952ff8f8978ef793e3cf92d3",
     "required_assets": [
       "orchestra-compliance-registry.zip",
       "orchestra-compliance-registry.zip.sha256",
@@ -36,7 +36,7 @@
     ]
   },
   "verification": {
-    "method": "LIVE_GITHUB_TAG_RELEASE_API_AND_PUBLICATION_WORKFLOW_EVIDENCE_READ",
+    "method": "LIVE_GITHUB_MAIN_RELEASE_API_RELEASE_EVIDENCE_AND_ORCHESTRA_O7_7_CONFORMANCE_READ",
     "repository_source_boundary_verified": true,
     "tag_target_verified_exact": true,
     "release_identity_verified": true,
@@ -53,8 +53,9 @@
   },
   "human_companions": [
     "README.md",
-    "docs/REGISTRY_V0_3_0_RELEASE_EVIDENCE.md",
+    "docs/REGISTRY_V0_4_0_RELEASE_EVIDENCE.md",
     "docs/TRUSTED_RELEASE_HISTORY.md",
+    "docs/TOKEN_EFFICIENT_QUERY_ARCHITECTURE_R7.md",
     "docs/RELEASE_PACKAGING.md",
     "docs/INTERNATIONAL_PRIVACY_PILOT.md",
     "docs/SOURCE_PROVENANCE_AUDIT.md"

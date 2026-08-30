@@ -34,6 +34,8 @@ REQUIRED_MCP_TOOLS = (
     "registry_freshness",
     "registry_delta",
 )
+TERMINAL_R7_STATUS = "IMPLEMENTED_R7_1_R7_9_TRUSTED_V0_4_0_PUBLISHED_O7_7_CONFORMANCE_COMPLETE"
+TERMINAL_PUBLICATION_STATE = "PUBLISHED_IMMUTABLE_VERIFIED_AND_O7_7_CONFORMANCE_COMPLETE"
 
 
 def load(path: Path) -> dict:
@@ -54,6 +56,16 @@ def validate(root: Path = ROOT) -> list[str]:
         surface = load(surface_path)
         surface_schema = load(surface_schema_path)
         validate_value(surface, surface_schema, "r7_surface")
+
+        if surface["implementation"]["status"] != TERMINAL_R7_STATUS:
+            raise ValueError("R7 machine state does not declare terminal post-publication/post-conformance status")
+        release_boundary = surface["release_boundary"]
+        if release_boundary.get("planned_tag") != "registry-v0.4.0":
+            raise ValueError("R7 release boundary must remain bound to registry-v0.4.0")
+        if release_boundary.get("published") is not True:
+            raise ValueError("R7 release boundary must declare trusted v0.4.0 publication complete")
+        if release_boundary.get("publication_state") != TERMINAL_PUBLICATION_STATE:
+            raise ValueError("R7 release boundary does not declare terminal O7.7 conformance state")
 
         receipt_schema = load(receipt_schema_path)
         if receipt_schema.get("$schema") != "https://json-schema.org/draft/2020-12/schema":
@@ -78,8 +90,8 @@ def validate(root: Path = ROOT) -> list[str]:
             raise ValueError("MCP capability fallback must preserve the direct JSON path")
 
         architecture = architecture_path.read_text(encoding="utf-8")
-        if "IMPLEMENTED_R7_1_R7_9_PENDING_TRUSTED_PUBLICATION_AND_O7_7_CONFORMANCE" not in architecture:
-            raise ValueError("R7 architecture status does not declare complete R7.1-R7.9 implementation")
+        if TERMINAL_R7_STATUS not in architecture:
+            raise ValueError("R7 architecture status does not declare terminal R7/O7 completion")
         if "IMPLEMENTED_READ_ONLY_TRANSPORT" not in architecture:
             raise ValueError("R7 architecture does not declare the read-only MCP transport")
         if "TOKEN_EFFICIENCY_NOT_CLAIMED_WITHOUT_HOST_MEASUREMENT" not in architecture:

@@ -2,7 +2,7 @@
   "$schema": "../schema/trusted-release-history.schema.json",
   "schema_version": "orchestra.compliance-registry.trusted-release-history.v1",
   "canonical_repository": "Baelfyre/Orchestra-Compliance-Registry",
-  "current_trusted_release": "registry-v0.3.0",
+  "current_trusted_release": "registry-v0.4.0",
   "releases": [
     {
       "tag": "registry-v0.1.0",
@@ -56,6 +56,26 @@
       "published_at": "2026-08-20T00:11:24Z",
       "release_manifest_sha256": "2674c7625188e20047274f3f3e7a25836299c640913bfc2eb20de2d4349808a9",
       "bundle_sha256": "dc74b59f3c11dd7c740a91a4c6667064b84c3505d8bfc62382cd2ce0f4f0bfea",
+      "required_assets": [
+        "orchestra-compliance-registry.zip",
+        "orchestra-compliance-registry.zip.sha256",
+        "release-manifest.json",
+        "release-manifest.sha256"
+      ],
+      "state": "PUBLISHED_IMMUTABLE_VERIFIED"
+    },
+    {
+      "tag": "registry-v0.4.0",
+      "release_id": 378292109,
+      "registry_version": "0.4.0",
+      "release_sequence": 4,
+      "target_commit": "488c979b37dd84d8645fd8e6c288d297375c4e5b",
+      "draft": false,
+      "prerelease": false,
+      "immutable": true,
+      "published_at": "2026-08-28T06:15:24Z",
+      "release_manifest_sha256": "040d6576cf10e9f7e3a9a051792869541c1d33b7af3c665fad8eecb939c7baaa",
+      "bundle_sha256": "e0457a75837d169d7bb8a7da14d8f4141d35a691952ff8f8978ef793e3cf92d3",
       "required_assets": [
         "orchestra-compliance-registry.zip",
         "orchestra-compliance-registry.zip.sha256",
