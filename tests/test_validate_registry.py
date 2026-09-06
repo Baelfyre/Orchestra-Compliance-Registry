@@ -62,6 +62,46 @@ class RegistryValidatorTests(unittest.TestCase):
         manifest["record_counts"].update({"sources": 1, "obligations": 0, "source_status": 1, "review_due": 1})
         write_json(manifest_path, manifest)
 
+    def write_source_watch_candidate(
+        self,
+        root: Path,
+        *,
+        result_state: str = "POTENTIAL_SUBSTANTIVE_CHANGE",
+        source_id: str = "SRC-1",
+    ) -> None:
+        (root / "machine").mkdir(parents=True, exist_ok=True)
+        write_json(
+            root / "machine" / "source-watch-candidate.json",
+            {
+                "$schema": "../schema/source-watch-receipt.schema.json",
+                "schema_version": validate_registry.SOURCE_WATCH_RECEIPT_SCHEMA_VERSION,
+                "canonical_repository": validate_registry.CANONICAL_REPOSITORY,
+                "checked_at": "2026-09-06T04:50:15Z",
+                "baseline_captured_at": "2026-08-19T15:36:28Z",
+                "overall_state": "CHANGES_DETECTED",
+                "source_results": [
+                    {
+                        "source_id": source_id,
+                        "state": result_state,
+                        "strategy": "HTML_NORMALIZED_TEXT",
+                        "canonical_url": "https://example.com/source",
+                        "final_url": "https://example.com/source",
+                        "content_type": "text/html",
+                        "previous_raw_sha256": "a" * 64,
+                        "current_raw_sha256": "b" * 64,
+                        "previous_normalized_text_sha256": "c" * 64,
+                        "current_normalized_text_sha256": "d" * 64,
+                        "reason": "official source fingerprint changed",
+                        "fetched_at": "2026-09-06T04:50:15Z",
+                    }
+                ],
+                "actionable_source_ids": [source_id],
+                "failure_source_ids": [],
+                "candidate_key": "1" * 64,
+                "observation_digest": "2" * 64,
+            },
+        )
+
     def test_repository_fixture_is_valid(self):
         self.assertEqual([], validate_registry.validate(ROOT, today=TODAY))
 
@@ -127,6 +167,62 @@ class RegistryValidatorTests(unittest.TestCase):
         try:
             self.set_single_source(root, source_state="VERIFIED_CURRENT", ledger_state="CURRENT_WITH_PENDING_CHANGE")
             self.assertIn("verification/status drift", validate_registry.validate(root, today=TODAY)[0])
+        finally:
+            temp.cleanup()
+
+    def test_source_watch_candidate_mode_allows_receipt_backed_status_divergence(self):
+        temp, root = self.fixture()
+        try:
+            self.set_single_source(
+                root,
+                source_state="VERIFIED_CURRENT",
+                ledger_state="HUMAN_INTERPRETATION_REQUIRED",
+            )
+            self.write_source_watch_candidate(root)
+            self.assertEqual(
+                [],
+                validate_registry.validate(
+                    root,
+                    today=TODAY,
+                    allow_source_watch_candidate=True,
+                ),
+            )
+        finally:
+            temp.cleanup()
+
+    def test_source_watch_candidate_file_does_not_weaken_default_validation(self):
+        temp, root = self.fixture()
+        try:
+            self.set_single_source(
+                root,
+                source_state="VERIFIED_CURRENT",
+                ledger_state="HUMAN_INTERPRETATION_REQUIRED",
+            )
+            self.write_source_watch_candidate(root)
+            self.assertIn(
+                "verification/status drift",
+                validate_registry.validate(root, today=TODAY)[0],
+            )
+        finally:
+            temp.cleanup()
+
+    def test_source_watch_candidate_mode_rejects_unmatched_ledger_transition(self):
+        temp, root = self.fixture()
+        try:
+            self.set_single_source(
+                root,
+                source_state="VERIFIED_CURRENT",
+                ledger_state="HUMAN_INTERPRETATION_REQUIRED",
+            )
+            self.write_source_watch_candidate(root, result_state="SOURCE_MOVED")
+            self.assertIn(
+                "candidate/status drift",
+                validate_registry.validate(
+                    root,
+                    today=TODAY,
+                    allow_source_watch_candidate=True,
+                )[0],
+            )
         finally:
             temp.cleanup()
 
