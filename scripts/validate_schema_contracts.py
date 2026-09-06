@@ -29,6 +29,8 @@ DOCUMENT_CONTRACTS = {
 }
 RELEASE_REQUEST_SCHEMA = "schema/release-request.schema.json"
 RELEASE_REQUEST_GLOB = "machine/release-request-v*.json"
+SOURCE_WATCH_RECEIPT_SCHEMA = "schema/source-watch-receipt.schema.json"
+SOURCE_WATCH_CANDIDATE_PATH = "machine/source-watch-candidate.json"
 STANDALONE_CONTRACTS = (
     "schema/query-receipt.schema.json",
     "schema/source-watch-receipt.schema.json",
@@ -176,6 +178,16 @@ def validate(root: Path = ROOT) -> list[str]:
             schema = load(root / schema_rel)
             _assert_closed_schema(schema, schema_rel)
             validate_value(load(root / document_rel), schema, document_rel)
+
+        candidate_path = root / SOURCE_WATCH_CANDIDATE_PATH
+        if candidate_path.is_file():
+            receipt_schema = load(root / SOURCE_WATCH_RECEIPT_SCHEMA)
+            _assert_closed_schema(receipt_schema, SOURCE_WATCH_RECEIPT_SCHEMA)
+            validate_value(
+                load(candidate_path),
+                receipt_schema,
+                SOURCE_WATCH_CANDIDATE_PATH,
+            )
 
         release_schema = load(root / RELEASE_REQUEST_SCHEMA)
         _assert_closed_schema(release_schema, RELEASE_REQUEST_SCHEMA)

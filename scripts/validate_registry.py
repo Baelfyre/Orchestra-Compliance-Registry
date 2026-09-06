@@ -32,6 +32,13 @@ EXPECTED_RECORDS = {
     "review_due": "registry/review-due.json",
 }
 
+SOURCE_WATCH_CANDIDATE_PATH = "machine/source-watch-candidate.json"
+SOURCE_WATCH_RECEIPT_SCHEMA_VERSION = "orchestra.compliance-registry.source-watch-receipt.v1"
+SOURCE_WATCH_RESULT_TO_LEDGER_STATUS = {
+    "POTENTIAL_SUBSTANTIVE_CHANGE": "HUMAN_INTERPRETATION_REQUIRED",
+    "SOURCE_MOVED": "SOURCE_MOVED",
+}
+
 
 def load_json(path: Path) -> dict[str, Any]:
     try:
@@ -69,7 +76,71 @@ def _coverage_error(label: str, expected: set[str], actual: set[str]) -> ValueEr
     return ValueError(f"{label} coverage mismatch: missing={missing} extra={extra}")
 
 
-def validate(root: Path, *, today: date | None = None) -> list[str]:
+def _source_watch_candidate_overrides(root: Path) -> dict[str, str]:
+    path = root / SOURCE_WATCH_CANDIDATE_PATH
+    if not path.is_file():
+        raise ValueError(
+            "source-watch candidate validation requires machine/source-watch-candidate.json"
+        )
+
+    receipt = load_json(path)
+    if receipt.get("schema_version") != SOURCE_WATCH_RECEIPT_SCHEMA_VERSION:
+        raise ValueError("source-watch candidate has unsupported schema_version")
+    if receipt.get("canonical_repository") != CANONICAL_REPOSITORY:
+        raise ValueError("source-watch candidate canonical_repository mismatch")
+    if receipt.get("overall_state") != "CHANGES_DETECTED":
+        raise ValueError("source-watch candidate must record CHANGES_DETECTED")
+
+    actionable_ids = receipt.get("actionable_source_ids")
+    if (
+        not isinstance(actionable_ids, list)
+        or not actionable_ids
+        or not all(isinstance(item, str) and item for item in actionable_ids)
+        or len(actionable_ids) != len(set(actionable_ids))
+    ):
+        raise ValueError("source-watch candidate actionable_source_ids are malformed")
+
+    failure_ids = receipt.get("failure_source_ids")
+    if failure_ids != []:
+        raise ValueError("source-watch change candidate must not contain monitor failures")
+
+    source_results = receipt.get("source_results")
+    if not isinstance(source_results, list) or not all(
+        isinstance(item, dict) for item in source_results
+    ):
+        raise ValueError("source-watch candidate source_results are malformed")
+
+    result_by_id: dict[str, dict[str, Any]] = {}
+    for result in source_results:
+        source_id = result.get("source_id")
+        if not isinstance(source_id, str) or not source_id:
+            raise ValueError("source-watch candidate result has invalid source_id")
+        if source_id in result_by_id:
+            raise ValueError(f"duplicate source-watch candidate result: {source_id}")
+        result_by_id[source_id] = result
+
+    derived_actionable = sorted(
+        source_id
+        for source_id, result in result_by_id.items()
+        if result.get("state") in SOURCE_WATCH_RESULT_TO_LEDGER_STATUS
+    )
+    if sorted(actionable_ids) != derived_actionable:
+        raise ValueError(
+            "source-watch candidate actionable source set does not match source_results"
+        )
+
+    return {
+        source_id: SOURCE_WATCH_RESULT_TO_LEDGER_STATUS[result_by_id[source_id]["state"]]
+        for source_id in actionable_ids
+    }
+
+
+def validate(
+    root: Path,
+    *,
+    today: date | None = None,
+    allow_source_watch_candidate: bool = False,
+) -> list[str]:
     try:
         today = today or date.today()
         manifest = load_json(root / "registry" / "manifest.json")
@@ -179,10 +250,30 @@ def validate(root: Path, *, today: date | None = None) -> list[str]:
         if review_due_ids != source_ids:
             raise _coverage_error("review-due", source_ids, review_due_ids)
 
+        candidate_overrides = (
+            _source_watch_candidate_overrides(root)
+            if allow_source_watch_candidate
+            else {}
+        )
+        unknown_candidate_ids = sorted(set(candidate_overrides) - source_ids)
+        if unknown_candidate_ids:
+            raise ValueError(
+                f"source-watch candidate references unknown sources: {unknown_candidate_ids}"
+            )
+        for source_id, candidate_status in candidate_overrides.items():
+            if source_status_states[source_id] != candidate_status:
+                raise ValueError(
+                    f"source-watch candidate/status drift: source={source_id} "
+                    f"candidate={candidate_status} ledger={source_status_states[source_id]}"
+                )
+
         for source_id in sorted(source_ids):
             source_state = source_verification_states[source_id]
             ledger_state = source_status_states[source_id]
-            if source_state != ledger_state:
+            if (
+                source_state != ledger_state
+                and candidate_overrides.get(source_id) != ledger_state
+            ):
                 raise ValueError(
                     f"source {source_id} verification/status drift: source={source_state} ledger={ledger_state}"
                 )
@@ -211,8 +302,19 @@ def validate(root: Path, *, today: date | None = None) -> list[str]:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", default=str(Path(__file__).resolve().parents[1]))
+    parser.add_argument(
+        "--allow-source-watch-candidate",
+        action="store_true",
+        help=(
+            "Permit only receipt-backed source-status divergence on a generated "
+            "source-watch candidate branch."
+        ),
+    )
     args = parser.parse_args(argv)
-    errors = validate(Path(args.root))
+    errors = validate(
+        Path(args.root),
+        allow_source_watch_candidate=args.allow_source_watch_candidate,
+    )
     if errors:
         for error in errors:
             print(f"ERROR: {error}", file=sys.stderr)

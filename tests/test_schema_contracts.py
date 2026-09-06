@@ -83,6 +83,20 @@ class SchemaContractTests(unittest.TestCase):
         finally:
             temp.cleanup()
 
+    def test_optional_source_watch_candidate_is_schema_validated(self) -> None:
+        temp, root = self.fixture()
+        try:
+            write_json(
+                root / "machine" / "source-watch-candidate.json",
+                {"schema_version": "invalid"},
+            )
+            self.assertIn(
+                "missing required keys",
+                validate_schema_contracts.validate(root)[0],
+            )
+        finally:
+            temp.cleanup()
+
     def test_every_versioned_release_request_is_schema_validated(self) -> None:
         temp, root = self.fixture()
         try:
