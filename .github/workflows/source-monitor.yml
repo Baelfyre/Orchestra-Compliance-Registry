@@ -175,7 +175,7 @@ jobs:
           python scripts/source_monitor.py apply-candidate \
             --receipt artifacts/source-monitor/source-watch-receipt.json \
             --candidate-output machine/source-watch-candidate.json
-          python scripts/validate_registry.py
+          python scripts/validate_registry.py --allow-source-watch-candidate
           python scripts/validate_source_provenance.py
           python scripts/validate_schema_contracts.py
           python scripts/validate_machine_records.py
