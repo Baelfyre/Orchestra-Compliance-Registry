@@ -103,7 +103,15 @@ class RegistryValidatorTests(unittest.TestCase):
         )
 
     def test_repository_fixture_is_valid(self):
-        self.assertEqual([], validate_registry.validate(ROOT, today=TODAY))
+        candidate_path = ROOT / validate_registry.SOURCE_WATCH_CANDIDATE_PATH
+        self.assertEqual(
+            [],
+            validate_registry.validate(
+                ROOT,
+                today=TODAY,
+                allow_source_watch_candidate=candidate_path.is_file(),
+            ),
+        )
 
     def test_manifest_record_path_drift_is_rejected(self):
         temp, root = self.fixture()
