@@ -134,25 +134,36 @@ jobs:
         if: steps.monitor.outputs.overall_state == 'MONITOR_FAILURE'
         env:
           GH_TOKEN: ${{ github.token }}
-          FAILURE_SOURCE_IDS: ${{ steps.monitor.outputs.failure_source_ids }}
         shell: bash
         run: |
           title="Registry source monitor failure"
           body_file="${RUNNER_TEMP}/source-monitor-failure.md"
-          cat > "$body_file" <<EOF
-          The scheduled official-source monitor could not complete a trustworthy check.
+          previous_file="${RUNNER_TEMP}/source-monitor-previous-report.md"
+          : > "$previous_file"
 
-          Failure source IDs: ${FAILURE_SOURCE_IDS}
-          Workflow run: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
-
-          This is monitoring evidence only. No Registry source status, obligation, merge state, or trusted release was changed automatically.
-          EOF
           existing="$(gh issue list --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
           if [[ -n "$existing" ]]; then
-            gh issue comment "$existing" --body-file "$body_file"
-          else
-            gh issue create --title "$title" --body-file "$body_file"
+            # Deduplicate by the latest bot report signature, not a moving run ID.
+            gh issue view "$existing" --json comments \
+              --jq '[.comments[] | (.body // "") | select(startswith("<!-- registry-source-monitor-failure-signature: "))] | last // ""' \
+              > "$previous_file"
           fi
+          python scripts/source_monitor_failure_report.py \
+            --receipt artifacts/source-monitor/source-watch-receipt.json \
+            --run-url "https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" \
+            --previous-report "$previous_file" \
+            --output "$body_file"
+
+          if [[ -s "$body_file" ]]; then
+            if [[ -n "$existing" ]]; then
+              gh issue comment "$existing" --body-file "$body_file"
+            else
+              gh issue create --title "$title" --body-file "$body_file"
+            fi
+          else
+            echo "Repeated identical monitor-failure signature; preserved receipt without adding an issue comment."
+          fi
+          # Failure stays visible even when the issue update is deduplicated.
           exit 1
       - name: Prepare bounded change candidate
         if: steps.monitor.outputs.overall_state == 'CHANGES_DETECTED'
