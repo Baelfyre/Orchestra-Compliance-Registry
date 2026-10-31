@@ -132,7 +132,7 @@
       "implementation_state": "CANONICAL_MAIN_AND_INCLUDED_IN_TRUSTED_V0_4_0",
       "implementation_merge_sha": "be297335b55aa6a3a88a473c7e7da28614e95cd2",
       "workflow": ".github/workflows/source-monitor.yml",
-      "schedule_hours": 6,
+      "schedule_hours": 24,
       "policy": "machine/source-monitor-policy.json",
       "baseline": "machine/source-monitor-baseline.v1.json",
       "baseline_state": "ACTIVE",
