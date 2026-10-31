@@ -28,11 +28,14 @@ def failure_signature(receipt: dict[str, Any]) -> str:
     if not failures:
         raise ValueError("MONITOR_FAILURE receipt has no failure sources")
     actionable = _ids(receipt, "actionable_source_ids")
+    # The candidate key contains full page fingerprints. Those may change with
+    # unrelated presentation noise during the same unresolved incident.
+    # Retain that key in each receipt/report, but deduplicate incident comments
+    # by stable source classifications rather than unreviewed live digests.
     key = receipt.get("candidate_key")
     if key is not None and not isinstance(key, str):
         raise ValueError("invalid candidate_key in source-watch receipt")
-    identity = {"failure_source_ids": failures, "actionable_source_ids": actionable,
-                "candidate_key": key}
+    identity = {"failure_source_ids": failures, "actionable_source_ids": actionable}
     canonical = json.dumps(identity, sort_keys=True, separators=(",", ":")).encode("utf-8")
     return hashlib.sha256(canonical).hexdigest()
 
