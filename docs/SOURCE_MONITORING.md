@@ -85,7 +85,7 @@ For Singapore Statutes Online, a response that passes the HTTPS/content-type bou
 
 Each scheduled check still saves a unique source-watch receipt artifact. When one source fails, separately observed `POTENTIAL_SUBSTANTIVE_CHANGE` or `SOURCE_MOVED` results remain in the receipt and are now included in the incident issue notification. The overall state remains `MONITOR_FAILURE`, and the automated candidate-PR path remains disabled until a complete trustworthy check succeeds. No legal obligations or trusted-release state are mutated.
 
-Repeated failures with the same sorted failure IDs, sorted actionable IDs, and candidate fingerprint produce the same incident signature. The issue reporter posts a new notification only when the signature changes, reducing six-hour duplicate comments. Repeated runs still fail visibly and preserve per-run evidence. The current classifier signature intentionally omits transient timestamps and raw HTTP error text; operators must consult receipt artifacts for those details.
+Repeated failures with the same sorted failure IDs and sorted actionable IDs produce the same incident signature. Changes in unreviewed page digests or the candidate key do not generate duplicate comments for the same unresolved source set; each per-run receipt still retains the exact fingerprint. The issue reporter posts a new notification only when the signature changes, reducing six-hour duplicate comments. Repeated runs still fail visibly and preserve per-run evidence. The current classifier signature intentionally omits transient timestamps and raw HTTP error text; operators must consult receipt artifacts for those details.
 
 See [2026-10-31 investigation and review gates](SOURCE_MONITOR_20261031_INVESTIGATION.md).
 
