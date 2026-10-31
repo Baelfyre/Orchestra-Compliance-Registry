@@ -111,6 +111,42 @@ class SourceMonitorLiveTests(unittest.TestCase):
             source_monitor_live._normalize_sg_pdpa_html(html)
 
 
+    def test_sso_http_202_is_rejected_before_text_normalization(self) -> None:
+        html = b"<html><body><h1>Personal Data Protection Act 2012</h1></body></html>"
+
+        class AcceptedResponse:
+            status = 202
+
+            def __init__(self):
+                self.headers = Message()
+                self.headers["Content-Type"] = "text/html; charset=utf-8"
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, exc_type, exc, tb):
+                return False
+
+            def read(self, limit):
+                return html[:limit]
+
+            def geturl(self):
+                return "https://sso.agc.gov.sg/Act/PDPA2012"
+
+        source = {
+            "source_id": source_monitor_live.SG_PDPA_SOURCE_ID,
+            "canonical_url": "https://sso.agc.gov.sg/Act/PDPA2012",
+            "verification": {"authority_domain": "sso.agc.gov.sg"},
+        }
+        config = {"strategy": "HTML_NORMALIZED_TEXT", "timeout_seconds": 30, "max_bytes": 4096}
+        with patch.object(source_monitor_live.urllib.request, "urlopen", return_value=AcceptedResponse()):
+            with self.assertRaises(source_monitor.SourceMonitorError) as failure:
+                source_monitor_live._sg_pdpa_fetch(source, config)
+        self.assertIn("unexpected response_status=202", str(failure.exception))
+        self.assertIn("raw_sha256=" + source_monitor._sha256_bytes(html), str(failure.exception))
+        self.assertNotIn("<html>", str(failure.exception))
+
+
 
 if __name__ == "__main__":
     unittest.main()
