@@ -25,6 +25,13 @@ class FailureReportTests(unittest.TestCase):
         second = receipt(actionable=list(reversed(first["actionable_source_ids"])), checked="2026-11-01T00:00:00Z")
         self.assertEqual(report.failure_signature(first), report.failure_signature(second))
 
+    def test_repeated_alert_ignores_changing_page_fingerprint(self) -> None:
+        first = receipt(key="a" * 64)
+        changed_page = receipt(key="b" * 64)
+        self.assertEqual(report.failure_signature(first), report.failure_signature(changed_page))
+        previous = report.render_report(first, "https://github.com/a/b/actions/runs/1")
+        self.assertTrue(report.already_reported(previous, changed_page))
+
     def test_new_actionable_evidence_changes_signature(self) -> None:
         self.assertNotEqual(report.failure_signature(receipt()), report.failure_signature(receipt(actionable=[])))
 
