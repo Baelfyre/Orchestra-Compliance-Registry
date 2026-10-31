@@ -77,6 +77,16 @@ Singapore Statutes Online renders a moving `Current version as at DD Mon YYYY` s
 
 The raw response SHA-256 is still preserved. Changes elsewhere in the normalized page remain detectable, and the monitor requires both expected PDPA text sentinels and the moving status label to be present. If those invariants disappear, the source fails closed rather than broadening normalization automatically.
 
+## Failure diagnostics and incident de-duplication (2026-10-31)
+
+For Singapore Statutes Online, a response that passes the HTTPS/content-type boundary but lacks readable statutory text is rejected. The receipt now records a bounded failure diagnostic (HTTP status, content type, response byte count, and raw SHA-256) without retaining raw challenge HTML or broadening text acceptance. This does not resolve an upstream transport restriction or prove the cause of a past response.
+
+Each scheduled check still saves a unique source-watch receipt artifact. When one source fails, separately observed `POTENTIAL_SUBSTANTIVE_CHANGE` or `SOURCE_MOVED` results remain in the receipt and are now included in the incident issue notification. The overall state remains `MONITOR_FAILURE`, and the automated candidate-PR path remains disabled until a complete trustworthy check succeeds. No legal obligations or trusted-release state are mutated.
+
+Repeated failures with the same sorted failure IDs, sorted actionable IDs, and candidate fingerprint produce the same incident signature. The issue reporter posts a new notification only when the signature changes, reducing six-hour duplicate comments. Repeated runs still fail visibly and preserve per-run evidence. The current classifier signature intentionally omits transient timestamps and raw HTTP error text; operators must consult receipt artifacts for those details.
+
+See [2026-10-31 investigation and review gates](SOURCE_MONITOR_20261031_INVESTIGATION.md).
+
 ## Change states
 
 | State | Meaning | Automatic repository action |
