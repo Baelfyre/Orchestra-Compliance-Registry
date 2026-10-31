@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import re
+from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 import urllib.error
 import urllib.request
 from typing import Any
@@ -163,10 +165,30 @@ def _normalize_sg_pdpa_html(text: str) -> str:
     return normalized
 
 
+
+def _sg_sso_extraction_window_open(at: datetime | None = None) -> bool:
+    """Allow automated SSO text extraction only from 03:00 to 07:00 SGT.
+
+    SSO Terms of Use clause 15(d): https://sso.agc.gov.sg/Terms-of-Use
+    This gate checks request-start time. Scheduled runs use 04:23 SGT
+    to leave a buffer for normal GitHub Actions queue delays.
+    """
+    now = at if at is not None else datetime.now(timezone.utc)
+    if now.tzinfo is None or now.utcoffset() is None:
+        raise source_monitor.SourceMonitorError("Singapore SSO window check requires timezone-aware time")
+    hour = now.astimezone(ZoneInfo("Asia/Singapore")).hour
+    return 3 <= hour < 7
+
+
 def _sg_pdpa_fetch(source: dict[str, Any], config: dict[str, Any]) -> dict[str, Any]:
     if config["strategy"] != "HTML_NORMALIZED_TEXT":
         raise source_monitor.SourceMonitorError(
             f"official SSO monitor for {source['source_id']} must use HTML_NORMALIZED_TEXT"
+        )
+    if not _sg_sso_extraction_window_open():
+        raise source_monitor.SourceMonitorError(
+            "official SSO automated extraction deferred outside 03:00-07:00 "
+            "Asia/Singapore window under SSO Terms of Use; no request sent"
         )
     canonical_url = source["canonical_url"]
     authority_domain = source["verification"]["authority_domain"]
