@@ -183,6 +183,7 @@ def _sg_pdpa_fetch(source: dict[str, Any], config: dict[str, Any]) -> dict[str, 
             if len(raw) > config["max_bytes"]:
                 raise source_monitor.SourceMonitorError(f"source {source['source_id']} exceeds max_bytes")
             final_url = response.geturl()
+            response_status = getattr(response, "status", "unknown")
             content_type = response.headers.get_content_type() or "application/octet-stream"
             charset = response.headers.get_content_charset() or "utf-8"
     except (urllib.error.URLError, TimeoutError, OSError) as exc:
@@ -200,7 +201,14 @@ def _sg_pdpa_fetch(source: dict[str, Any], config: dict[str, Any]) -> dict[str, 
             f"official SSO source {source['source_id']} returned unexpected content type {content_type}"
         )
 
-    normalized = _normalize_sg_pdpa_html(raw.decode(charset, errors="replace"))
+    try:
+        normalized = _normalize_sg_pdpa_html(raw.decode(charset, errors="replace"))
+    except source_monitor.SourceMonitorError as exc:
+        # Persist bounded response diagnostics without storing untrusted HTML.
+        raise source_monitor.SourceMonitorError(
+            f"{exc}; response_status={response_status}; content_type={content_type}; "
+            f"response_bytes={len(raw)}; raw_sha256={source_monitor._sha256_bytes(raw)}"
+        ) from exc
 
     return {
         "source_id": source["source_id"],
