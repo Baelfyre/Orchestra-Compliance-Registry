@@ -160,8 +160,15 @@ jobs:
               --jq '[.comments[] | (.body // "") | select(startswith("<!-- registry-source-monitor-failure-signature: "))] | last // ""' \
               > "$previous_file"
           fi
+          receipt_file="artifacts/source-monitor/source-watch-receipt.json"
+          if [[ ! -f "$receipt_file" ]]; then
+            # Failures before receipt generation still need an incident signal.
+            # This temporary reporting-only object is NOT a source-watch artifact.
+            receipt_file="${RUNNER_TEMP}/missing-source-watch-receipt.json"
+            printf '%s\n' '{"overall_state":"MONITOR_FAILURE","failure_source_ids":["UNKNOWN"],"actionable_source_ids":[],"candidate_key":null}' > "$receipt_file"
+          fi
           python scripts/source_monitor_failure_report.py \
-            --receipt artifacts/source-monitor/source-watch-receipt.json \
+            --receipt "$receipt_file" \
             --run-url "https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" \
             --previous-report "$previous_file" \
             --output "$body_file"
