@@ -20,6 +20,13 @@ The failed fetch had passed the response processing path far enough to attempt H
 A script-only page, access challenge, or unexpected response are hypotheses, **not confirmed root causes**.
 Independent HTTP retrieval of the SSO root path also encountered an HTTP 403 in a separate retrieval environment. This does not establish what the GitHub runner actually received.
 
+## Hosted PR validation follow-up (2026-10-31)
+
+- PR preview run https://github.com/Baelfyre/Orchestra-Compliance-Registry/actions/runs/41245449547 returned `SOURCE_MONITOR_FAIL` for Singapore with **HTTP status 202**, `text/html`, 2,399 response bytes, and raw SHA-256 `f37b0a7d527074f44aaccbeabe8d4b7a0c92a970788aedbd41aec5ff5a15acaf`. This establishes the observed transport status but **not** why the official server served it. The response must not be accepted as statutory text.
+- PR Registry Validation https://github.com/Baelfyre/Orchestra-Compliance-Registry/actions/runs/41245449592 initially failed on an overdue Australian source review. The checked-in `review-due.json` shows **four** due dates of 2026-10-18 (NPC Advisory 2025-02, Canada PIPEDA, Australia Privacy Act, Singapore PDPA).
+- A conservative draft-only correction marks those four source verification and ledger statuses `REVIEW_OVERDUE`, retains 2026-08-19 as the last actually accepted review date, and leaves all due dates unchanged. This removes false assertions of currentness without purporting to complete substantive legal review. Human review is required before merging or restoring reviewed-current statuses.
+- The monitor now explicitly rejects non-200 Singapore responses, retaining SHA-256-only diagnostics. A 200 HTML response with no extractable statutory text also remains rejected.
+
 ## Official-primary-source review leads
 
 | Source | Official evidence inspected | Classification and next step |
