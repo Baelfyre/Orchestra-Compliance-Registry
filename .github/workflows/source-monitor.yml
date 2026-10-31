@@ -43,8 +43,20 @@ jobs:
       - name: Generate live official-source baseline preview
         run: |
           mkdir -p artifacts/source-monitor
+          printf 'Live baseline bootstrap attempted; see workflow log for details.\n' \
+            > artifacts/source-monitor/preview-attempt.txt
+          set +e
           python scripts/source_monitor_live.py bootstrap \
             --output artifacts/source-monitor/current-baseline.json
+          bootstrap_rc=$?
+          set -e
+          if [[ "$bootstrap_rc" -ne 0 ]]; then
+            # A failed bootstrap cannot issue a reviewed baseline. Preserve the
+            # independent per-source receipt where possible for diagnosis.
+            python scripts/source_monitor_live.py check \
+              --receipt-output artifacts/source-monitor/source-watch-receipt.json || true
+            exit "$bootstrap_rc"
+          fi
       - name: Compare reviewed baseline with live official sources
         run: |
           python scripts/source_monitor_live.py check \
