@@ -24,10 +24,10 @@
     },
     {
       "source_id": "PH-NPC-ADV-2025-02",
-      "status": "VERIFIED_CURRENT",
+      "status": "REVIEW_OVERDUE",
       "checked_at": "2026-08-19",
       "check_method": "PRIMARY_OFFICIAL_SIGNED_PDF_AND_CURRENT_NPC_ISSUANCE_INDEX_REVIEW",
-      "note": "Signed NPC Advisory 2025-02 and the current NPC advisory index were re-verified on 2026-08-19. The signed advisory is dated 2025-08-27 and remains listed as current privacy-engineering guidance."
+      "note": "Signed NPC Advisory 2025-02 and the current NPC advisory index were re-verified on 2026-08-19. The signed advisory is dated 2025-08-27 and remains listed as current privacy-engineering guidance. Review due 2026-10-18 passed without an accepted comprehensive source review; marked REVIEW_OVERDUE on 2026-10-31. Prior verification evidence is retained, but currentness is not asserted."
     },
     {
       "source_id": "EU-GDPR-2016-679",
@@ -38,24 +38,24 @@
     },
     {
       "source_id": "CA-PIPEDA-SC2000-C5",
-      "status": "CURRENT_WITH_PENDING_CHANGE",
+      "status": "REVIEW_OVERDUE",
       "checked_at": "2026-08-19",
       "check_method": "PRIMARY_OFFICIAL_JUSTICE_LAWS_CURRENT_TEXT_AND_AMENDMENTS_NOT_IN_FORCE_REVIEW",
-      "note": "Justice Laws states that PIPEDA is current to 2026-06-14 and last amended on 2025-03-04, while separately listing amendments not yet in force. Part 1 entered into force on 2001-01-01. Pending provisions are not treated as current obligations."
+      "note": "Justice Laws states that PIPEDA is current to 2026-06-14 and last amended on 2025-03-04, while separately listing amendments not yet in force. Part 1 entered into force on 2001-01-01. Pending provisions are not treated as current obligations. Review due 2026-10-18 passed without an accepted comprehensive source review; marked REVIEW_OVERDUE on 2026-10-31. Prior verification evidence is retained, but currentness is not asserted."
     },
     {
       "source_id": "AU-PRIVACY-ACT-1988",
-      "status": "VERIFIED_CURRENT",
+      "status": "REVIEW_OVERDUE",
       "checked_at": "2026-08-19",
       "check_method": "PRIMARY_OFFICIAL_FEDERAL_REGISTER_LATEST_COMPILATION_AND_LEGISLATION_HISTORY_REVIEW",
-      "note": "Federal Register of Legislation re-verified the Privacy Act 1988 as in force. Assent was 1988-12-14, commencement 1989-01-01, and the latest reviewed compilation is C2026C00227 C104 effective 2026-06-04."
+      "note": "Federal Register of Legislation re-verified the Privacy Act 1988 as in force. Assent was 1988-12-14, commencement 1989-01-01, and the latest reviewed compilation is C2026C00227 C104 effective 2026-06-04. Review due 2026-10-18 passed without an accepted comprehensive source review; marked REVIEW_OVERDUE on 2026-10-31. Prior verification evidence is retained, but currentness is not asserted."
     },
     {
       "source_id": "SG-PDPA-2012",
-      "status": "VERIFIED_CURRENT",
+      "status": "REVIEW_OVERDUE",
       "checked_at": "2026-08-19",
       "check_method": "PRIMARY_OFFICIAL_SSO_CURRENT_VERSION_AND_LEGISLATIVE_HISTORY_REVIEW",
-      "note": "Singapore Statutes Online re-verified the current PDPA text. The Act was published in the Acts Supplement on 2012-12-03, principal Parts III-VII commenced on 2014-07-02, the latest reviewed text is current as at 2026-08-07, and the latest timeline amendment is 2025-12-05."
+      "note": "Singapore Statutes Online re-verified the current PDPA text. The Act was published in the Acts Supplement on 2012-12-03, principal Parts III-VII commenced on 2014-07-02, the latest reviewed text is current as at 2026-08-07, and the latest timeline amendment is 2025-12-05. Review due 2026-10-18 passed without an accepted comprehensive source review; marked REVIEW_OVERDUE on 2026-10-31. Prior verification evidence is retained, but currentness is not asserted."
     }
   ]
 }

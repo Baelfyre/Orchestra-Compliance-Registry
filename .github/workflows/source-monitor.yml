@@ -15,7 +15,9 @@ on:
       - "tests/test_source_monitor.py"
       - ".github/workflows/source-monitor.yml"
   schedule:
-    - cron: "23 */6 * * *"
+    # SSO permits automated extraction only 03:00-07:00 Singapore time.
+    - cron: "23 4 * * *"
+      timezone: "Asia/Singapore"
   workflow_dispatch:
 
 permissions:
@@ -40,12 +42,43 @@ jobs:
           python-version: "3.12"
       - name: Validate monitor configuration
         run: python scripts/source_monitor.py validate-config
-      - name: Generate live official-source baseline preview
+      - name: Determine Singapore permitted extraction window
+        id: sso_window
+        shell: bash
         run: |
           mkdir -p artifacts/source-monitor
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          from scripts.source_monitor_live import _sg_sso_extraction_window_open
+          print("open=" + str(_sg_sso_extraction_window_open()).lower())
+          PY
+      - name: Record deferred live source preview
+        if: steps.sso_window.outputs.open != 'true'
+        shell: bash
+        run: |
+          printf '%s\n' 'DEFERRED: Singapore SSO automated extraction permitted only 03:00-07:00 Asia/Singapore. Live source verification not executed for this PR.' \
+            > artifacts/source-monitor/window-deferred.txt
+          echo 'Live source preview deferred outside the SSO permitted window. This is NOT verified source-currentness evidence. Human review remains required.' \
+            >> "$GITHUB_STEP_SUMMARY"
+      - name: Generate live official-source baseline preview
+        if: steps.sso_window.outputs.open == 'true'
+        run: |
+          mkdir -p artifacts/source-monitor
+          printf 'Live baseline bootstrap attempted; see workflow log for details.\n' \
+            > artifacts/source-monitor/preview-attempt.txt
+          set +e
           python scripts/source_monitor_live.py bootstrap \
             --output artifacts/source-monitor/current-baseline.json
+          bootstrap_rc=$?
+          set -e
+          if [[ "$bootstrap_rc" -ne 0 ]]; then
+            # A failed bootstrap cannot issue a reviewed baseline. Preserve the
+            # independent per-source receipt where possible for diagnosis.
+            python scripts/source_monitor_live.py check \
+              --receipt-output artifacts/source-monitor/source-watch-receipt.json || true
+            exit "$bootstrap_rc"
+          fi
       - name: Compare reviewed baseline with live official sources
+        if: steps.sso_window.outputs.open == 'true'
         run: |
           python scripts/source_monitor_live.py check \
             --receipt-output artifacts/source-monitor/source-watch-receipt.json
@@ -95,6 +128,18 @@ jobs:
           python-version: "3.12"
       - name: Validate monitor configuration
         run: python scripts/source_monitor.py validate-config
+      - name: Enforce Singapore permitted extraction window
+        shell: bash
+        run: |
+          python - <<'PY'
+          from scripts.source_monitor_live import _sg_sso_extraction_window_open
+          if not _sg_sso_extraction_window_open():
+              raise SystemExit(
+                  "DEFERRED_SSO_WINDOW: source monitor cannot run outside "
+                  "03:00-07:00 Asia/Singapore; no official source request was sent"
+              )
+          print("SSO_EXTRACTION_WINDOW_OPEN")
+          PY
       - name: Check official sources
         id: monitor
         shell: bash
@@ -134,25 +179,43 @@ jobs:
         if: steps.monitor.outputs.overall_state == 'MONITOR_FAILURE'
         env:
           GH_TOKEN: ${{ github.token }}
-          FAILURE_SOURCE_IDS: ${{ steps.monitor.outputs.failure_source_ids }}
         shell: bash
         run: |
           title="Registry source monitor failure"
           body_file="${RUNNER_TEMP}/source-monitor-failure.md"
-          cat > "$body_file" <<EOF
-          The scheduled official-source monitor could not complete a trustworthy check.
+          previous_file="${RUNNER_TEMP}/source-monitor-previous-report.md"
+          : > "$previous_file"
 
-          Failure source IDs: ${FAILURE_SOURCE_IDS}
-          Workflow run: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
-
-          This is monitoring evidence only. No Registry source status, obligation, merge state, or trusted release was changed automatically.
-          EOF
           existing="$(gh issue list --state open --search "${title} in:title" --json number --jq '.[0].number // empty')"
           if [[ -n "$existing" ]]; then
-            gh issue comment "$existing" --body-file "$body_file"
-          else
-            gh issue create --title "$title" --body-file "$body_file"
+            # Deduplicate by the latest bot report signature, not a moving run ID.
+            gh issue view "$existing" --json comments \
+              --jq '[.comments[] | (.body // "") | select(startswith("<!-- registry-source-monitor-failure-signature: "))] | last // ""' \
+              > "$previous_file"
           fi
+          receipt_file="artifacts/source-monitor/source-watch-receipt.json"
+          if [[ ! -f "$receipt_file" ]]; then
+            # Failures before receipt generation still need an incident signal.
+            # This temporary reporting-only object is NOT a source-watch artifact.
+            receipt_file="${RUNNER_TEMP}/missing-source-watch-receipt.json"
+            printf '%s\n' '{"overall_state":"MONITOR_FAILURE","failure_source_ids":["UNKNOWN"],"actionable_source_ids":[],"candidate_key":null}' > "$receipt_file"
+          fi
+          python scripts/source_monitor_failure_report.py \
+            --receipt "$receipt_file" \
+            --run-url "https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" \
+            --previous-report "$previous_file" \
+            --output "$body_file"
+
+          if [[ -s "$body_file" ]]; then
+            if [[ -n "$existing" ]]; then
+              gh issue comment "$existing" --body-file "$body_file"
+            else
+              gh issue create --title "$title" --body-file "$body_file"
+            fi
+          else
+            echo "Repeated identical monitor-failure signature; preserved receipt without adding an issue comment."
+          fi
+          # Failure stays visible even when the issue update is deduplicated.
           exit 1
       - name: Prepare bounded change candidate
         if: steps.monitor.outputs.overall_state == 'CHANGES_DETECTED'

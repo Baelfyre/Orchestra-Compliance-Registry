@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 import unittest
+from datetime import datetime, timezone
+from email.message import Message
+from unittest.mock import patch
 
 from scripts import source_monitor, source_monitor_live
 
@@ -62,6 +65,123 @@ class SourceMonitorLiveTests(unittest.TestCase):
         )
         with self.assertRaises(source_monitor.SourceMonitorError):
             source_monitor_live._normalize_sg_pdpa_html(html)
+
+    def test_sso_script_only_response_fails_with_bounded_diagnostics(self) -> None:
+        html = b"<html><head><script>challenge()</script></head><body></body></html>"
+
+        class ScriptOnlyResponse:
+            status = 200
+
+            def __init__(self) -> None:
+                self.headers = Message()
+                self.headers["Content-Type"] = "text/html; charset=utf-8"
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, exc_type, exc, tb):
+                return False
+
+            def read(self, limit):
+                return html[:limit]
+
+            def geturl(self):
+                return "https://sso.agc.gov.sg/Act/PDPA2012"
+
+        source = {
+            "source_id": source_monitor_live.SG_PDPA_SOURCE_ID,
+            "canonical_url": "https://sso.agc.gov.sg/Act/PDPA2012",
+            "verification": {"authority_domain": "sso.agc.gov.sg"},
+        }
+        config = {"strategy": "HTML_NORMALIZED_TEXT", "timeout_seconds": 30, "max_bytes": 4096}
+        with patch.object(source_monitor_live, "_sg_sso_extraction_window_open", return_value=True), patch.object(source_monitor_live.urllib.request, "urlopen", return_value=ScriptOnlyResponse()):
+            with self.assertRaises(source_monitor.SourceMonitorError) as failure:
+                source_monitor_live._sg_pdpa_fetch(source, config)
+        message = str(failure.exception)
+        self.assertIn("normalized text is empty", message)
+        self.assertIn("response_status=200", message)
+        self.assertIn("content_type=text/html", message)
+        self.assertIn(f"response_bytes={len(html)}", message)
+        self.assertIn("raw_sha256=" + source_monitor._sha256_bytes(html), message)
+        self.assertNotIn("challenge()", message)
+        self.assertNotIn("<html>", message)
+
+    def test_sso_invalid_legal_text_remains_untrusted(self) -> None:
+        html = "<html><body><h1>Unverified text</h1></body></html>"
+        with self.assertRaisesRegex(source_monitor.SourceMonitorError, "missing expected PDPA text sentinels"):
+            source_monitor_live._normalize_sg_pdpa_html(html)
+
+
+    def test_sso_http_202_is_rejected_before_text_normalization(self) -> None:
+        html = b"<html><body><h1>Personal Data Protection Act 2012</h1></body></html>"
+
+        class AcceptedResponse:
+            status = 202
+
+            def __init__(self):
+                self.headers = Message()
+                self.headers["Content-Type"] = "text/html; charset=utf-8"
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, exc_type, exc, tb):
+                return False
+
+            def read(self, limit):
+                return html[:limit]
+
+            def geturl(self):
+                return "https://sso.agc.gov.sg/Act/PDPA2012"
+
+        source = {
+            "source_id": source_monitor_live.SG_PDPA_SOURCE_ID,
+            "canonical_url": "https://sso.agc.gov.sg/Act/PDPA2012",
+            "verification": {"authority_domain": "sso.agc.gov.sg"},
+        }
+        config = {"strategy": "HTML_NORMALIZED_TEXT", "timeout_seconds": 30, "max_bytes": 4096}
+        with patch.object(source_monitor_live, "_sg_sso_extraction_window_open", return_value=True), patch.object(source_monitor_live.urllib.request, "urlopen", return_value=AcceptedResponse()):
+            with self.assertRaises(source_monitor.SourceMonitorError) as failure:
+                source_monitor_live._sg_pdpa_fetch(source, config)
+        self.assertIn("unexpected response_status=202", str(failure.exception))
+        self.assertIn("raw_sha256=" + source_monitor._sha256_bytes(html), str(failure.exception))
+        self.assertNotIn("<html>", str(failure.exception))
+
+
+    def test_sso_extraction_window_respects_singapore_timezone_boundaries(self) -> None:
+        utc = timezone.utc
+        allowed = [
+            datetime(2026, 10, 30, 19, 0, tzinfo=utc),  # 03:00 SGT
+            datetime(2026, 10, 30, 20, 23, tzinfo=utc), # 04:23 SGT
+            datetime(2026, 10, 30, 22, 59, tzinfo=utc), # 06:59 SGT
+        ]
+        disallowed = [
+            datetime(2026, 10, 30, 18, 59, tzinfo=utc), # 02:59 SGT
+            datetime(2026, 10, 30, 23, 0, tzinfo=utc),  # 07:00 SGT
+            datetime(2026, 10, 29, 13, 21, tzinfo=utc), # Original failed run
+        ]
+        for when in allowed:
+            with self.subTest(allowed=when):
+                self.assertTrue(source_monitor_live._sg_sso_extraction_window_open(when))
+        for when in disallowed:
+            with self.subTest(disallowed=when):
+                self.assertFalse(source_monitor_live._sg_sso_extraction_window_open(when))
+        with self.assertRaisesRegex(source_monitor.SourceMonitorError, "timezone-aware"):
+            source_monitor_live._sg_sso_extraction_window_open(datetime(2026, 10, 30, 20, 23))
+
+    def test_sso_window_rejects_early_without_network_access(self) -> None:
+        source = {
+            "source_id": source_monitor_live.SG_PDPA_SOURCE_ID,
+            "canonical_url": "https://sso.agc.gov.sg/Act/PDPA2012",
+            "verification": {"authority_domain": "sso.agc.gov.sg"},
+        }
+        config = {"strategy": "HTML_NORMALIZED_TEXT", "timeout_seconds": 30, "max_bytes": 4096}
+        with patch.object(source_monitor_live, "_sg_sso_extraction_window_open", return_value=False):
+            with patch.object(source_monitor_live.urllib.request, "urlopen") as urlopen:
+                with self.assertRaisesRegex(source_monitor.SourceMonitorError, "no request sent"):
+                    source_monitor_live._sg_pdpa_fetch(source, config)
+                urlopen.assert_not_called()
+
 
 
 if __name__ == "__main__":
