@@ -37,6 +37,14 @@ Independent HTTP retrieval of the SSO root path also encountered an HTTP 403 in 
 
 Official webpages are live and can change. The above observations are time-bounded and do not replace a signed review of exact texts or legally effective dates.
 
+## Confirmed upstream automated-use restriction (2026-10-31)
+
+- The [SSO Terms of Use](https://sso.agc.gov.sg/Terms-of-Use), clause 15(d), and [FAQ A3](https://sso.agc.gov.sg/FAQ) explicitly restrict automated extraction of Singapore legislation to **03:00–07:00 Singapore Time**, forbid deceptive/intrusive requests and circumvention of security measures. This was not accounted for in the original six-hour schedule.
+- The previously configured `23 */6 * * *` UTC schedule executed at **01:23, 07:23, 13:23 and 19:23 SGT**; all four are outside the allowed window. Observed HTTP 202 does not itself prove timing-based blocking.
+- To keep the current all-or-nothing eight-source check intact, the draft changes the schedule to **04:23 Asia/Singapore once per day** and records a policy cadence of 24 hours. This is a **tradeoff**, reducing freshness for the other seven sources from every six hours to daily. Source-separated workflows would allow different cadences but require additional design and human review.
+- The Singapore fetch adapter now rejects out-of-window calls before making an HTTP request. Pull-request preview outside the window records a transparent **DEFERRED, NOT VERIFIED** artifact, and manual dispatch outside the window fails without fetching. Live in-window success remains unqualified until observed in hosted CI.
+- SSO FAQ B1 states the SSO consolidation is not the authoritative statute text; use the official Government Gazette for final legal text and commencement review. Do not substitute a third-party aggregation site for official source evidence.
+
 ## P0-P2 implementation scope
 
 1. **P0 response diagnostics**: on rejected Singapore HTML content, record only response status, content type, byte count, and raw SHA-256 in the source-watch receipt's reason string. Preserve strict HTTPS host boundary, required legal-text sentinels, and fail-closed behavior. Do not attempt CAPTCHA evasion or accept script-only/non-statutory content.
