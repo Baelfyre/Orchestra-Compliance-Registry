@@ -44,6 +44,11 @@ def render_report(receipt: dict[str, Any], run_url: str) -> str:
     failures = _ids(receipt, "failure_source_ids")
     actionable = _ids(receipt, "actionable_source_ids")
     candidate_key = receipt.get("candidate_key")
+    receipt_location = (
+        "Not generated; inspect the workflow logs"
+        if failures == ["UNKNOWN"]
+        else f"{run_url}#artifacts"
+    )
     lines = [
         f"{MARKER_PREFIX}{signature} -->",
         "The scheduled official-source monitor could not complete a trustworthy check.",
@@ -53,7 +58,7 @@ def render_report(receipt: dict[str, Any], run_url: str) -> str:
         + (", ".join(f"`{x}`" for x in actionable) if actionable else "None detected"),
         "**Candidate fingerprint:** " + (f"`{candidate_key}`" if candidate_key else "Not applicable"),
         f"**Workflow evidence:** {run_url}",
-        f"**Receipt artifact:** {run_url}#artifacts",
+        f"**Receipt artifact:** {receipt_location}",
         "",
         "This remains a monitor failure. Changes detected for other sources are preserved in the receipt,",
         "but no automated candidate, source-status update, baseline acceptance, merge, or trusted release is authorized.",
