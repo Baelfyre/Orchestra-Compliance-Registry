@@ -15,7 +15,9 @@ on:
       - "tests/test_source_monitor.py"
       - ".github/workflows/source-monitor.yml"
   schedule:
-    - cron: "23 */6 * * *"
+    # SSO permits automated extraction only 03:00-07:00 Singapore time.
+    - cron: "23 4 * * *"
+      timezone: "Asia/Singapore"
   workflow_dispatch:
 
 permissions:
@@ -40,7 +42,25 @@ jobs:
           python-version: "3.12"
       - name: Validate monitor configuration
         run: python scripts/source_monitor.py validate-config
+      - name: Determine Singapore permitted extraction window
+        id: sso_window
+        shell: bash
+        run: |
+          mkdir -p artifacts/source-monitor
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          from scripts.source_monitor_live import _sg_sso_extraction_window_open
+          print("open=" + str(_sg_sso_extraction_window_open()).lower())
+          PY
+      - name: Record deferred live source preview
+        if: steps.sso_window.outputs.open != 'true'
+        shell: bash
+        run: |
+          printf '%s\n' 'DEFERRED: Singapore SSO automated extraction permitted only 03:00-07:00 Asia/Singapore. Live source verification not executed for this PR.' \
+            > artifacts/source-monitor/window-deferred.txt
+          echo 'Live source preview deferred outside the SSO permitted window. This is NOT verified source-currentness evidence. Human review remains required.' \
+            >> "$GITHUB_STEP_SUMMARY"
       - name: Generate live official-source baseline preview
+        if: steps.sso_window.outputs.open == 'true'
         run: |
           mkdir -p artifacts/source-monitor
           printf 'Live baseline bootstrap attempted; see workflow log for details.\n' \
@@ -58,6 +78,7 @@ jobs:
             exit "$bootstrap_rc"
           fi
       - name: Compare reviewed baseline with live official sources
+        if: steps.sso_window.outputs.open == 'true'
         run: |
           python scripts/source_monitor_live.py check \
             --receipt-output artifacts/source-monitor/source-watch-receipt.json
@@ -107,6 +128,18 @@ jobs:
           python-version: "3.12"
       - name: Validate monitor configuration
         run: python scripts/source_monitor.py validate-config
+      - name: Enforce Singapore permitted extraction window
+        shell: bash
+        run: |
+          python - <<'PY'
+          from scripts.source_monitor_live import _sg_sso_extraction_window_open
+          if not _sg_sso_extraction_window_open():
+              raise SystemExit(
+                  "DEFERRED_SSO_WINDOW: source monitor cannot run outside "
+                  "03:00-07:00 Asia/Singapore; no official source request was sent"
+              )
+          print("SSO_EXTRACTION_WINDOW_OPEN")
+          PY
       - name: Check official sources
         id: monitor
         shell: bash
