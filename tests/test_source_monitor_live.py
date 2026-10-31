@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import unittest
+from datetime import datetime, timezone
 from email.message import Message
 from unittest.mock import patch
 
@@ -93,7 +94,7 @@ class SourceMonitorLiveTests(unittest.TestCase):
             "verification": {"authority_domain": "sso.agc.gov.sg"},
         }
         config = {"strategy": "HTML_NORMALIZED_TEXT", "timeout_seconds": 30, "max_bytes": 4096}
-        with patch.object(source_monitor_live.urllib.request, "urlopen", return_value=ScriptOnlyResponse()):
+        with patch.object(source_monitor_live, "_sg_sso_extraction_window_open", return_value=True), patch.object(source_monitor_live.urllib.request, "urlopen", return_value=ScriptOnlyResponse()):
             with self.assertRaises(source_monitor.SourceMonitorError) as failure:
                 source_monitor_live._sg_pdpa_fetch(source, config)
         message = str(failure.exception)
@@ -139,12 +140,47 @@ class SourceMonitorLiveTests(unittest.TestCase):
             "verification": {"authority_domain": "sso.agc.gov.sg"},
         }
         config = {"strategy": "HTML_NORMALIZED_TEXT", "timeout_seconds": 30, "max_bytes": 4096}
-        with patch.object(source_monitor_live.urllib.request, "urlopen", return_value=AcceptedResponse()):
+        with patch.object(source_monitor_live, "_sg_sso_extraction_window_open", return_value=True), patch.object(source_monitor_live.urllib.request, "urlopen", return_value=AcceptedResponse()):
             with self.assertRaises(source_monitor.SourceMonitorError) as failure:
                 source_monitor_live._sg_pdpa_fetch(source, config)
         self.assertIn("unexpected response_status=202", str(failure.exception))
         self.assertIn("raw_sha256=" + source_monitor._sha256_bytes(html), str(failure.exception))
         self.assertNotIn("<html>", str(failure.exception))
+
+
+    def test_sso_extraction_window_respects_singapore_timezone_boundaries(self) -> None:
+        utc = timezone.utc
+        allowed = [
+            datetime(2026, 10, 30, 19, 0, tzinfo=utc),  # 03:00 SGT
+            datetime(2026, 10, 30, 20, 23, tzinfo=utc), # 04:23 SGT
+            datetime(2026, 10, 30, 22, 59, tzinfo=utc), # 06:59 SGT
+        ]
+        disallowed = [
+            datetime(2026, 10, 30, 18, 59, tzinfo=utc), # 02:59 SGT
+            datetime(2026, 10, 30, 23, 0, tzinfo=utc),  # 07:00 SGT
+            datetime(2026, 10, 29, 13, 21, tzinfo=utc), # Original failed run
+        ]
+        for when in allowed:
+            with self.subTest(allowed=when):
+                self.assertTrue(source_monitor_live._sg_sso_extraction_window_open(when))
+        for when in disallowed:
+            with self.subTest(disallowed=when):
+                self.assertFalse(source_monitor_live._sg_sso_extraction_window_open(when))
+        with self.assertRaisesRegex(source_monitor.SourceMonitorError, "timezone-aware"):
+            source_monitor_live._sg_sso_extraction_window_open(datetime(2026, 10, 30, 20, 23))
+
+    def test_sso_window_rejects_early_without_network_access(self) -> None:
+        source = {
+            "source_id": source_monitor_live.SG_PDPA_SOURCE_ID,
+            "canonical_url": "https://sso.agc.gov.sg/Act/PDPA2012",
+            "verification": {"authority_domain": "sso.agc.gov.sg"},
+        }
+        config = {"strategy": "HTML_NORMALIZED_TEXT", "timeout_seconds": 30, "max_bytes": 4096}
+        with patch.object(source_monitor_live, "_sg_sso_extraction_window_open", return_value=False):
+            with patch.object(source_monitor_live.urllib.request, "urlopen") as urlopen:
+                with self.assertRaisesRegex(source_monitor.SourceMonitorError, "no request sent"):
+                    source_monitor_live._sg_pdpa_fetch(source, config)
+                urlopen.assert_not_called()
 
 
 
