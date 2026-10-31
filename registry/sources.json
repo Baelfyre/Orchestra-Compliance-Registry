@@ -108,7 +108,7 @@
       "gathered_at": "2026-08-19",
       "date_reference_note": "The signed NPC advisory states DATE: 27 August 2025. It is guidance for privacy engineering across planning, design/development, testing, deployment, operation and maintenance; it is not recorded as a standalone statute.",
       "verification": {
-        "status": "VERIFIED_CURRENT",
+        "status": "REVIEW_OVERDUE",
         "verified_at": "2026-08-19",
         "method": "PRIMARY_OFFICIAL_SIGNED_PDF_AND_CURRENT_NPC_ISSUANCE_INDEX_REVIEW",
         "authority_domain": "privacy.gov.ph"
@@ -170,7 +170,7 @@
       "date_reference_note": "Justice Laws states that the Act is current to 2026-06-14 and last amended on 2025-03-04. Its coming-into-force note states that Part 1 entered into force on 2001-01-01. Justice Laws also lists amendments not yet in force, so pending provisions are not treated as currently effective obligations.",
       "supersession_note": "Justice Laws identifies amendments not yet in force; the Registry records the current consolidated Act and requires applicability review for pending provisions.",
       "verification": {
-        "status": "CURRENT_WITH_PENDING_CHANGE",
+        "status": "REVIEW_OVERDUE",
         "verified_at": "2026-08-19",
         "method": "PRIMARY_OFFICIAL_JUSTICE_LAWS_CURRENT_TEXT_AND_AMENDMENTS_NOT_IN_FORCE_REVIEW",
         "authority_domain": "laws-lois.justice.gc.ca"
@@ -200,7 +200,7 @@
       "gathered_at": "2026-08-19",
       "date_reference_note": "The Federal Register records assent on 1988-12-14 and commencement on 1989-01-01. The latest in-force compilation reviewed is C2026C00227 C104, effective 2026-06-04.",
       "verification": {
-        "status": "VERIFIED_CURRENT",
+        "status": "REVIEW_OVERDUE",
         "verified_at": "2026-08-19",
         "method": "PRIMARY_OFFICIAL_FEDERAL_REGISTER_LATEST_COMPILATION_AND_LEGISLATION_HISTORY_REVIEW",
         "authority_domain": "legislation.gov.au"
@@ -231,7 +231,7 @@
       "gathered_at": "2026-08-19",
       "date_reference_note": "Singapore Statutes Online records publication in the Acts Supplement on 2012-12-03. The Act commenced in phases; Parts III-VII, which include the principal personal-data obligations used in this pilot, commenced on 2014-07-02. The current text reviewed is shown as current as at 2026-08-07, with the latest timeline amendment on 2025-12-05 by Act 19 of 2025.",
       "verification": {
-        "status": "VERIFIED_CURRENT",
+        "status": "REVIEW_OVERDUE",
         "verified_at": "2026-08-19",
         "method": "PRIMARY_OFFICIAL_SSO_CURRENT_VERSION_AND_LEGISLATIVE_HISTORY_REVIEW",
         "authority_domain": "sso.agc.gov.sg"
