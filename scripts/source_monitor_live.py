@@ -200,6 +200,12 @@ def _sg_pdpa_fetch(source: dict[str, Any], config: dict[str, Any]) -> dict[str, 
         raise source_monitor.SourceMonitorError(
             f"official SSO source {source['source_id']} returned unexpected content type {content_type}"
         )
+    if response_status != 200:
+        raise source_monitor.SourceMonitorError(
+            f"official SSO source {source['source_id']} returned unexpected response_status={response_status}; "
+            f"content_type={content_type}; response_bytes={len(raw)}; "
+            f"raw_sha256={source_monitor._sha256_bytes(raw)}"
+        )
 
     try:
         normalized = _normalize_sg_pdpa_html(raw.decode(charset, errors="replace"))
