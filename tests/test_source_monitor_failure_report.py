@@ -59,6 +59,14 @@ class FailureReportTests(unittest.TestCase):
                 self.assertEqual(main(), 0)
             self.assertEqual(output.read_text(encoding="utf-8"), "")
 
+    def test_unknown_pre_receipt_failure_does_not_claim_artifact_exists(self) -> None:
+        incomplete = receipt(failures=["UNKNOWN"], actionable=[], key=None)
+        output = report.render_report(incomplete, "https://github.com/a/b/actions/runs/1")
+        self.assertIn("Not generated; inspect the workflow logs", output)
+        self.assertNotIn("#artifacts", output)
+        self.assertEqual(report.failure_signature(incomplete), report.failure_signature(dict(incomplete)))
+
+
 
 if __name__ == "__main__":
     unittest.main()
